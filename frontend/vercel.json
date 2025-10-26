@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "package.json", "use": "@vercel/static-build" }
+  ],
+  "installCommand": "npm ci",
+  "buildCommand": "chmod +x ./node_modules/.bin/vite && npm run build",
+  "outputDirectory": "dist",
+  "devCommand": "npm run dev",
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/.*", "dest": "/index.html" }
+  ]
+}
