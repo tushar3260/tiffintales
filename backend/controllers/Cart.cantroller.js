@@ -80,7 +80,7 @@ export const deleteCartItem = async (req, res) => {
 // ✅ Clear all items from cart (reset)
 export const clearCart = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { userId } = req.params;
 
     const cart = await Cart.findOne({ userId });
     if (!cart) return res.status(404).json({ msg: "Cart not found" });

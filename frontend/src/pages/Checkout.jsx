@@ -1,93 +1,125 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useUser } from "../context/userContext.jsx";
 
 const Checkout = () => {
+  const { state } = useLocation(); // cart items passed from Cart.jsx
   const navigate = useNavigate();
-  const [address, setAddress] = useState("");
-  const [timeSlot, setTimeSlot] = useState("");
-  const [payment, setPayment] = useState("");
+  const { user } = useUser();
 
-  const handleSelectPayment = (option) => {
-    setPayment(option);
+  const cartItems = state?.cart || [];
+  const totalAmount = cartItems.reduce(
+    (sum, i) => sum + i.price * i.quantity,
+    0
+  );
+
+  const selectedChefId = cartItems[0]?.chefId || null;
+  const selectedTimeSlot = "Lunch";
+
+  // ✅ Main payment handler
+  const handlePayment = async () => {
+    try {
+      // 1️⃣ Create Razorpay order on backend
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_URL}/payment/create-order`,
+        { amount: totalAmount }
+      );
+
+      const { order } = data;
+
+      // 2️⃣ Razorpay config
+      const options = {
+        key: import.meta.env.RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Tiffin Tales",
+        description: "Order Payment",
+        order_id: order.id,
+        prefill: {
+          name: user.name || "Tiffin Tales User",
+          email: user.email || "tiffin@example.com",
+          contact: user.phone || "0000000000",
+        },
+        theme: { color: "#F97316" },
+
+        // 3️⃣ Razorpay payment success callback
+        handler: async function (response) {
+          try {
+            // 4️⃣ Verify payment on backend
+            const verifyRes = await axios.post(
+              `${import.meta.env.VITE_API_URL}/payment/verify`,
+              {
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+              }
+            );
+
+            if (verifyRes.data.success) {
+              // 5️⃣ Create order in DB
+              const orderData = {
+                userId: user._id,
+                chefId: selectedChefId,
+                meals: cartItems.map((item) => ({
+                  mealId: item._id,
+                  quantity: item.quantity,
+                  price: item.price,
+                })),
+                totalPrice: totalAmount,
+                deliveryAddress: {
+                  street: user.address?.street || "Not provided",
+                  city: user.address?.city || "Not provided",
+                  pincode: user.address?.pincode || "000000",
+                },
+                paymentMode: "Online",
+                timeSlot: selectedTimeSlot,
+                paymentStatus: "Paid",
+              };
+
+              await axios.post(
+                `${import.meta.env.VITE_API_URL}/orders/placeOrder`,
+                orderData
+              );
+
+              // 6️⃣ Clear cart
+              await axios.delete(
+                `${import.meta.env.VITE_API_URL}/cart/clear/${user._id}`
+              );
+
+              // 7️⃣ Redirect
+              toast.success("Order placed successfully!");
+              navigate("/my-orders");
+            } else {
+              toast.error("Payment verification failed");
+            }
+          } catch (error) {
+            console.error(error);
+            toast.error("Something went wrong during order process");
+          }
+        },
+      };
+
+      // 8️⃣ Open Razorpay window
+      const razor = new window.Razorpay(options);
+      razor.open();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to initiate payment");
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-200 to-orange-100 p-6">
-      <div className="bg-[#fffce5] rounded-xl shadow-xl p-6 max-w-3xl mx-auto relative">
-        <h2 className="text-3xl font-bold mb-6 text-orange-700">Checkout</h2>
-
-        {/* Back to cart */}
-        <button
-          onClick={() => navigate("/cart")}
-          className="absolute top-6 right-6 text-orange-700 border border-orange-500 px-4 py-1 rounded-full hover:bg-orange-100 transition"
-        >
-          ← Back to Cart
-        </button>
-
-        {/* Address */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Delivery Address</label>
-          <textarea
-            className="w-full border border-gray-300 rounded-md p-2"
-            rows={3}
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Enter your address"
-          />
-        </div>
-
-        {/* Time Slot */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Select Time Slot</label>
-          <select
-            className="w-full border border-gray-300 rounded-md p-2"
-            value={timeSlot}
-            onChange={(e) => setTimeSlot(e.target.value)}
-          >
-            <option value="">Select</option>
-            <option>8:00 AM - 10:00 AM</option>
-            <option>12:00 PM - 2:00 PM</option>
-            <option>6:00 PM - 8:00 PM</option>
-          </select>
-        </div>
-
-        {/* Payment Options */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-2">Payment Option</label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {["Cash On Delivery", "UPI", "Card", "Razorpay"].map((option) => (
-              <button
-                key={option}
-                className={`border p-4 rounded-lg text-center transition ${
-                  payment === option
-                    ? "bg-orange-100 border-orange-500"
-                    : "bg-white"
-                }`}
-                onClick={() => handleSelectPayment(option)}
-              >
-                <div className="mb-1">
-                  <img
-                    src={`/${option
-                      .toLowerCase()
-                      .replace(/\s/g, "")}.png`} // example: cashondelivery.png
-                    alt={option}
-                    className="h-6 mx-auto"
-                  />
-                </div>
-                <span>{option}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Confirmation Message */}
-        {payment && (
-          <div className="bg-green-100 border border-green-300 p-4 rounded mt-4 text-green-800">
-            <p className="font-semibold">You selected {payment}</p>
-            <p>Your order will be processed once you confirm it.</p>
-          </div>
-        )}
-      </div>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-orange-50">
+      <h2 className="text-2xl font-bold mb-4">Checkout</h2>
+      <p>Total Amount: ₹{totalAmount}</p>
+      <button
+        onClick={handlePayment}
+        className="mt-4 px-6 py-3 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold"
+      >
+        Pay Now
+      </button>
     </div>
   );
 };

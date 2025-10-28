@@ -17,6 +17,7 @@ import dotenv from 'dotenv';
 import forgotRoutes from './routes/forgot.routes.js';
 import chatRoutes from './routes/Chat.js'; // Import chat routes
 import cartRoutes from './routes/cart.routes.js'
+import payments from './routes/payment.routes.js';
 dotenv.config();
 const app = express();
 
@@ -57,7 +58,8 @@ app.use("/api/withdrawls", witthdrawlRoutes);
 app.use('/api/otp', otpRoutes); // OTP routes
 app.use('/api/forgot', forgotRoutes); // Forgot password routes
 app.use('/api/chat', chatRoutes); // Chat routes
-app.use('/api/cart',cartRoutes)
+app.use('/api/cart',cartRoutes);
+app.use('/api/payment',payments);
 connectDB()
 app.get('/', (req, res) => {
     res.send('Hello duniyaa');

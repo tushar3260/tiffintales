@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 // User SignUp
 import OTP from "../models/otp.model.js";
 
-
 export const UserSignUp = async (req, res) => {
   const { fullName, email, passwordHash, phone, address } = req.body;
 
@@ -74,8 +73,6 @@ export const UserSignUp = async (req, res) => {
   }
 };
 
-
-
 // User Login
 export const UserLogin = async (req, res) => {
   const { email, passwordHash } = req.body;
@@ -114,6 +111,117 @@ export const UserLogin = async (req, res) => {
   }
 };
 
+// ✅ Google OAuth Login - ADD THIS NEW FUNCTION
+export const GoogleAuth = async (req, res) => {
+  try {
+    const { credential } = req.body;
+    
+    if (!credential) {
+      return res.status(400).json({ message: "Google credential is required" });
+    }
+
+    console.log('Google credential received:', credential.substring(0, 50) + '...');
+
+    // Verify Google JWT token
+    const response = await fetch(
+      `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${credential}`
+    );
+    
+    if (!response.ok) {
+      console.error('Google token verification failed:', response.status);
+      return res.status(401).json({ message: 'Invalid Google token' });
+    }
+    
+    const googleUser = await response.json();
+    console.log('Google user data:', googleUser);
+    
+    // Check if user already exists with Google ID
+    let user = await User.findOne({ googleId: googleUser.sub });
+    
+    if (user) {
+      console.log('Existing Google user found:', user.email);
+      
+      // Check if user is blocked
+      if (user.isBlocked) {
+        return res.status(403).json({ message: "User is blocked by admin" });
+      }
+
+      // Update avatar if changed
+      user.avtar = googleUser.picture;
+      await user.save();
+      
+    } else {
+      // Check if user exists with same email but different provider
+      const existingUser = await User.findOne({ email: googleUser.email });
+      
+      if (existingUser) {
+        console.log('Linking Google to existing user:', existingUser.email);
+        
+        // Link Google account to existing user
+        existingUser.googleId = googleUser.sub;
+        existingUser.provider = 'google';
+        existingUser.avtar = googleUser.picture;
+        existingUser.isVerified = true; // Google accounts are pre-verified
+        existingUser.isOtpVerified = true;
+        user = existingUser;
+        await user.save();
+      } else {
+        console.log('Creating new Google user:', googleUser.email);
+        
+        // Create new user from Google data
+        user = new User({
+          googleId: googleUser.sub,
+          fullName: googleUser.name,
+          email: googleUser.email,
+          avtar: googleUser.picture,
+          provider: 'google',
+          isVerified: true,
+          isOtpVerified: true, // Google users don't need OTP verification
+          phone: null, // Will be collected later if needed
+          role: 'user'
+        });
+        await user.save();
+      }
+    }
+    
+    console.log('User authenticated successfully:', user.email);
+    
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    
+    // Set token in cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+    
+    res.status(200).json({
+      message: "Google login successful",
+      user: {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        avtar: user.avtar,
+        phone: user.phone,
+        role: user.role,
+        provider: user.provider || 'google',
+        isVerified: user.isVerified
+      },
+      token
+    });
+    
+  } catch (error) {
+    console.error('Google Auth Error:', error);
+    res.status(500).json({ message: "Google authentication failed", error: error.message });
+  }
+};
+
 // Get all users
 export const getallUsers = async (req, res) => {
   try {
@@ -145,9 +253,6 @@ export const toggleBlockStatus = async (req, res) => {
     res.status(500).json({ message: "Failed to update user status", error: err.message });
   }
 };
-
-
-// import User from "../models/userModel.js"; // make sure path is correct
 
 export const updateProfile = async (req, res) => {
   try {

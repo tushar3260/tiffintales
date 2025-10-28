@@ -1,43 +1,69 @@
-import { useContext, useEffect, useState, useRef } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import AdminContext from "../context/AdminContext";
 import { storage } from "../../utils/Storage";
+
 const AdminProtect = ({ children }) => {
-  const { admin, adminToken } = useContext(AdminContext);
-
-  const [checking, setChecking] = useState(true);
-  const [authenticated, setAuthenticated] = useState(false);
-  const [redirect, setRedirect] = useState(false);
-
-  const toastShownRef = useRef(false);
+  const { admin, adminToken, loading } = useContext(AdminContext);
+  const [isChecking, setIsChecking] = useState(true);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      await new Promise((res) => setTimeout(res, 300)); // lil animation buffer
+    const checkAuthentication = async () => {
+      try {
+        // Wait for context loading to complete
+        if (loading) return;
 
-      const storedAdmin = storage.getItem("AdminData");
-      const storedToken = storage.getItem("AdminToken");
-
-      const role = admin?.role || storedAdmin?.role || null;
-
-      if (!storedToken || role !== "admin") {
-        if (!toastShownRef.current) {
+        // Check if admin is authenticated and has admin role
+        const hasValidToken = adminToken || await storage.getItem('AdminToken');
+        const adminData = admin || await storage.getItem('AdminData');
+        
+        if (!hasValidToken || !adminData) {
           toast.error("⛔ Admin access denied. Please login first.");
-          toastShownRef.current = true;
+          setShouldRedirect(true);
+          return;
         }
-        setRedirect(true);
-      } else {
-        setAuthenticated(true);
-      }
 
-      setChecking(false);
+        // Check if user has admin role
+        if (adminData.role !== 'admin') {
+          toast.error("⛔ Insufficient privileges. Admin access required.");
+          setShouldRedirect(true);
+          return;
+        }
+
+        // Optional: Verify token with backend
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/admins/verify`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${hasValidToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          toast.error("⛔ Session expired. Please login again.");
+          // Clear invalid tokens
+          storage.removeItem('AdminToken');
+          storage.removeItem('AdminData');
+          setShouldRedirect(true);
+          return;
+        }
+
+      } catch (error) {
+        console.error("Authentication check failed:", error);
+        toast.error("⛔ Authentication error. Please login again.");
+        setShouldRedirect(true);
+      } finally {
+        setIsChecking(false);
+      }
     };
 
-    checkAuth();
-  }, [adminToken]); // Only re-run if token changes
+    checkAuthentication();
+  }, [admin, adminToken, loading]);
 
-  if (checking || (!admin && !storage.getItem("AdminData"))) {
+  // Show loading while context is loading or checking auth
+  if (loading || isChecking) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-[#fff8ee] backdrop-blur-sm">
         <div className="flex flex-col justify-center items-center bg-white bg-opacity-80 p-8 rounded-xl shadow-2xl animate-fadeIn">
@@ -53,7 +79,8 @@ const AdminProtect = ({ children }) => {
     );
   }
 
-  if (redirect) {
+  // Redirect to login if authentication failed
+  if (shouldRedirect) {
     return <Navigate to="/admin/secure/tales/login" replace />;
   }
 
