@@ -223,44 +223,11 @@ const GalleryPage = () => {
         </div>
 
         {/* Bottom Divider */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="flex justify-center items-center gap-6 mt-20"
-        >
-          <div className="w-24 h-[1.5px] bg-gradient-to-r from-transparent to-[#E8C18F]" />
-          <span className="text-[#E57A44] text-3xl">♥</span>
-          <div className="w-24 h-[1.5px] bg-gradient-to-l from-transparent to-[#E8C18F]" />
-        </motion.div>
+       
       </section>
 
       {/* ===================== FLOATING EMOJIS ===================== */}
-      <section className="relative px-4 sm:px-6 py-20 md:py-28">
-        <div className="max-w-5xl mx-auto flex justify-center gap-12">
-
-          {["🌿", "✨", "♥", "🌸", "✨", "🌿"].map((emoji, i) => (
-            <motion.span
-              key={i}
-              animate={{
-                y: [0, -12, 0],
-                rotate: [0, 8, -8, 0],
-              }}
-              transition={{
-                duration: 3.5,
-                repeat: Infinity,
-                delay: i * 0.4,
-                ease: "easeInOut",
-              }}
-              className="text-3xl opacity-30 hidden md:inline-block"
-            >
-              {emoji}
-            </motion.span>
-          ))}
-
-        </div>
-      </section>
+     
     </div>
   );
 };
