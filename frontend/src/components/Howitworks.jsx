@@ -1,6 +1,5 @@
 // Howitworks.jsx
 import React from "react";
-import { motion } from "framer-motion";
 import { MapPin, Utensils, CreditCard, Heart } from "lucide-react";
 
 const steps = [
@@ -43,13 +42,7 @@ function Howitworks() {
 
       <div className="max-w-6xl mx-auto px-4 relative z-10">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-10 sm:mb-14"
-        >
+        <div className="text-center mb-10 sm:mb-14">
           <h2
             className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#6B3A1E] mb-3"
             style={{
@@ -63,19 +56,15 @@ function Howitworks() {
           <p className="text-[#6B3A1E]/70 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-medium">
             Four simple steps to enjoy homemade meals
           </p>
-        </motion.div>
+        </div>
 
         {/* Steps Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 md:gap-8">
           {steps.map((step, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -8 }}
-              className="relative group"
+              className="relative group animate-fadeInUp"
+              style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Connecting Line (Desktop) */}
               {index < steps.length - 1 && (
@@ -83,22 +72,19 @@ function Howitworks() {
               )}
 
               {/* Card Glow */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#F7C35F] to-[#E57A44] rounded-2xl sm:rounded-3xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 -z-10"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#F7C35F] to-[#E57A44] rounded-2xl sm:rounded-3xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300 -z-10"></div>
 
               {/* Card */}
-              <div className="relative bg-white/70 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border-2 border-white/80 text-center">
+              <div className="relative bg-white/70 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-white/80 text-center group-hover:-translate-y-2">
                 {/* Step Number */}
                 <div className="absolute -top-3 -right-3 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#E57A44] to-[#F7C35F] rounded-full flex items-center justify-center text-white font-bold text-sm sm:text-base shadow-lg">
                   {index + 1}
                 </div>
 
                 {/* Icon */}
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  className={`w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg text-white`}
-                >
+                <div className={`w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg text-white group-hover:scale-110 transition-transform duration-300`}>
                   {step.icon}
-                </motion.div>
+                </div>
 
                 {/* Emoji Badge */}
                 <div className="text-3xl sm:text-4xl mb-3">{step.emoji}</div>
@@ -108,7 +94,7 @@ function Howitworks() {
 
                 {/* Content */}
                 <h3
-                  className="text-lg sm:text-xl font-bold text-[#6B3A1E] mb-2 group-hover:text-[#E57A44] transition-colors"
+                  className="text-lg sm:text-xl font-bold text-[#6B3A1E] mb-2 group-hover:text-[#E57A44] transition-colors duration-200"
                   style={{ fontFamily: "Georgia, serif" }}
                 >
                   {step.title}
@@ -117,29 +103,38 @@ function Howitworks() {
                   {step.desc}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 
         {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.6 }}
-          className="text-center mt-10 sm:mt-12"
-        >
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+        <div className="text-center mt-10 sm:mt-12">
+          <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="bg-gradient-to-r from-[#E57A44] to-[#F7C35F] text-white font-bold px-8 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all relative overflow-hidden group text-sm sm:text-base"
+            className="bg-gradient-to-r from-[#E57A44] to-[#F7C35F] text-white font-bold px-8 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 relative overflow-hidden group text-sm sm:text-base hover:scale-105 active:scale-95"
           >
             <span className="relative z-10">Start Ordering Now 🚀</span>
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-          </motion.button>
-        </motion.div>
+          </button>
+        </div>
       </div>
+
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fadeInUp {
+          animation: fadeInUp 0.5s ease-out forwards;
+        }
+      `}</style>
     </section>
   );
 }

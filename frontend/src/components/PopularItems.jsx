@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/userContext';
@@ -75,17 +74,12 @@ function PopularItems() {
       <div className="absolute top-20 left-10 w-64 h-64 bg-orange-200/20 rounded-full blur-3xl" />
       <div className="absolute bottom-20 right-10 w-56 h-56 bg-amber-200/20 rounded-full blur-3xl" />
       
-      <motion.div 
-        initial={{ opacity: 0, y: -15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mb-8 relative z-10"
-      >
+      <div className="mb-8 relative z-10">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-2">
           Popular Items
         </h2>
         <div className="w-20 h-1 bg-orange-500 mx-auto" />
-      </motion.div>
+      </div>
 
       {loading ? (
         <div className="text-center py-10">
@@ -193,169 +187,186 @@ function PopularItems() {
           </div>
 
           {/* View All Button */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="mt-10 text-center relative z-10"
-          >
+          <div className="mt-10 text-center relative z-10">
             <button
               onClick={() => navigate('/meals')}
               className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
             >
               View All Meals 👉
             </button>
-          </motion.div>
+          </div>
         </>
       )}
 
       {/* Details Modal */}
-      <AnimatePresence>
-        {showDetailsModal && selectedMeal && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
-            onClick={closeDetailsModal}
+      {showDetailsModal && selectedMeal && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-fadeIn"
+          onClick={closeDetailsModal}
+        >
+          <div 
+            className="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:w-[90%] sm:max-w-2xl max-h-[90vh] overflow-y-auto border-t-4 sm:border-2 border-orange-500 animate-slideUp"
+            onClick={(e) => e.stopPropagation()}
           >
-            <motion.div 
-              initial={{ y: "100%", opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: "100%", opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:w-[90%] sm:max-w-2xl max-h-[90vh] overflow-y-auto border-t-4 sm:border-2 border-orange-500"
-              onClick={(e) => e.stopPropagation()}
+            {/* Close Button */}
+            <button
+              onClick={closeDetailsModal}
+              className="absolute top-4 right-4 z-20 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors duration-200"
             >
-              {/* Close Button */}
-              <button
-                onClick={closeDetailsModal}
-                className="absolute top-4 right-4 z-20 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100"
-              >
-                <span className="text-2xl text-gray-800">×</span>
-              </button>
+              <span className="text-2xl text-gray-800">×</span>
+            </button>
 
-              {/* Image */}
-              <div className="relative h-64 md:h-80 overflow-hidden rounded-t-3xl">
-                <img
-                  src={selectedMeal.photo || "https://placehold.co/600x400?text=No+Image"}
-                  alt={selectedMeal.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                
-                <div className="absolute bottom-4 left-4 bg-white/90 px-4 py-2 rounded-full shadow-lg">
-                  <span className="text-orange-600 font-bold text-xl">₹{selectedMeal.price}</span>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-6 md:p-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                  {selectedMeal.title}
-                </h2>
-                
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-gray-600 font-medium">
-                    👨‍🍳 By {selectedMeal.chefId?.name || "Unknown Chef"}
-                  </span>
-                </div>
-
-                <div className="h-px bg-gradient-to-r from-transparent via-orange-300 to-transparent my-4" />
-
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">About this dish</h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    {selectedMeal.description || "A delicious homemade meal prepared with love and care. Made with fresh ingredients and authentic spices to bring you the taste of home."}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="bg-orange-50 rounded-xl p-4 text-center border border-orange-200">
-                    <span className="text-3xl mb-1 block">🍽️</span>
-                    <p className="text-sm text-gray-700">Fresh & Hot</p>
-                  </div>
-                  <div className="bg-orange-50 rounded-xl p-4 text-center border border-orange-200">
-                    <span className="text-3xl mb-1 block">⭐</span>
-                    <p className="text-sm text-gray-700">Top Rated</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <button
-                    onClick={closeDetailsModal}
-                    className="flex-1 bg-white border-2 border-orange-300 text-gray-800 font-semibold px-6 py-3 rounded-xl hover:border-orange-500 transition-all"
-                  >
-                    Close
-                  </button>
-                  
-                  <button
-                    onClick={() => {
-                      closeDetailsModal();
-                      handleOrderNow(selectedMeal._id);
-                    }}
-                    className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all"
-                  >
-                    Order Now 🛒
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Login Modal */}
-      <AnimatePresence>
-        {showLoginPopup && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center p-4"
-            onClick={closePopup}
-          >
-            <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-white/95 p-8 rounded-2xl shadow-2xl max-w-md w-full text-center border border-gray-200"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-orange-500 to-amber-500 rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-4xl">🔐</span>
-              </div>
+            {/* Image */}
+            <div className="relative h-64 md:h-80 overflow-hidden rounded-t-3xl">
+              <img
+                src={selectedMeal.photo || "https://placehold.co/600x400?text=No+Image"}
+                alt={selectedMeal.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
               
-              <h2 className="text-2xl font-bold text-gray-900 mb-3">
-                Login Required
+              <div className="absolute bottom-4 left-4 bg-white/90 px-4 py-2 rounded-full shadow-lg">
+                <span className="text-orange-600 font-bold text-xl">₹{selectedMeal.price}</span>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 md:p-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                {selectedMeal.title}
               </h2>
-              <p className="text-gray-600 mb-8 font-medium">
-                Please login to place your order and start your culinary journey.
-              </p>
               
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-gray-600 font-medium">
+                  👨‍🍳 By {selectedMeal.chefId?.name || "Unknown Chef"}
+                </span>
+              </div>
+
+              <div className="h-px bg-gradient-to-r from-transparent via-orange-300 to-transparent my-4" />
+
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">About this dish</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  {selectedMeal.description || "A delicious homemade meal prepared with love and care. Made with fresh ingredients and authentic spices to bring you the taste of home."}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-orange-50 rounded-xl p-4 text-center border border-orange-200">
+                  <span className="text-3xl mb-1 block">🍽️</span>
+                  <p className="text-sm text-gray-700">Fresh & Hot</p>
+                </div>
+                <div className="bg-orange-50 rounded-xl p-4 text-center border border-orange-200">
+                  <span className="text-3xl mb-1 block">⭐</span>
+                  <p className="text-sm text-gray-700">Top Rated</p>
+                </div>
+              </div>
+
               <div className="flex gap-4">
                 <button
-                  onClick={redirectToLogin}
-                  className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all"
+                  onClick={closeDetailsModal}
+                  className="flex-1 bg-white border-2 border-orange-300 text-gray-800 font-semibold px-6 py-3 rounded-xl hover:border-orange-500 transition-all"
                 >
-                  Go to Login
+                  Close
                 </button>
                 
                 <button
-                  onClick={closePopup}
-                  className="flex-1 bg-gray-100 text-gray-800 font-semibold px-8 py-3 rounded-xl border border-gray-300 hover:bg-gray-200 transition-all"
+                  onClick={() => {
+                    closeDetailsModal();
+                    handleOrderNow(selectedMeal._id);
+                  }}
+                  className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all"
                 >
-                  Cancel
+                  Order Now 🛒
                 </button>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Login Modal */}
+      {showLoginPopup && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center p-4 animate-fadeIn"
+          onClick={closePopup}
+        >
+          <div 
+            className="bg-white/95 p-8 rounded-2xl shadow-2xl max-w-md w-full text-center border border-gray-200 animate-scaleIn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-orange-500 to-amber-500 rounded-full flex items-center justify-center shadow-lg">
+              <span className="text-4xl">🔐</span>
+            </div>
+            
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+              Login Required
+            </h2>
+            <p className="text-gray-600 mb-8 font-medium">
+              Please login to place your order and start your culinary journey.
+            </p>
+            
+            <div className="flex gap-4">
+              <button
+                onClick={redirectToLogin}
+                className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all"
+              >
+                Go to Login
+              </button>
+              
+              <button
+                onClick={closePopup}
+                className="flex-1 bg-gray-100 text-gray-800 font-semibold px-8 py-3 rounded-xl border border-gray-300 hover:bg-gray-200 transition-all"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(100%);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+        
+        .animate-fadeIn {
+          animation: fadeIn 0.2s ease-out;
+        }
+        
+        .animate-slideUp {
+          animation: slideUp 0.3s ease-out;
+        }
+        
+        .animate-scaleIn {
+          animation: scaleIn 0.25s ease-out;
         }
       `}</style>
     </div>

@@ -64,7 +64,7 @@ const FeaturedRestaurants = () => {
         {chefs.map((chef, index) => (
           <div
             key={index}
-            className="group relative flex flex-col justify-between rounded-2xl bg-white/90 backdrop-blur-sm shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden hover:scale-[1.03] border border-yellow-200 hover:border-transparent"
+            className="group relative flex flex-col justify-between rounded-2xl bg-white/90 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden hover:scale-[1.03] border border-yellow-200 hover:border-transparent"
           >
             <span className="absolute top-3 left-3 z-10 bg-orange-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm uppercase tracking-wide">
               Best Choice
@@ -74,12 +74,12 @@ const FeaturedRestaurants = () => {
                 <img
                   src="https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"
                   alt={chef.name}
-                  className="w-24 h-24 rounded-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-24 h-24 rounded-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
             </div>
             <div className="flex-grow p-6 pb-7 text-center flex flex-col">
-              <h3 className="text-lg font-bold text-gray-800 group-hover:text-orange-600 transition-colors">
+              <h3 className="text-lg font-bold text-gray-800 group-hover:text-orange-600 transition-colors duration-200">
                 {chef.name}
               </h3>
               <p className="text-sm text-orange-600 font-medium mt-0.5">
@@ -94,7 +94,7 @@ const FeaturedRestaurants = () => {
               <div className="flex-grow" />
               <button
                 onClick={() => setSelectedChef(chef)}
-                className="mt-5 w-full py-2 rounded-lg font-semibold text-white bg-[#ff7e00] hover:bg-orange-600 active:scale-95 transition-all shadow-md"
+                className="mt-5 w-full py-2 rounded-lg font-semibold text-white bg-[#ff7e00] hover:bg-orange-600 active:scale-95 transition-all duration-200 shadow-md"
               >
                 View Detail
               </button>
@@ -107,11 +107,11 @@ const FeaturedRestaurants = () => {
       <div className="mt-10 flex justify-center">
         <button
           onClick={() => navigate("/allchef")}
-          className="bg-orange-600 text-white font-semibold px-6 py-2 rounded-full shadow-md hover:bg-orange-500 transition duration-300 flex items-center gap-2"
+          className="bg-orange-600 text-white font-semibold px-6 py-2 rounded-full shadow-md hover:bg-orange-500 transition-all duration-300 flex items-center gap-2"
         >
           View All Chefs
           <svg
-            className="w-4 h-4 transition-transform duration-300"
+            className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
@@ -124,11 +124,17 @@ const FeaturedRestaurants = () => {
 
       {/* Modal Popup */}
       {selectedChef && (
-        <div className="fixed inset-0 bg-[#FFFAF1] py-16 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-2xl shadow-2xl w-[95%] max-w-xl relative">
+        <div 
+          className="fixed inset-0 bg-[#FFFAF1] py-16 bg-opacity-50 flex justify-center items-center z-50 animate-fadeIn"
+          onClick={() => setSelectedChef(null)}
+        >
+          <div 
+            className="bg-white p-8 rounded-2xl shadow-2xl w-[95%] max-w-xl relative animate-scaleIn"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               onClick={() => setSelectedChef(null)}
-              className="absolute top-3 right-4 text-gray-500 hover:text-gray-800 text-3xl font-bold"
+              className="absolute top-3 right-4 text-gray-500 hover:text-gray-800 text-3xl font-bold transition-colors duration-200"
             >
               &times;
             </button>
@@ -175,6 +181,32 @@ const FeaturedRestaurants = () => {
           </div>
         </div>
       )}
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        
+        .animate-fadeIn {
+          animation: fadeIn 0.2s ease-out;
+        }
+        
+        .animate-scaleIn {
+          animation: scaleIn 0.25s ease-out;
+        }
+      `}</style>
     </div>
   );
 };

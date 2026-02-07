@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 
 const foodImages = [
   {
@@ -76,13 +75,7 @@ const GalleryPage = () => {
       {/* ===================== HEADER ===================== */}
       <section className="relative px-4 sm:px-6 pb-12 md:pb-16">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
+          <div className="text-center animate-fadeInUp">
             <div className="inline-block relative">
 
               {/* Highlighter */}
@@ -92,16 +85,12 @@ const GalleryPage = () => {
                 Our Signature Collection
               </h2>
 
-              {/* Bouncy Arrow */}
-              <motion.div
-                animate={{ y: [0, 5, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[#E8B55F] text-4xl"
-              >
+              {/* Static Arrow */}
+              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[#E8B55F] text-4xl">
                 ↓
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -110,42 +99,21 @@ const GalleryPage = () => {
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-10 lg:gap-12">
 
           {foodImages.map((food, i) => (
-            <motion.div
+            <div
               key={i}
-              initial={{ opacity: 0, y: 60 }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-                rotate:
-                  i % 3 === 0 ? -2.5 :
-                  i % 3 === 1 ? 2.5 : -1.5,
+              className="group cursor-pointer animate-fadeInUp"
+              style={{
+                animationDelay: `${i * 50}ms`,
+                transform: 
+                  i % 3 === 0 ? 'rotate(-2.5deg)' :
+                  i % 3 === 1 ? 'rotate(2.5deg)' : 'rotate(-1.5deg)',
               }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.7,
-                delay: i * 0.08,
-                type: "spring",
-                bounce: 0.4,
-              }}
-              whileHover={{
-                y: -16,
-                rotate: 0,
-                scale: 1.02,
-                transition: { duration: 0.4 },
-              }}
-              className="group cursor-pointer"
             >
               {/* POLAROID FRAME */}
-              <div className="relative bg-white p-5 pb-20 rounded-2xl shadow-[0_10px_40px_rgba(92,64,51,0.12)] group-hover:shadow-[0_20px_60px_rgba(92,64,51,0.18)] transition-all">
+              <div className="relative bg-white p-5 pb-20 rounded-2xl shadow-[0_10px_40px_rgba(92,64,51,0.12)] group-hover:shadow-[0_20px_60px_rgba(92,64,51,0.18)] transition-all duration-300 group-hover:-translate-y-4 group-hover:rotate-0 group-hover:scale-[1.02]">
 
                 {/* Tape strip */}
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 + i * 0.05 }}
-                  className="absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-7 bg-[#F4D9A6]/60 rounded shadow-md border-l border-r border-[#E8C18F]/40"
-                />
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-7 bg-[#F4D9A6]/60 rounded shadow-md border-l border-r border-[#E8C18F]/40" />
 
                 {/* IMAGE */}
                 <div className="relative overflow-hidden rounded-xl aspect-[4/3] mb-5 bg-[#F4EDE3]">
@@ -163,20 +131,14 @@ const GalleryPage = () => {
                   <div className="absolute inset-0 bg-gradient-to-br from-[#F4A460]/8 via-transparent to-[#E8C18F]/8" />
 
                   {/* Badge */}
-                  <motion.div
-                    initial={{ scale: 0, rotate: -180 }}
-                    whileInView={{ scale: 1, rotate: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 + i * 0.05, type: "spring" }}
-                    className="absolute top-3 right-3 bg-white/95 px-3 py-1.5 rounded-full shadow-lg border-2 border-[#E8C18F] text-xs font-semibold text-[#C17A3F]"
-                  >
+                  <div className="absolute top-3 right-3 bg-white/95 px-3 py-1.5 rounded-full shadow-lg border-2 border-[#E8C18F] text-xs font-semibold text-[#C17A3F]">
                     {food.badge}
-                  </motion.div>
+                  </div>
                 </div>
 
                 {/* CAPTION */}
                 <div className="text-center px-3">
-                  <h3 className="text-[#5C4033] text-xl font-serif mb-2 group-hover:text-[#E57A44] transition-colors">
+                  <h3 className="text-[#5C4033] text-xl font-serif mb-2 group-hover:text-[#E57A44] transition-colors duration-300">
                     {food.name}
                   </h3>
 
@@ -185,16 +147,12 @@ const GalleryPage = () => {
                   {/* Hearts */}
                   <div className="flex justify-center gap-1.5 mb-3">
                     {[...Array(5)].map((_, idx) => (
-                      <motion.span
+                      <span
                         key={idx}
-                        initial={{ opacity: 0, scale: 0 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.4 + idx * 0.05 }}
                         className="text-[#E8B55F]"
                       >
                         ♥
-                      </motion.span>
+                      </span>
                     ))}
                   </div>
 
@@ -203,31 +161,37 @@ const GalleryPage = () => {
 
                 {/* Page-curl effect */}
                 <div
-                  className="absolute bottom-0 right-0 w-10 h-10 bg-gradient-to-tl from-[#F4EDE3] to-white/50 rounded-tl-3xl opacity-70 group-hover:opacity-100"
+                  className="absolute bottom-0 right-0 w-10 h-10 bg-gradient-to-tl from-[#F4EDE3] to-white/50 rounded-tl-3xl opacity-70 group-hover:opacity-100 transition-opacity duration-300"
                   style={{ clipPath: "polygon(100% 0, 100% 100%, 0 100%)" }}
                 />
 
                 {/* Sparkle */}
-                <motion.div
-                  className="absolute -top-3 -right-3 text-4xl opacity-0 group-hover:opacity-100 transition-all"
-                  animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
+                <div className="absolute -top-3 -right-3 text-4xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   ✨
-                </motion.div>
+                </div>
 
               </div>
-            </motion.div>
+            </div>
           ))}
 
         </div>
-
-        {/* Bottom Divider */}
-       
       </section>
 
-      {/* ===================== FLOATING EMOJIS ===================== */}
-     
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(40px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeInUp {
+          animation: fadeInUp 0.6s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 };
