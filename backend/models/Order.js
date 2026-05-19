@@ -16,7 +16,8 @@ const orderSchema = new mongoose.Schema({
     city: String,
     pincode: String
   },
-  timeSlot: { type: String, enum: ["Lunch", "Dinner"] },
+  timeSlot: { type: String },
+  instructions: { type: String, default: "" },
   status: {
     type: String,
     enum: ["Placed", "Preparing", "Delivered", "Cancelled"],
@@ -28,7 +29,7 @@ const orderSchema = new mongoose.Schema({
     default: "Pending"
   },
   paymentMode: { type: String },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now } // legacy — timestamps: true handles updatedAt
 },
 {
   timestamps: true  

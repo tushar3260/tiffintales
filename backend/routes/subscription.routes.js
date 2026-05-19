@@ -4,15 +4,19 @@ import {
   getAllSubscriptions,
   getSubscriptionById,
   updateSubscription,
-  deleteSubscription
+  deleteSubscription,
+  getSubscriptionsByUser
 } from '../controllers/subscription.controller.js';
 
 const router = express.Router();
 
 router.post("/", createSubscription);
 
-// Get all subscriptions
+// Get all subscriptions (admin)
 router.get("/", getAllSubscriptions);
+
+// ✅ Get subscriptions for a specific user — static before dynamic
+router.get("/user/:userId", getSubscriptionsByUser);
 
 // Get subscription by ID
 router.get("/:id", getSubscriptionById);

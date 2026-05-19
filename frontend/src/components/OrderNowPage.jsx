@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
@@ -45,6 +45,7 @@ const scaleIn = (delay = 0) => ({
 /* ------------------ Component ------------------ */
 const OrderNowPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { user } = useUser();
 
   /* ------------ State ------------ */
@@ -87,9 +88,8 @@ const OrderNowPage = () => {
           `${import.meta.env.VITE_API_URL}/meals/${id}`
         );
         setMeal(res.data);
-      } catch (err) {
+      } catch {
         toast.error("Failed to fetch meal details.");
-        console.error(err);
       }
     };
     fetchMeal();
@@ -134,8 +134,7 @@ const OrderNowPage = () => {
     // Optionally update localStorage or state if needed
     storage.setItem("cart", res.data.items); // optional
     toast.success("Added to cart 🛒");
-  } catch (error) {
-    console.error("Add to cart error:", error);
+  } catch {
     toast.error("Something went wrong!");
   }
 };
@@ -164,10 +163,11 @@ const OrderNowPage = () => {
       }
       // create razorpay order on server
       const createRes = await axios.post(
-        `${import.meta.env.VITE_API_URL}/payments/razorpay/order`,
+        `${import.meta.env.VITE_API_URL}/payment/create-order`,  // ✅ FIXED: was /payments/razorpay/order
         { amount: totalPrice * 100, currency: "INR" }
       );
-      const { orderId, amount } = createRes.data; // adjust if backend differs
+      const rzpOrder = createRes.data.order || createRes.data;
+      const { id: orderId, amount } = rzpOrder;
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -180,15 +180,14 @@ const OrderNowPage = () => {
         handler: async function (response) {
           try {
             await axios.post(
-              `${import.meta.env.VITE_API_URL}/payments/razorpay/verify`,
+              `${import.meta.env.VITE_API_URL}/payment/verify`,  // ✅ FIXED: was /payments/razorpay/verify
               response
             );
             toast.success("Payment successful!");
             setPaymentMode("Razorpay");
             setShowConfirmModal(true);
-          } catch (err) {
+          } catch {
             toast.error("Payment verification failed");
-            console.error(err);
           }
         },
         prefill: {
@@ -200,9 +199,8 @@ const OrderNowPage = () => {
       };
       const rp = new window.Razorpay(options);
       rp.open();
-    } catch (err) {
+    } catch {
       toast.error("Razorpay init failed");
-      console.error(err);
     }
   };
 
@@ -235,7 +233,7 @@ const OrderNowPage = () => {
     try {
       const payload = {
         userId: user._id,
-        chefId: meal.chefId._id,
+        chefId: meal?.chefId?._id || meal?.chefId,  // ✅ FIXED: safe access in case chefId not populated
         meals: [
           {
             mealId: meal._id,
@@ -254,14 +252,13 @@ const OrderNowPage = () => {
       };
 
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/orders/`,
+        `${import.meta.env.VITE_API_URL}/orders/`,  // ✅ confirmed correct route
         payload
       );
-      toast.success("Order placed successfully!");
-      console.log("✅ Order:", res.data);
-    } catch (err) {
+      toast.success("Order placed successfully! 🎉");
+      navigate("/orders");
+    } catch {
       toast.error("Order failed!");
-      console.error(err);
     } finally {
       setShowConfirmModal(false);
       setPlacing(false);

@@ -15,8 +15,8 @@ export const ChefProvider = ({ children }) => {
         const storedToken = await storage.getItem('chefToken');
         if (storedChef) setChef(storedChef);
         if (storedToken) setChefToken(storedToken);
-      } catch (err) {
-        console.error('Failed to load chef data:', err);
+      } catch {
+        // silent — storage may not be available
       } finally {
         setLoading(false);
       }
@@ -24,7 +24,14 @@ export const ChefProvider = ({ children }) => {
     loadData();
   }, []);
 
-  if (loading) return null; // Optional: Add a loader here
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-screen bg-orange-50">
+      <div className="text-center">
+        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-orange-600 font-semibold">Loading chef session...</p>
+      </div>
+    </div>
+  );
 
   return (
     <ChefContext.Provider value={{ chef, setChef, chefToken, setChefToken }}>

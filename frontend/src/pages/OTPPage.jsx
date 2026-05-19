@@ -30,11 +30,9 @@ const OTPPage = () => {
           setEmail(admin?.email || '');
         } else {
           const user = await storage.getItem('userData');
-          console.log(user)
           setEmail(user?.email || '');
         }
-      } catch (err) {
-        console.error("Error fetching email from storage:", err);
+      } catch {
         setEmail('');
       }
     };

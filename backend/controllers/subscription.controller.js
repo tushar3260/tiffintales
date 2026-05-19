@@ -84,7 +84,7 @@ export const createSubscription = async (req, res) => {
 export const getAllSubscriptions = async (req, res) => {
   try {
     const subscriptions = await Subscription.find()
-      .populate("userId", "name email")
+      .populate("userId", "fullName email")
       .populate("chefId", "name email cuisine")
       .populate("selectedMeals.mealId", "title description price");
 
@@ -98,7 +98,7 @@ export const getAllSubscriptions = async (req, res) => {
 export const getSubscriptionById = async (req, res) => {
   try {
     const subscription = await Subscription.findById(req.params.id)
-      .populate("userId", "name email")
+      .populate("userId", "fullName email")
       .populate("chefId", "name email cuisine")
       .populate("selectedMeals.mealId", "title description price");
 
@@ -131,7 +131,7 @@ export const updateSubscription = async (req, res) => {
       updates,
       { new: true, runValidators: true }
     )
-      .populate("userId", "name email")
+      .populate("userId", "fullName email")
       .populate("chefId", "name email cuisine")
       .populate("selectedMeals.mealId", "title description price");
 
@@ -162,5 +162,18 @@ export const deleteSubscription = async (req, res) => {
 
   } catch (err) {
     res.status(500).json({ message: "Failed to delete subscription", error: err.message });
+  }
+};
+// ✅ Get Subscriptions by User ID
+export const getSubscriptionsByUser = async (req, res) => {
+  try {
+    const subscriptions = await Subscription.find({ userId: req.params.userId })
+      .populate("chefId", "name email cuisine location")
+      .populate("selectedMeals.mealId", "title description price photo")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(subscriptions);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch user subscriptions", error: err.message });
   }
 };

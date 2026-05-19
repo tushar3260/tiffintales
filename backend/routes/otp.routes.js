@@ -1,12 +1,10 @@
 import express from 'express';
-import { sendOTP, verifyOTP } from '../controllers/otp.cantroller.js'; // your file where OTP funcs live
+import { sendOTP, verifyOTP, resendOTP } from '../controllers/otp.cantroller.js';
 
 const router = express.Router();
 
-// Route to send OTP
-router.post('/send-otp', sendOTP);
-
-// Route to verify OTP
-router.post('/verify-otp', verifyOTP);
+router.post('/send-otp', sendOTP);     // Send new OTP
+router.post('/verify-otp', verifyOTP); // Verify OTP
+router.post('/resend-otp', resendOTP); // ✅ Resend OTP (was missing)
 
 export default router;

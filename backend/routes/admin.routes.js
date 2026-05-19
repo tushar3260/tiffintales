@@ -11,7 +11,7 @@ router.get("/verify", authorize('admin'), (req, res) => {
 });
 router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
-router.get("/getAllAdmins", authorize('admin'), getAllAdmins);  // Only accessible to admin
+router.get("/getAllAdmins", authorize('admin'), getAllAdmins);  
 
 
 export default router;

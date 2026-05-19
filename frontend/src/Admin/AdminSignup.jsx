@@ -44,14 +44,12 @@ export default function AdminSignup() {
       const { admin, token } = res.data;
 
       if (!token || !admin) {
-        toast.error("❌ Signup failed: No token or admin data");
+        toast.error("Signup failed: No token or admin data");
         return;
       }
 
       storage.setItem("AdminToken", token);
       storage.setItem("AdminData", admin);
-      console.log("🧠 Saved Admin:", storage.getItem("AdminData"));
-      console.log("🔐 Saved Token:", storage.getItem("AdminToken"));
 
       setAdmin(admin);
       setAdminToken(token);
@@ -62,7 +60,6 @@ export default function AdminSignup() {
         window.location.href = "/otp?role=admin";
       }, 1500);
     } catch (err) {
-      console.error("❌ Signup Error:", err.response || err.message);
       toast.error(
         err.response?.data?.message || "Signup failed. Please try again."
       );

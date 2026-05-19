@@ -25,15 +25,12 @@ const AddLocation= ({ isOpen, onClose }) => {
       );
 
       toast.success("✅ Address added successfully!");
-      console.log(res.data);
-
       setPincode("");
       setCity("");
       setStreet("");
       setTag("Home");
       onClose();
     } catch (err) {
-      console.error("❌ Error:", err);
       toast.error(err.response?.data?.message || "Failed to add address!");
     }
   };
@@ -47,33 +44,30 @@ const AddLocation= ({ isOpen, onClose }) => {
 
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
-        const { latitude, longitude } = pos.coords;
-        console.log("Coordinates:", latitude, longitude);
+          const { latitude, longitude } = pos.coords;
 
-        try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
-          );
-          const data = await res.json();
-          const address = data.address || {};
+          try {
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+            );
+            const data = await res.json();
+            const address = data.address || {};
 
-          setStreet(address.road || "");
-          setCity(address.city || address.town || address.village || "");
-          setPincode(address.postcode || "");
+            setStreet(address.road || "");
+            setCity(address.city || address.town || address.village || "");
+            setPincode(address.postcode || "");
 
-          toast.success("📍 Location detected!");
-        } catch (error) {
-          console.error(error);
-          toast.error("Failed to detect location");
-        } finally {
+            toast.success("📍 Location detected!");
+          } catch {
+            toast.error("Failed to detect location");
+          } finally {
+            setLoadingLocation(false);
+          }
+        },
+        () => {
+          toast.error("Permission denied or error");
           setLoadingLocation(false);
         }
-      },
-      (err) => {
-        console.error(err);
-        toast.error("Permission denied or error");
-        setLoadingLocation(false);
-      }
     );
   };
 

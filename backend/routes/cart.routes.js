@@ -10,19 +10,20 @@ import {
 
 const router = express.Router();
 
-// ✅ Add or update item in cart
+// ✅ Static routes MUST come before dynamic /:userId to prevent route conflicts
+// Add item to cart
 router.post("/add", addToCart);
 
-// ✅ Get all cart items for a user
-router.get("/:userId", getCart);
-
-// ✅ Update quantity of a specific item in the cart
+// Update item quantity
 router.put("/update", updateCartItem);
 
-// ✅ Delete a specific item from the cart
+// Delete a specific item from the cart
 router.delete("/delete", deleteCartItem);
 
-// ✅ Clear all items from the cart
-router.delete("/clear", clearCart);
+// Clear all cart items for a user - needs userId as param
+router.delete("/clear/:userId", clearCart);
+
+// ✅ Dynamic route last — get cart by userId
+router.get("/:userId", getCart);
 
 export default router;

@@ -1,410 +1,359 @@
+// AllChef.jsx — Production Ready
+// Real data: chefs, reviews, meals count. Search + cuisine filter.
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaStar, FaTimes, FaPhone, FaEnvelope, FaMapMarkerAlt, FaUtensils } from "react-icons/fa";
-import Loading from '../Loading.jsx';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import {
+  FaStar, FaTimes, FaPhone, FaEnvelope, FaMapMarkerAlt,
+  FaUtensils, FaSearch, FaFilter, FaShoppingBag,
+} from "react-icons/fa";
+import Loading from "../Loading.jsx";
+import TopNav from "../components/TopNav.jsx";
 
-const getRandomRating = () => (Math.random() * 1.4 + 3.6).toFixed(1);
+const BASE = import.meta.env.VITE_API_URL;
 
-const containerVariants = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.95 },
-  show: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { type: "spring", stiffness: 120, damping: 14 },
-  },
-};
-
-const StarRow = ({ rating }) => {
-  const full = Math.floor(rating);
-  const half = rating - full >= 0.5;
-  const total = 5;
-
+function StarRow({ rating = 0, count }) {
+  const r = parseFloat(rating) || 0;
   return (
-    <div className="flex items-center justify-center gap-0.5">
-      {Array.from({ length: total }).map((_, i) => {
-        const filled = i < full;
-        const showHalf = !filled && i === full && half;
-        return (
+    <div className="flex items-center gap-1.5">
+      <div className="flex gap-0.5">
+        {[1, 2, 3, 4, 5].map((i) => (
           <FaStar
             key={i}
-            className={
-              filled
-                ? "text-[#F7C35F]"
-                : showHalf
-                ? "text-[#F7C35F] opacity-60"
-                : "text-gray-300"
-            }
-            size={16}
+            className={i <= Math.round(r) ? "text-yellow-400" : "text-gray-300"}
+            size={13}
           />
-        );
-      })}
-      <span className="ml-1.5 text-sm font-bold text-[#6B3A1E]">
-        {rating.toFixed(1)}
-      </span>
+        ))}
+      </div>
+      <span className="text-sm font-bold text-[#6B3A1E]">{r > 0 ? r.toFixed(1) : "New"}</span>
+      {count > 0 && <span className="text-xs text-gray-500">({count})</span>}
     </div>
   );
-};
+}
 
 const Allchef = () => {
-  const [loadingState, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [chefs, setChefs] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [selectedChef, setSelectedChef] = useState(null);
+  const [search, setSearch] = useState("");
+  const [cuisineFilter, setCuisineFilter] = useState("All");
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchChefs = async () => {
-      setLoading(true);
-      setError(null);
-      
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/chefs/getAllChefs`, {
-          method: "GET",
-          credentials: "include",
-        });
-        
-        if (!res.ok) throw new Error("Failed to fetch chefs");
-        
-        const data = await res.json();
-        const updated = data.map((chef) => ({
-          ...chef,
-          rating: parseFloat(getRandomRating()),
-        }));
-        
-        setChefs(updated);
-      } catch (err) {
-        console.error("Fetch error:", err.message);
-        setError(err.message);
-        setChefs([]);
-      } finally {
-        setTimeout(() => setLoading(false), 1500);
-      }
-    };
-
-    fetchChefs();
+    Promise.all([
+      axios.get(`${BASE}/chefs/getAllChefs`),
+      axios.get(`${BASE}/reviews`),
+    ])
+      .then(([chefsRes, reviewsRes]) => {
+        setChefs(Array.isArray(chefsRes.data) ? chefsRes.data : []);
+        setReviews(Array.isArray(reviewsRes.data) ? reviewsRes.data : []);
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   }, []);
 
-  if (loadingState) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#FFF7EB] via-[#F2E3C6] to-[#F7C35F]">
-        <Loading />
-      </div>
-    );
-  }
+  // Compute avg rating + review count per chef
+  const getChefStats = (chefId) => {
+    const chefReviews = reviews.filter((r) => String(r.chefId?._id || r.chefId) === String(chefId));
+    const avg = chefReviews.length
+      ? chefReviews.reduce((s, r) => s + (r.rating || 0), 0) / chefReviews.length
+      : 0;
+    return { avg: avg.toFixed(1), count: chefReviews.length };
+  };
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#FFF7EB] via-[#F2E3C6] to-[#F7C35F] px-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center bg-white/60 backdrop-blur-xl rounded-3xl p-8 sm:p-12 shadow-2xl border-2 border-white/80 max-w-md"
-        >
-          <span className="text-6xl mb-4 block">⚠️</span>
-          <p className="text-[#E57A44] text-xl sm:text-2xl font-bold mb-3">Error loading chefs</p>
-          <p className="text-[#6B3A1E]/70 mb-6">{error}</p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => window.location.reload()}
-            className="px-8 py-3 bg-gradient-to-r from-[#E57A44] to-[#F7C35F] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
-          >
-            Retry
-          </motion.button>
-        </motion.div>
-      </div>
-    );
-  }
+  // All unique cuisines for filter
+  const allCuisines = ["All", ...new Set(chefs.flatMap((c) => c.cuisine || []).filter(Boolean))];
 
-  if (chefs.length === 0) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#FFF7EB] via-[#F2E3C6] to-[#F7C35F] px-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center bg-white/60 backdrop-blur-xl rounded-3xl p-8 sm:p-12 shadow-2xl border-2 border-white/80"
-        >
-          <span className="text-6xl mb-4 block">👨‍🍳</span>
-          <p className="text-[#6B3A1E] text-xl font-semibold">No chefs available at the moment</p>
-        </motion.div>
+  const filtered = chefs.filter((chef) => {
+    const matchSearch = chef.name?.toLowerCase().includes(search.toLowerCase());
+    const matchCuisine =
+      cuisineFilter === "All" || chef.cuisine?.includes(cuisineFilter);
+    return matchSearch && matchCuisine;
+  });
+
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-screen bg-[#FFF7EB]">
+      <Loading />
+    </div>
+  );
+
+  if (error) return (
+    <div className="flex items-center justify-center min-h-screen bg-[#FFF7EB] px-4">
+      <div className="text-center bg-white rounded-3xl p-10 shadow-2xl">
+        <p className="text-5xl mb-4">⚠️</p>
+        <p className="text-[#E57A44] text-xl font-bold mb-3">Failed to load chefs</p>
+        <button onClick={() => window.location.reload()} className="px-6 py-3 bg-orange-500 text-white rounded-xl font-bold">
+          Retry
+        </button>
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
-    <section className="relative bg-gradient-to-br from-[#FFF7EB] via-[#F2E3C6] to-[#F7C35F] min-h-screen py-12 sm:py-16 md:py-20 px-4 overflow-hidden">
-      {/* Ambient Background Glows */}
-      <div className="absolute top-40 left-20 w-96 h-96 bg-[#F7C35F] rounded-full blur-3xl opacity-20 pointer-events-none"></div>
-      <div className="absolute bottom-40 right-20 w-80 h-80 bg-[#E57A44] rounded-full blur-3xl opacity-15 pointer-events-none"></div>
+    <>
+      <TopNav onLoginClick={() => navigate("/login")} onSignupClick={() => navigate("/signup")} />
 
-      {/* Floating Food Icons */}
-      <motion.div
-        className="absolute w-12 sm:w-16 top-20 left-8 opacity-20 filter drop-shadow-lg pointer-events-none"
-        animate={{ y: [0, -15, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <span className="text-5xl sm:text-6xl">👨‍🍳</span>
-      </motion.div>
+      <section className="relative bg-gradient-to-br from-[#FFF7EB] via-[#F2E3C6] to-[#F7C35F]/40 min-h-screen pt-24 pb-16 px-4 overflow-hidden">
+        {/* Ambient glows */}
+        <div className="absolute top-40 left-20 w-96 h-96 bg-[#F7C35F] rounded-full blur-3xl opacity-20 pointer-events-none" />
+        <div className="absolute bottom-40 right-20 w-80 h-80 bg-[#E57A44] rounded-full blur-3xl opacity-15 pointer-events-none" />
 
-      <motion.div
-        className="absolute w-12 sm:w-16 bottom-32 right-10 opacity-20 filter drop-shadow-lg pointer-events-none"
-        animate={{ y: [0, 15, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <span className="text-5xl sm:text-6xl">🍳</span>
-      </motion.div>
-
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-10 sm:mb-14"
-        >
-          <h2 
-            className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#6B3A1E] mb-3 sm:mb-4"
-            style={{ 
-              fontFamily: "Georgia, serif",
-              textShadow: "0 2px 20px rgba(247, 195, 95, 0.3)"
-            }}
+        <div className="max-w-7xl mx-auto relative z-10">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-10"
           >
-            Meet Our Master Chefs 👨‍🍳
-          </h2>
-          <div className="w-20 sm:w-24 h-1 bg-gradient-to-r from-transparent via-[#E57A44] to-transparent mx-auto mb-3"></div>
-          <p className="text-[#6B3A1E]/70 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-medium">
-            Passionate home chefs bringing authentic flavors to your table
-          </p>
-        </motion.div>
-
-        {/* Chef Detail Modal */}
-        <AnimatePresence>
-          {selectedChef && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-[#6B3A1E]/70 backdrop-blur-md z-50 flex items-center justify-center p-4"
-              onClick={() => setSelectedChef(null)}
+            <h1
+              className="text-4xl sm:text-5xl font-bold text-[#6B3A1E] mb-3"
+              style={{ fontFamily: "Georgia, serif", textShadow: "0 2px 20px rgba(247,195,95,0.3)" }}
             >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                transition={{ type: "spring", damping: 25 }}
-                className="bg-white/95 backdrop-blur-2xl rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border-2 border-[#E57A44]/30 relative"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {/* Close Button */}
-                <button
-                  onClick={() => setSelectedChef(null)}
-                  className="absolute top-4 right-4 z-20 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-300"
-                >
-                  <FaTimes className="text-xl text-[#6B3A1E]" />
-                </button>
+              Our Master Chefs 👨‍🍳
+            </h1>
+            <div className="w-20 h-1 bg-gradient-to-r from-transparent via-[#E57A44] to-transparent mx-auto mb-3" />
+            <p className="text-[#6B3A1E]/70 text-base max-w-xl mx-auto">
+              {filtered.length} passionate home chefs. Authentic flavors, made with love.
+            </p>
+          </motion.div>
 
-                {/* Header Section */}
-                <div className="relative bg-gradient-to-br from-[#E57A44] to-[#F7C35F] p-8 sm:p-10 rounded-t-3xl">
-                  <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
-                  
-                  <div className="relative z-10 text-center">
-                    {/* Chef Image with Ring */}
-                    <div className="inline-block p-1 bg-white rounded-full mb-4">
-                      <div className="p-1 bg-gradient-to-br from-[#F7C35F] to-[#E57A44] rounded-full">
+          {/* Search + Filter */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="flex flex-col sm:flex-row gap-3 max-w-3xl mx-auto mb-8"
+          >
+            <div className="relative flex-1">
+              <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[#E57A44]" />
+              <input
+                type="text"
+                placeholder="Search chef by name..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 bg-white/70 backdrop-blur-xl border-2 border-white/80 rounded-2xl text-[#6B3A1E] placeholder-[#6B3A1E]/50 focus:outline-none focus:border-[#E57A44] transition shadow-md"
+              />
+            </div>
+            <select
+              value={cuisineFilter}
+              onChange={(e) => setCuisineFilter(e.target.value)}
+              className="py-3 px-4 bg-white/70 backdrop-blur-xl border-2 border-white/80 rounded-2xl text-[#6B3A1E] focus:outline-none focus:border-[#E57A44] transition shadow-md font-semibold"
+            >
+              {allCuisines.map((c) => (
+                <option key={c} value={c}>{c === "All" ? "🍽 All Cuisines" : c}</option>
+              ))}
+            </select>
+          </motion.div>
+
+          {/* Chef Detail Modal */}
+          <AnimatePresence>
+            {selectedChef && (() => {
+              const stats = getChefStats(selectedChef._id);
+              return (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 bg-[#6B3A1E]/70 backdrop-blur-md z-50 flex items-center justify-center p-4"
+                  onClick={() => setSelectedChef(null)}
+                >
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    transition={{ type: "spring", damping: 25 }}
+                    className="bg-white/97 backdrop-blur-2xl rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto relative"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      onClick={() => setSelectedChef(null)}
+                      className="absolute top-4 right-4 z-20 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-50 transition"
+                    >
+                      <FaTimes className="text-[#6B3A1E]" />
+                    </button>
+
+                    {/* Modal Header */}
+                    <div className="relative bg-gradient-to-br from-[#E57A44] to-[#F7C35F] p-8 rounded-t-3xl text-center">
+                      <div className="w-24 h-24 mx-auto mb-4 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white">
                         <img
-                          src="https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"
+                          src={selectedChef.photo || "https://cdn-icons-png.flaticon.com/512/1721/1721307.png"}
                           alt={selectedChef.name}
-                          className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-white shadow-xl"
+                          className="w-full h-full object-cover"
+                          onError={(e) => { e.target.src = "https://cdn-icons-png.flaticon.com/512/1721/1721307.png"; }}
                         />
                       </div>
+                      <h3 className="text-2xl font-bold text-white">{selectedChef.name}</h3>
+                      <div className="flex items-center justify-center gap-2 text-white/90 mt-1 text-sm">
+                        <FaMapMarkerAlt />
+                        <span>{selectedChef.location?.area || selectedChef.location || "Home Chef"}</span>
+                      </div>
+                      <div className="flex justify-center mt-3">
+                        <div className="bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full">
+                          <StarRow rating={stats.avg} count={stats.count} />
+                        </div>
+                      </div>
                     </div>
 
-                    <h3 
-                      className="text-2xl sm:text-3xl font-bold text-white mb-2"
-                      style={{ fontFamily: "Georgia, serif", textShadow: "0 2px 10px rgba(0,0,0,0.2)" }}
-                    >
-                      {selectedChef.name}
-                    </h3>
-                    
-                    <div className="flex items-center justify-center gap-2 text-white/90 mb-2">
-                      <FaMapMarkerAlt />
-                      <span className="text-sm sm:text-base font-medium">{selectedChef.location?.area || "Location not available"}</span>
-                    </div>
+                    {/* Modal Body */}
+                    <div className="p-6 space-y-4">
+                      {/* Specialties */}
+                      <div>
+                        <p className="text-sm font-bold text-[#6B3A1E] mb-2 flex items-center gap-2">
+                          <FaUtensils className="text-[#E57A44]" /> Specialties
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {(selectedChef.cuisine || []).map((c) => (
+                            <span key={c} className="px-3 py-1 bg-orange-100 text-[#6B3A1E] rounded-full text-xs font-semibold">
+                              {c}
+                            </span>
+                          ))}
+                          {(!selectedChef.cuisine?.length) && (
+                            <span className="text-gray-400 text-sm">Not specified</span>
+                          )}
+                        </div>
+                      </div>
 
-                    <div className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                      <StarRow rating={selectedChef.rating} />
-                    </div>
-                  </div>
-                </div>
+                      {/* Contact */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-[#FFF7EB] rounded-xl p-3 border border-[#E57A44]/20">
+                          <p className="text-xs text-gray-500 mb-1">Phone</p>
+                          <p className="text-sm font-semibold text-[#6B3A1E]">{selectedChef.phone || "N/A"}</p>
+                        </div>
+                        <div className="bg-[#FFF7EB] rounded-xl p-3 border border-[#E57A44]/20">
+                          <p className="text-xs text-gray-500 mb-1">Email</p>
+                          <p className="text-sm font-semibold text-[#6B3A1E] truncate">{selectedChef.email || "N/A"}</p>
+                        </div>
+                      </div>
 
-                {/* Content Section */}
-                <div className="p-6 sm:p-8">
-                  {/* Cuisine Tags */}
-                  <div className="mb-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <FaUtensils className="text-[#E57A44] text-lg" />
-                      <h4 className="text-base sm:text-lg font-bold text-[#6B3A1E]">Specialties</h4>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {(selectedChef.cuisine || ["Not specified"]).map((item, idx) => (
-                        <span
-                          key={idx}
-                          className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-[#E57A44]/20 to-[#F7C35F]/20 text-[#6B3A1E] rounded-full text-xs sm:text-sm font-semibold border border-[#E57A44]/30"
+                      {/* Bio */}
+                      <div className="bg-[#FFF7EB] rounded-xl p-4 border border-[#E57A44]/20">
+                        <p className="text-sm text-[#6B3A1E]/80 leading-relaxed">
+                          {selectedChef.bio || "A passionate home chef dedicated to creating authentic, delicious meals with fresh ingredients."}
+                        </p>
+                      </div>
+
+                      {/* CTA Buttons */}
+                      <div className="flex gap-3 pt-2">
+                        <button
+                          onClick={() => { navigate("/meals"); setSelectedChef(null); }}
+                          className="flex-1 py-3 bg-gradient-to-r from-[#E57A44] to-[#F7C35F] text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition text-sm flex items-center justify-center gap-2"
                         >
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Divider */}
-                  <div className="h-px bg-gradient-to-r from-transparent via-[#E57A44]/30 to-transparent my-6"></div>
-
-                  {/* Contact Info */}
-                  <div className="grid sm:grid-cols-2 gap-4 mb-6">
-                    <div className="bg-[#FFF7EB] rounded-xl p-4 border border-[#E57A44]/20">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-[#E57A44] to-[#F7C35F] rounded-full flex items-center justify-center flex-shrink-0">
-                          <FaPhone className="text-white text-sm" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-xs text-[#6B3A1E]/60 font-semibold mb-0.5">Phone</p>
-                          <p className="text-sm text-[#6B3A1E] font-medium truncate">{selectedChef.phone || "N/A"}</p>
-                        </div>
+                          <FaShoppingBag /> Order Now
+                        </button>
+                        <button
+                          onClick={() => setSelectedChef(null)}
+                          className="flex-1 py-3 border-2 border-[#E57A44]/30 text-[#6B3A1E] font-semibold rounded-2xl hover:border-[#E57A44] transition text-sm"
+                        >
+                          Close
+                        </button>
                       </div>
                     </div>
+                  </motion.div>
+                </motion.div>
+              );
+            })()}
+          </AnimatePresence>
 
-                    <div className="bg-[#FFF7EB] rounded-xl p-4 border border-[#E57A44]/20">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-[#E57A44] to-[#F7C35F] rounded-full flex items-center justify-center flex-shrink-0">
-                          <FaEnvelope className="text-white text-sm" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-xs text-[#6B3A1E]/60 font-semibold mb-0.5">Email</p>
-                          <p className="text-sm text-[#6B3A1E] font-medium truncate">{selectedChef.email || "N/A"}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bio Section */}
-                  <div className="bg-[#FFF7EB] rounded-xl p-5 border border-[#E57A44]/20">
-                    <h4 className="text-base sm:text-lg font-bold text-[#6B3A1E] mb-3 flex items-center gap-2">
-                      <span>📖</span> About the Chef
-                    </h4>
-                    <p className="text-sm sm:text-base text-[#6B3A1E]/80 leading-relaxed">
-                      {selectedChef.bio || "A passionate chef dedicated to creating delicious homemade meals with love and care."}
-                    </p>
-                  </div>
-
-                  {/* Action Button */}
-                  <motion.button
-                    onClick={() => setSelectedChef(null)}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="mt-6 w-full py-3 sm:py-4 bg-gradient-to-r from-[#E57A44] to-[#F7C35F] text-white font-bold rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all relative overflow-hidden group text-sm sm:text-base"
+          {/* Chefs Grid */}
+          {filtered.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-5xl mb-4">👨‍🍳</p>
+              <p className="text-[#6B3A1E] text-xl font-semibold">No chefs found</p>
+              <button onClick={() => { setSearch(""); setCuisineFilter("All"); }} className="mt-3 text-orange-500 underline text-sm">
+                Clear filters
+              </button>
+            </div>
+          ) : (
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6"
+              initial="hidden"
+              animate="show"
+              variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07 } } }}
+            >
+              {filtered.map((chef) => {
+                const stats = getChefStats(chef._id);
+                return (
+                  <motion.div
+                    key={chef._id}
+                    variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0 } }}
+                    whileHover={{ y: -8 }}
+                    className="group relative"
                   >
-                    <span className="relative z-10">Close</span>
-                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                  </motion.button>
-                </div>
-              </motion.div>
+                    {/* Glow */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#F7C35F] to-[#E57A44] rounded-3xl blur-xl opacity-0 group-hover:opacity-25 transition-all duration-500 -z-10" />
+
+                    <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border-2 border-white/80">
+                      {/* Top Badge */}
+                      {stats.avg >= 4 && (
+                        <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-[10px] px-2.5 py-1 rounded-full font-bold shadow">
+                          ⭐ Top Rated
+                        </div>
+                      )}
+
+                      {/* Avatar */}
+                      <div className="flex justify-center pt-8">
+                        <div className="relative">
+                          <div className="p-1 bg-gradient-to-br from-[#E57A44] to-[#F7C35F] rounded-full group-hover:scale-105 transition-transform duration-500">
+                            <div className="p-0.5 bg-white rounded-full">
+                              <img
+                                src={chef.photo || "https://cdn-icons-png.flaticon.com/512/1721/1721307.png"}
+                                alt={chef.name}
+                                className="w-24 h-24 rounded-full object-cover"
+                                onError={(e) => { e.target.src = "https://cdn-icons-png.flaticon.com/512/1721/1721307.png"; }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Info */}
+                      <div className="p-5 text-center">
+                        <div className="w-14 h-0.5 bg-gradient-to-r from-transparent via-[#E57A44] to-transparent mx-auto mb-3" />
+                        <h3
+                          className="text-lg font-bold text-[#6B3A1E] group-hover:text-[#E57A44] transition-colors mb-1"
+                          style={{ fontFamily: "Georgia, serif" }}
+                        >
+                          {chef.name}
+                        </h3>
+                        <p className="text-xs text-[#E57A44] font-semibold mb-2 line-clamp-1">
+                          {chef.cuisine?.join(", ") || "Home Chef"}
+                        </p>
+                        <div className="flex justify-center mb-3">
+                          <StarRow rating={stats.avg} count={stats.count} />
+                        </div>
+                        <p className="text-xs text-[#6B3A1E]/70 line-clamp-2 mb-4 min-h-[2rem]">
+                          {chef.bio || "Passionate about authentic homemade food."}
+                        </p>
+
+                        <div className="flex gap-2">
+                          <motion.button
+                            onClick={() => setSelectedChef(chef)}
+                            whileTap={{ scale: 0.95 }}
+                            className="flex-1 py-2.5 rounded-xl border-2 border-[#E57A44]/40 text-[#6B3A1E] font-semibold text-xs hover:border-[#E57A44] hover:bg-orange-50 transition"
+                          >
+                            View Profile
+                          </motion.button>
+                          <motion.button
+                            onClick={() => navigate("/meals")}
+                            whileTap={{ scale: 0.95 }}
+                            className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#E57A44] to-[#F7C35F] text-white font-bold text-xs shadow hover:shadow-md transition"
+                          >
+                            Order
+                          </motion.button>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </motion.div>
           )}
-        </AnimatePresence>
-
-        {/* Chefs Grid */}
-        {!selectedChef && (
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6 md:gap-8"
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
-          >
-            {chefs.map((chef) => (
-              <motion.div
-                key={chef._id}
-                variants={cardVariants}
-                whileHover={{ y: -10 }}
-                className="relative group"
-              >
-                {/* Glow Effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#F7C35F] to-[#E57A44] rounded-2xl sm:rounded-3xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 -z-10"></div>
-
-                {/* Card */}
-                <div className="relative bg-white/60 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border-2 border-white/80">
-                  {/* Badge */}
-                  <span className="absolute top-3 left-3 z-10 bg-gradient-to-r from-[#E57A44] to-[#F7C35F] text-white text-[10px] px-3 py-1 rounded-full font-bold shadow-md uppercase tracking-wide">
-                    ⭐ Top Chef
-                  </span>
-
-                  {/* Chef Image */}
-                  <div className="w-full flex justify-center pt-8 sm:pt-10">
-                    <div className="p-1 bg-gradient-to-br from-[#E57A44] to-[#F7C35F] rounded-full group-hover:scale-110 transition-transform duration-500">
-                      <div className="p-0.5 bg-white rounded-full">
-                        <img
-                          src="https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"
-                          alt={chef.name}
-                          className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-5 sm:p-6 text-center">
-                    {/* Decorative Border */}
-                    <div className="w-16 h-1 bg-gradient-to-r from-transparent via-[#E57A44] to-transparent mx-auto mb-3"></div>
-
-                    <h3 
-                      className="text-lg sm:text-xl font-bold text-[#6B3A1E] group-hover:text-[#E57A44] transition-colors mb-2"
-                      style={{ fontFamily: "Georgia, serif" }}
-                    >
-                      {chef.name}
-                    </h3>
-                    
-                    <p className="text-xs sm:text-sm text-[#E57A44] font-semibold mb-2 line-clamp-1">
-                      {chef.cuisine?.join(", ") || "Cuisine not listed"}
-                    </p>
-
-                    <div className="mb-3">
-                      <StarRow rating={chef.rating} />
-                    </div>
-
-                    <p className="text-xs sm:text-sm text-[#6B3A1E]/70 min-h-[2.5rem] sm:min-h-[3rem] line-clamp-2 mb-4">
-                      {chef.bio || "A passionate chef creating delicious homemade meals."}
-                    </p>
-
-                    <motion.button
-                      onClick={() => setSelectedChef(chef)}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="w-full py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-[#E57A44] to-[#F7C35F] text-white font-bold shadow-lg hover:shadow-xl transition-all relative overflow-hidden group/btn text-sm sm:text-base"
-                    >
-                      <span className="relative z-10">View Profile</span>
-                      <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300"></div>
-                    </motion.button>
-                  </div>
-
-                  {/* Hover Overlay */}
-                  <div className="pointer-events-none absolute inset-0 rounded-2xl sm:rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-[#F7C35F]/10 to-transparent" />
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 };
 

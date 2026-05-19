@@ -1,140 +1,166 @@
-// Howitworks.jsx
+// Howitworks.jsx — Premium redesign
 import React from "react";
-import { MapPin, Utensils, CreditCard, Heart } from "lucide-react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const steps = [
   {
+    step: "01",
     title: "Pick Location",
-    desc: "Select your delivery address",
-    icon: <MapPin className="w-8 h-8 sm:w-10 sm:h-10" />,
-    color: "from-[#E57A44] to-[#F7C35F]",
+    desc: "Share your delivery address or detect it live. We'll show you the best chefs near you.",
     emoji: "📍",
+    gradient: "from-violet-500 to-indigo-500",
+    glow: "#7C3AED40",
   },
   {
-    title: "Browse Meals",
-    desc: "Explore homemade dishes",
-    icon: <Utensils className="w-8 h-8 sm:w-10 sm:h-10" />,
-    color: "from-[#F7C35F] to-[#E57A44]",
+    step: "02",
+    title: "Browse & Choose",
+    desc: "Explore handcrafted dishes from verified home chefs. Filter by cuisine, price, or rating.",
     emoji: "🍽️",
+    gradient: "from-orange-500 to-amber-400",
+    glow: "#FF6A2C40",
   },
   {
+    step: "03",
     title: "Quick Payment",
-    desc: "Safe & secure checkout",
-    icon: <CreditCard className="w-8 h-8 sm:w-10 sm:h-10" />,
-    color: "from-[#E57A44] to-[#F7C35F]",
+    desc: "Pay securely via UPI, card, or Razorpay. Your transaction is 100% safe & encrypted.",
     emoji: "💳",
+    gradient: "from-emerald-500 to-teal-400",
+    glow: "#10B98140",
   },
   {
-    title: "Enjoy Food",
-    desc: "Fresh meals at your door",
-    icon: <Heart className="w-8 h-8 sm:w-10 sm:h-10" />,
-    color: "from-[#F7C35F] to-[#E57A44]",
+    step: "04",
+    title: "Enjoy at Home",
+    desc: "Your meal is prepared fresh and delivered hot. Track your order in real time.",
     emoji: "❤️",
+    gradient: "from-rose-500 to-pink-400",
+    glow: "#F4365440",
   },
 ];
 
 function Howitworks() {
-  return (
-    <section className="relative bg-gradient-to-br from-[#FFF7EB] via-[#F2E3C6] to-[#F7C35F] py-12 sm:py-16 md:py-20 overflow-hidden">
-      {/* Background Decorations */}
-      <div className="absolute top-20 left-10 w-64 h-64 bg-[#E57A44] rounded-full blur-3xl opacity-10 pointer-events-none"></div>
-      <div className="absolute bottom-20 right-10 w-64 h-64 bg-[#F7C35F] rounded-full blur-3xl opacity-10 pointer-events-none"></div>
+  const navigate = useNavigate();
 
-      <div className="max-w-6xl mx-auto px-4 relative z-10">
+  return (
+    <section className="relative py-24 lg:py-32 bg-[#0A0A0A] overflow-hidden">
+      {/* Subtle background grid */}
+      <div
+        className="absolute inset-0 opacity-[0.025]"
+        style={{
+          backgroundImage: `linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)`,
+          backgroundSize: "60px 60px",
+        }}
+      />
+
+      {/* Ambient glow */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-10 pointer-events-none"
+        style={{ background: "radial-gradient(circle, #FF6A2C, transparent 70%)" }}
+      />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         {/* Header */}
-        <div className="text-center mb-10 sm:mb-14">
-          <h2
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#6B3A1E] mb-3"
-            style={{
-              fontFamily: "Georgia, serif",
-              textShadow: "0 2px 20px rgba(247, 195, 95, 0.3)",
-            }}
+        <div className="text-center mb-20">
+          <motion.span
+            initial={{ opacity: 0, y: -10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase border border-orange-500/30 text-orange-400 bg-orange-500/10 mb-5"
           >
-            How It Works 🎯
-          </h2>
-          <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-transparent via-[#E57A44] to-transparent mx-auto mb-3"></div>
-          <p className="text-[#6B3A1E]/70 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-medium">
-            Four simple steps to enjoy homemade meals
-          </p>
+            How It Works
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl sm:text-5xl font-black text-white leading-tight"
+          >
+            Four Steps to{" "}
+            <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #FF6A2C, #FFB45E)" }}>
+              Home Food Bliss
+            </span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="mt-4 text-white/40 text-lg max-w-xl mx-auto"
+          >
+            Getting home-cooked food has never been this simple
+          </motion.p>
         </div>
 
-        {/* Steps Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 md:gap-8">
-          {steps.map((step, index) => (
-            <div
-              key={index}
-              className="relative group animate-fadeInUp"
-              style={{ animationDelay: `${index * 100}ms` }}
+        {/* Steps grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {steps.map((step, i) => (
+            <motion.div
+              key={step.step}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              whileHover={{ y: -8 }}
+              className="group relative"
             >
-              {/* Connecting Line (Desktop) */}
-              {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-14 left-full w-8 h-0.5 bg-gradient-to-r from-[#E57A44] to-transparent z-0"></div>
-              )}
-
-              {/* Card Glow */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#F7C35F] to-[#E57A44] rounded-2xl sm:rounded-3xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300 -z-10"></div>
+              {/* Glow on hover */}
+              <div
+                className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"
+                style={{ background: step.glow }}
+              />
 
               {/* Card */}
-              <div className="relative bg-white/70 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-white/80 text-center group-hover:-translate-y-2">
-                {/* Step Number */}
-                <div className="absolute -top-3 -right-3 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#E57A44] to-[#F7C35F] rounded-full flex items-center justify-center text-white font-bold text-sm sm:text-base shadow-lg">
-                  {index + 1}
+              <div className="relative rounded-3xl bg-white/[0.04] border border-white/[0.07] p-7 h-full hover:border-white/15 transition-all duration-300">
+                {/* Step number */}
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-5xl font-black text-white/[0.05] select-none">
+                    {step.step}
+                  </span>
+                  {/* Icon bubble */}
+                  <motion.div
+                    whileHover={{ scale: 1.15, rotate: 10 }}
+                    className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center text-2xl shadow-lg`}
+                  >
+                    {step.emoji}
+                  </motion.div>
                 </div>
 
-                {/* Icon */}
-                <div className={`w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg text-white group-hover:scale-110 transition-transform duration-300`}>
-                  {step.icon}
-                </div>
+                {/* Connector line (desktop) */}
+                {i < steps.length - 1 && (
+                  <div className="hidden lg:block absolute top-[3.5rem] left-full w-6 h-px bg-gradient-to-r from-white/10 to-transparent z-0" />
+                )}
 
-                {/* Emoji Badge */}
-                <div className="text-3xl sm:text-4xl mb-3">{step.emoji}</div>
-
-                {/* Decorative Border */}
-                <div className="w-12 sm:w-16 h-1 bg-gradient-to-r from-transparent via-[#E57A44] to-transparent mx-auto mb-3"></div>
-
-                {/* Content */}
-                <h3
-                  className="text-lg sm:text-xl font-bold text-[#6B3A1E] mb-2 group-hover:text-[#E57A44] transition-colors duration-200"
-                  style={{ fontFamily: "Georgia, serif" }}
-                >
+                <h3 className="text-lg font-bold text-white mb-2 group-hover:text-orange-400 transition-colors">
                   {step.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-[#6B3A1E]/70 font-medium leading-relaxed">
-                  {step.desc}
-                </p>
+                <p className="text-sm text-white/40 leading-relaxed">{step.desc}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
-        {/* Bottom CTA */}
-        <div className="text-center mt-10 sm:mt-12">
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="bg-gradient-to-r from-[#E57A44] to-[#F7C35F] text-white font-bold px-8 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 relative overflow-hidden group text-sm sm:text-base hover:scale-105 active:scale-95"
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+          className="text-center mt-16"
+        >
+          <motion.button
+            onClick={() => navigate("/meals")}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            className="inline-flex items-center gap-3 px-10 py-4 rounded-2xl font-bold text-white text-base shadow-2xl"
+            style={{ background: "linear-gradient(135deg, #FF6A2C, #FFB45E)" }}
           >
-            <span className="relative z-10">Start Ordering Now 🚀</span>
-            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-          </button>
-        </div>
+            Start Ordering Now
+            <span className="text-lg">→</span>
+          </motion.button>
+          <p className="text-white/20 text-sm mt-4">No subscription required · Pay per order</p>
+        </motion.div>
       </div>
-
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fadeInUp {
-          animation: fadeInUp 0.5s ease-out forwards;
-        }
-      `}</style>
     </section>
   );
 }

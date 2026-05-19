@@ -2,6 +2,7 @@ import app from './app.js';
 import http from 'http';
 import dotenv from 'dotenv';
 import { Server } from 'socket.io';
+import { setIO } from './config/socket.js'; // ✅ Socket singleton
 
 dotenv.config();
 
@@ -9,30 +10,30 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "*", // update for prod
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
+// ✅ Register the io instance into the singleton so controllers can use it
+setIO(io);
+
 // Chat logic
 io.on("connection", (socket) => {
-  console.log("🔌 New client connected:", socket.id);
-
-  // Join a chat room based on orderId
   socket.on("joinRoom", (orderId) => {
     socket.join(orderId);
-    console.log(`Socket ${socket.id} joined order room: ${orderId}`);
+  });
+
+  socket.on("joinChefRoom", (chefId) => {
+    socket.join(`chef:${chefId}`);
   });
 
   // Handle incoming messages
   socket.on("sendMessage", async (data) => {
     const { orderId, senderId, senderModel, message } = data;
 
-    if (!orderId || !senderId || !senderModel || !message) {
-      console.warn("❌ Invalid message data received.");
-      return;
-    }
+    if (!orderId || !senderId || !senderModel || !message) return;
 
     try {
       const ChatMessage = (await import("./models/ChatMessage.js")).default;
@@ -51,14 +52,11 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", () => {
-    console.log("❌ Client disconnected:", socket.id);
-  });
+  socket.on("disconnect", () => {});
 });
 
-const PORT = process.env.PORT || 3000;
+// PORT must match the proxy in frontend/vite.config.js (/api → http://localhost:5000)
+const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
-
-export { io };

@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import User from "../models/User.js";
 import Chef from "../models/Chef.js";
 import Admin from "../models/admin.js";
-import { REFUSED } from "dns";
+// dns import removed — was unused and caused a server crash
 
 dotenv.config();
 
@@ -228,7 +228,7 @@ export const resetPassword = async (req, res) => {
     if (process.env.SEND_CONFIRMATION_EMAIL === 'true') {
       try {
         const { data: confirmData, error: confirmError } = await resend.emails.send({
-          from: 'Tiffin Tales <noreply@tiffintales.com>',
+          from: 'Tiffin Tales <noreply@tiffintalesindia.me>',
           to: [user.email],
           subject: '✅ Password Reset Successful - Tiffin Tales',
           html: `

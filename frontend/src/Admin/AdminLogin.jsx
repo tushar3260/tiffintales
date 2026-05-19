@@ -66,8 +66,6 @@ export default function AdminLogin() {
 
       const { admin, token, message } = res.data;
 
-      console.log('✅ Admin Login Successful:', { admin: admin?.username, role: admin?.role });
-
       if (admin && token && admin.role === 'admin') {
         // ✅ Set in context first
         setAdmin(admin);
@@ -90,8 +88,6 @@ export default function AdminLogin() {
         throw new Error('Invalid response from server.');
       }
     } catch (err) {
-      console.error('Login Error:', err);
-      
       let msg = 'Login failed. Please try again.';
       
       if (err.code === 'ECONNABORTED') {

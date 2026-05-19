@@ -19,7 +19,6 @@ export default function Charts() {
         );
 
         const orders = res.data || [];
-        console.log("Orders:", orders);
 
         // Day-wise order count (Mon-Sun)
         const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -58,8 +57,8 @@ export default function Charts() {
             },
           ],
         });
-      } catch (err) {
-        console.error("Error fetching orders:", err);
+      } catch {
+        // silent — chart simply won't render
       }
     };
 

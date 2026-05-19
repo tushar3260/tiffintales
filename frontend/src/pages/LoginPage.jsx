@@ -111,8 +111,6 @@ function LoginPage({ onClose, onSignupClick }) {
     setError("");
     
     try {
-      console.log('Google Login Success - Credential received');
-      
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/user/google-login`,
         { credential: credentialResponse.credential }
@@ -143,7 +141,6 @@ function LoginPage({ onClose, onSignupClick }) {
         }
       }
     } catch (error) {
-      console.error('Google Login Error:', error);
       const errorMsg = error?.response?.data?.message || "Google login failed. Please try again.";
       setError(errorMsg);
       
@@ -157,7 +154,6 @@ function LoginPage({ onClose, onSignupClick }) {
 
   // Google Login Error Handler
   const handleGoogleError = () => {
-    console.error('Google Login Failed');
     setError("Google login failed. Please try again.");
     setTimeout(() => {
       setError("");

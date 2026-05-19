@@ -43,7 +43,7 @@ export const createReview = async (req, res) => {
 export const getAllReviews = async (req, res) => {
   try {
     const reviews = await Review.find()
-      .populate("userId", "name")
+      .populate("userId", "fullName email")
       .populate("chefId", "name")
       .populate("orderId");
 
@@ -57,8 +57,9 @@ export const getAllReviews = async (req, res) => {
 export const getReviewsByChef = async (req, res) => {
   try {
     const reviews = await Review.find({ chefId: req.params.chefId })
-      .populate("userId", "name")
-      .populate("orderId");
+      .populate("userId", "fullName email")
+      .populate("orderId")
+      .sort({ createdAt: -1 });
 
     res.status(200).json(reviews);
   } catch (error) {

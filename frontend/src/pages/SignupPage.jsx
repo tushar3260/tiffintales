@@ -138,7 +138,6 @@ function SignupPage({ onClose, onLoginClick }) {
         setResendCooldown(OTP_RESEND_COOLDOWN);
       }
     } catch (error) {
-      console.error("Send OTP Error:", error);
       if (error?.response?.status === 409) {
         toast.error("Email is already registered. Please login or use another email.");
         setOtpSent(false);
@@ -175,7 +174,6 @@ function SignupPage({ onClose, onLoginClick }) {
         toast.success("OTP verified successfully!");
       }
     } catch (error) {
-      console.error("Verify OTP Error:", error);
       toast.error(
         error?.response?.data?.message || "Invalid OTP. Please try again."
       );
@@ -237,7 +235,6 @@ function SignupPage({ onClose, onLoginClick }) {
         }
       }
     } catch (error) {
-      console.error("Signup Error:", error);
       toast.error(
         error?.response?.data?.message || "Signup failed. Please try again."
       );

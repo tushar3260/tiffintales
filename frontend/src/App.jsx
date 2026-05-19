@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { GoogleOAuthProvider } from "@react-oauth/google"; // ✅ Add this import
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { Toaster } from "react-hot-toast"; // ✅ Required for toast notifications to show
 import LandingPage from "./pages/LandingPage.jsx";
 import Login from "./pages/LoginPage.jsx";
 import Signup from "./pages/SignupPage.jsx";
@@ -39,6 +40,8 @@ import Team from "../src/pages/Team.jsx";
 import Helpandsupport from "../src/pages/Helpandsupport.jsx";
 import Termcondition from "../src/pages/Termcondition.jsx";
 import Refundcancellation from "../src/pages/Refundcancellation.jsx";
+import GalleryPage from "./pages/GalleryPage.jsx";
+import Subscription from "./pages/Subscription.jsx";
 import { useState } from "react";
 import CartProvider from "./context/CartContext.jsx";
 
@@ -48,142 +51,159 @@ function App() {
 
   return (
     <div>
-      {/* ✅ Wrap everything with GoogleOAuthProvider */}
+      {/* ✅ Toaster must be outside BrowserRouter but inside providers to show toast everywhere */}
+      <Toaster position="top-center" reverseOrder={false} />
+
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <UserProvider>
-          <BrowserRouter>
-            <Routes>
-              {/* Public Routes */}
-              <Route
-                path="/"
-                element={
-                  <>
-                    <LandingPage
-                      onLoginClick={() => setShowLogin(true)}
-                      onSignupClick={() => setShowSignup(true)}
-                    />
-
-                    {/* Login Popup */}
-                    {showLogin && (
-                      <Login
-                        onClose={() => setShowLogin(false)}
-                        onSignupClick={() => {
-                          setShowLogin(false);
-                          setShowSignup(true);
-                        }}
+          {/* ✅ CartProvider at app level — lets all pages use useCart() */}
+          <CartProvider>
+            <BrowserRouter>
+              <Routes>
+                {/* Public Routes */}
+                <Route
+                  path="/"
+                  element={
+                    <>
+                      <LandingPage
+                        onLoginClick={() => setShowLogin(true)}
+                        onSignupClick={() => setShowSignup(true)}
                       />
-                    )}
 
-                    {/* Signup Popup */}
-                    {showSignup && (
-                      <Signup
-                        onClose={() => setShowSignup(false)}
-                        onLoginClick={() => {
-                          setShowSignup(false);
-                          setShowLogin(true);
-                        }}
-                      />
-                    )}
-                  </>
-                }
-              />
-              
-              <Route
-                path="/login"
-                element={
-                  <div className="relative">
-                    <LandingPage disableButtons />
-                    <div className="absolute inset-0 bg-black/30 backdrop-blur-md"></div>
-                    <Login />
-                  </div>
-                }
-              />
-              
-              <Route
-                path="/signup"
-                element={
-                  <div className="relative">
-                    <LandingPage disableButtons />
-                    <div className="absolute inset-0 bg-black/30 backdrop-blur-md"></div>
-                    <Signup />
-                  </div>
-                }
-              />
+                      {showLogin && (
+                        <Login
+                          onClose={() => setShowLogin(false)}
+                          onSignupClick={() => {
+                            setShowLogin(false);
+                            setShowSignup(true);
+                          }}
+                        />
+                      )}
 
-              <Route path="/cart" element={
-                <CartProvider>
-                  <Cart />
-                </CartProvider>
-              } />
-              
-              <Route path="/allchef" element={<Allchef />} />
-              <Route path="/addlocation" element={<AddLocation />} />
-              <Route path="/otp" element={<OTPPage />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password/:token" element={<ResetPassword />} />
-              
-              <Route path="/order-now/:id" element={
-                <UserProtect>
-                  <OrderNowPage />
-                </UserProtect>
-              } />
-              
-              <Route path="/meals" element={<AllMeals />} />
-              <Route path="/chef-detail/:id" element={<ChefDetail />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/orders" element={<MyOrderPage />} />
-              <Route path="/aboutus" element={<Aboutus />} />
-              <Route path="/team" element={<Team />} />
-              <Route path="/help" element={<Helpandsupport />} />
-              <Route path="/terms" element={<Termcondition />} />
-              <Route path="/refund" element={<Refundcancellation />} />
+                      {showSignup && (
+                        <Signup
+                          onClose={() => setShowSignup(false)}
+                          onLoginClick={() => {
+                            setShowSignup(false);
+                            setShowLogin(true);
+                          }}
+                        />
+                      )}
+                    </>
+                  }
+                />
 
-              {/* Protected Routes */}
-              <Route
-                path="/dashboard/*"
-                element={
+                <Route
+                  path="/login"
+                  element={
+                    <div className="relative">
+                      <LandingPage disableButtons />
+                      <div className="absolute inset-0 bg-black/30 backdrop-blur-md"></div>
+                      <Login />
+                    </div>
+                  }
+                />
+
+                <Route
+                  path="/signup"
+                  element={
+                    <div className="relative">
+                      <LandingPage disableButtons />
+                      <div className="absolute inset-0 bg-black/30 backdrop-blur-md"></div>
+                      <Signup />
+                    </div>
+                  }
+                />
+
+                {/* Cart is now inside the global CartProvider */}
+                <Route path="/cart" element={<Cart />} />
+
+                <Route path="/allchef" element={<Allchef />} />
+                <Route path="/addlocation" element={<AddLocation />} />
+                <Route path="/otp" element={<OTPPage />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+                <Route
+                  path="/order-now/:id"
+                  element={
+                    <UserProtect>
+                      <OrderNowPage />
+                    </UserProtect>
+                  }
+                />
+
+                <Route path="/meals" element={<AllMeals />} />
+                <Route path="/chef-detail/:id" element={<ChefDetail />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/orders" element={<MyOrderPage />} />
+                <Route path="/aboutus" element={<Aboutus />} />
+                <Route path="/team" element={<Team />} />
+                <Route path="/help" element={<Helpandsupport />} />
+                <Route path="/terms" element={<Termcondition />} />
+                <Route path="/refund" element={<Refundcancellation />} />
+
+                {/* ✅ Additional footer/nav routes */}
+                <Route path="/subscription" element={
                   <UserProtect>
                     <DashboardLayout />
                   </UserProtect>
-                }
-              >
-                <Route index element={<Dashboard />} />
-                <Route path="orders" element={<OrderSummary />} />
-                <Route path="chat/:orderId" element={<OrderChat isChef={false} />} />
-                <Route path="tracker" element={<Tracker />} />
-                <Route path="charts" element={<Charts />} />
-                <Route path="subscription" element={<SubscriptionPage />} />
-                <Route path="wallet" element={<Wallet />} />
-                <Route path="refer" element={<ReferAndEarn />} />
-                <Route path="support" element={<Support />} />
-                <Route path="settings" element={<Settings />} />
-                <Route path="upcoming" element={<UpcomingMeals />} />
-              </Route>
+                }>
+                  <Route index element={<SubscriptionPage />} />
+                </Route>
+                <Route path="/privacy" element={<Termcondition />} />
+                <Route path="/gallery" element={<GalleryPage />} />
+                <Route path="/blog" element={<GalleryPage />} />
+                <Route path="/subscribe" element={<Subscription />} />
+                <Route path="/careers" element={<Team />} />
 
-              <Route path="/profile" element={<ProfilePage />} />
+                {/* Protected User Dashboard Routes */}
+                <Route
+                  path="/dashboard/*"
+                  element={
+                    <UserProtect>
+                      <DashboardLayout />
+                    </UserProtect>
+                  }
+                >
+                  <Route index element={<Dashboard />} />
+                  <Route path="orders" element={<OrderSummary />} />
+                  <Route path="chat/:orderId" element={<OrderChat isChef={false} />} />
+                  <Route path="tracker" element={<Tracker />} />
+                  <Route path="charts" element={<Charts />} />
+                  <Route path="subscription" element={<SubscriptionPage />} />
+                  <Route path="wallet" element={<Wallet />} />
+                  <Route path="refer" element={<ReferAndEarn />} />
+                  <Route path="support" element={<Support />} />
+                  <Route path="settings" element={<Settings />} />
+                  <Route path="upcoming" element={<UpcomingMeals />} />
+                </Route>
 
-              <Route
-                path="/chef/*"
-                element={
-                  <ChefProvider>
-                    <ChefApp />
-                  </ChefProvider>
-                }
-              />
-              
-              {/* ✅ Admin routes with AdminProvider */}
-              <Route 
-                path="/admin/secure/tales/*" 
-                element={
-                  <AdminProvider>
-                    <AdminApp />
-                  </AdminProvider>
-                } 
-              />
-            </Routes>
-          </BrowserRouter>
+                <Route path="/profile" element={<ProfilePage />} />
+
+                <Route
+                  path="/chef/*"
+                  element={
+                    <ChefProvider>
+                      <ChefApp />
+                    </ChefProvider>
+                  }
+                />
+
+                {/* Admin routes */}
+                <Route
+                  path="/admin/secure/tales/*"
+                  element={
+                    <AdminProvider>
+                      <AdminApp />
+                    </AdminProvider>
+                  }
+                />
+              </Routes>
+            </BrowserRouter>
+          </CartProvider>
         </UserProvider>
-      </GoogleOAuthProvider> {/* ✅ Close GoogleOAuthProvider here */}
+      </GoogleOAuthProvider>
     </div>
   );
 }

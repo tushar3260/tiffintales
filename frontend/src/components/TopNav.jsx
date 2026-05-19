@@ -1,705 +1,318 @@
-// import React, { useEffect, useState } from "react";
-// import { motion, AnimatePresence } from "framer-motion";
-// import { FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
-// import axios from "axios";
-// import TiffinTalesLogo from "../assets/tiffintaleslogo.png";
-// import { useUser } from "../context/userContext.jsx";
-// import Loading from "../Loading.jsx";
-// import { storage } from "../utils/Storage.js";
-// import { Link } from "react-router-dom";
-
-// function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
-//   const { user, setUser } = useUser();
-//   const [addresses, setAddresses] = useState([]);
-//   const [selectedAddress, setSelectedAddress] = useState(null);
-//   const [redirectLoading, setRedirectLoading] = useState(false);
-//   const [logoutLoading, setLogoutLoading] = useState(false);
-//   const [profileOpen, setProfileOpen] = useState(false);
-//   const [cartCount, setCartCount] = useState(0);
-//   const [menuOpen, setMenuOpen] = useState(false);
-//   const [locationLoading, setLocationLoading] = useState(false);
-//   const userId = user?._id;
-
-//   // 🔹 Fetch addresses or fallback to location
-//   // 🔹 Fetch addresses (no fallback to live location)
-// useEffect(() => {
-//   const fetchAddresses = async () => {
-//     if (!userId) return;
-//     try {
-//       const res = await axios.get(
-//         `${import.meta.env.VITE_API_URL}/user/${userId}/address`
-//       );
-//       const data = res.data;
-//       if (Array.isArray(data) && data.length > 0) {
-//         setAddresses(data);
-//         setSelectedAddress(data[0]);
-//       } else {
-//         // 👇 DON'T fetch live location automatically
-//         setAddresses([]);
-//         setSelectedAddress(null);
-//       }
-//     } catch (err) {
-//       console.error("Error fetching addresses from backend:", err);
-//     }
-//   };
-//   fetchAddresses();
-// }, [userId]);
-
-
-//   // 🔹 Cart count
-//   useEffect(() => {
-//     if (!userId) return;
-//     const fetchCartCount = async () => {
-//       try {
-//         const res = await axios.get(
-//           `${import.meta.env.VITE_API_URL}/orders/user/${userId}`
-//         );
-//         setCartCount(res.data?.items?.length || 0);
-//       } catch (err) {
-//         console.error("Error fetching cart:", err);
-//       }
-//     };
-//     fetchCartCount();
-//   }, [userId]);
-
-//   // 🔹 Live Location Fetch
-//   const handleManualLocationFetch = async () => {
-//     setLocationLoading(true);
-
-//     if (!("geolocation" in navigator)) {
-//       alert("Geolocation is not supported by your browser.");
-//       setLocationLoading(false);
-//       return;
-//     }
-
-//     navigator.geolocation.getCurrentPosition(
-//       async (position) => {
-//         const { latitude, longitude } = position.coords;
-
-//         try {
-//           const locationRes = await axios.get(
-//             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-//           );
-//           const locationData = locationRes.data;
-
-//           const addressObj = {
-//             addressLine: locationData.display_name,
-//             latitude,
-//             longitude,
-//           };
-
-//           setAddresses([addressObj]);
-//           setSelectedAddress(addressObj);
-//         } catch (err) {
-//           console.error("Reverse geocoding failed:", err);
-//           alert("Failed to get address from location.");
-//         } finally {
-//           setLocationLoading(false);
-//         }
-//       },
-//       (err) => {
-//         console.error("Geolocation error:", err);
-//         alert("Location permission denied.");
-//         setLocationLoading(false);
-//       },
-//       {
-//         enableHighAccuracy: true,
-//         timeout: 10000,
-//         maximumAge: 0,
-//       }
-//     );
-//   };
-
-//   const handleLoginRedirect = () => {
-//     setRedirectLoading(true);
-//     storage.setItem("redirectAfterLogin", window.location.pathname);
-//     setTimeout(() => (window.location.href = "/login"), 800);
-//   };
-
-//   const handleLogout = () => {
-//     setLogoutLoading(true);
-//     storage.removeItem("userData");
-//     setTimeout(() => (window.location.href = "/"), 800);
-//     setUser(null);
-//   };
-
-//   if (redirectLoading) return <Loading message="Redirecting to login..." />;
-//   if (logoutLoading) return <Loading message="Logging Out..." />;
-
-//   return (
-//     <header className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-md">
-//       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
-//         {/* Logo */}
-//         <div className="flex items-center">
-//           <Link to="/">
-//             <img
-//               src={TiffinTalesLogo}
-//               alt="Tiffin Tales"
-//               className="h-38 w-auto cursor-pointer"
-//             />
-//           </Link>
-//         </div>
-
-//         {/* 📍 Address Bar */}
-//         <div className="hidden md:flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full shadow-sm max-w-[400px] cursor-pointer">
-         
-//           {user ? (
-//             addresses.length > 0 ? (
-//               <select
-//                 value={selectedAddress?._id || "live-location"}
-//                 onChange={(e) => {
-//                   const selected = addresses.find(
-//                     (addr) => addr._id === e.target.value
-//                   );
-//                   if (selected) setSelectedAddress(selected);
-//                 }}
-//                 className="bg-transparent outline-none text-sm font-medium text-gray-800 truncate w-full"
-//               >
-//                 {addresses.map((addr) => (
-//                   <option key={addr._id || "live-location"} value={addr._id || "live-location"}>
-//                     {addr.tag ? `${addr.tag} - ` : ""}
-//                     {addr.city || addr.addressLine?.slice(0, 40)}...
-//                   </option>
-//                 ))}
-//                 {selectedAddress?.addressLine && !selectedAddress?._id && (
-//                   <option value="live-location">
-//                      {selectedAddress.addressLine}
-//                   </option>
-//                 )}
-//               </select>
-//             ) : selectedAddress?.addressLine ? (
-//               <p className="text-sm font-medium text-gray-800 truncate">
-//                 {selectedAddress.addressLine}
-//               </p>
-//             ) : locationLoading ? (
-//               <p className="text-sm text-gray-500 italic">Detecting location...</p>
-//             ) : (
-//               <button
-//                 onClick={handleManualLocationFetch}
-//                 className="text-sm font-medium text-orange-400 underline hover:text-orange-600"
-//               >
-//                 Add Location
-//               </button>
-//             )
-//           ) : (
-//             <p className="text-sm font-medium text-gray-600">
-//               Login to see addresses
-//             </p>
-//           )}
-//         </div>
-
-//         {/* Right Desktop Buttons */}
-//         <div className="hidden md:flex items-center gap-4">
-//           <motion.button
-//             whileHover={{ scale: 0.9 }}
-//             className="bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold px-4 py-2 rounded-full shadow"
-//             onClick={() => (window.location.href = "/chef")}
-//           >
-//             Become a Chef
-//           </motion.button>
-
-//           {user && (
-//             <>
-//               <motion.div whileHover={{ scale: 1.2 }} className="relative">
-//                 <button onClick={() => (window.location.href = "/cart")}>
-//                   <FaShoppingCart size={22} className="text-gray-700" />
-//                   {cartCount > 0 && (
-//                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-//                       {cartCount}
-//                     </span>
-//                   )}
-//                 </button>
-//               </motion.div>
-
-//               <motion.div whileHover={{ scale: 1.2 }} className="relative">
-//                 <img
-//                   src={
-//                     user?.avtar ||
-//                     "https://cdn-icons-png.flaticon.com/512/11018/11018596.png"
-//                   }
-//                   alt="Profile"
-//                   className="w-9 h-9 rounded-full cursor-pointer border-2 border-orange-300 object-cover"
-//                   onClick={() => setProfileOpen(!profileOpen)}
-//                 />
-//                 <AnimatePresence>
-//                   {profileOpen && (
-//                     <motion.div
-//                       initial={{ opacity: 0, y: -10 }}
-//                       animate={{ opacity: 1, y: 0 }}
-//                       exit={{ opacity: 0, y: -10 }}
-//                       className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg border"
-//                     >
-//                       <ul className="text-gray-700 text-sm">
-//                         <li onClick={() => (window.location.href = "/orders")} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-//                           My Orders
-//                         </li>
-//                         <li onClick={() => (window.location.href = "/profile")} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-//                           Profile
-//                         </li>
-//                         <li onClick={handleLogout} className="px-4 py-2 hover:bg-red-100 text-red-500 cursor-pointer">
-//                           Logout
-//                         </li>
-//                         <li onClick={() => (window.location.href = "/dashboard")} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-//                           Dashboard
-//                         </li>
-//                       </ul>
-//                     </motion.div>
-//                   )}
-//                 </AnimatePresence>
-//               </motion.div>
-//             </>
-//           )}
-
-//           {!user && !disableButtons && (
-//             <button
-//               onClick={onLoginClick}
-//               className="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-full font-semibold transition"
-//             >
-//               Login
-//             </button>
-//           )}
-//         </div>
-
-//         {/* Mobile Hamburger */}
-//         <div className="md:hidden">
-//           <button onClick={() => setMenuOpen(!menuOpen)}>
-//             {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-//           </button>
-//         </div>
-//       </div>
-
-//       {/* Mobile Menu Dropdown */}
-//       <AnimatePresence>
-//         {menuOpen && (
-//           <motion.div
-//             initial={{ opacity: 0, y: -10 }}
-//             animate={{ opacity: 1, y: 0 }}
-//             exit={{ opacity: 0, y: -10 }}
-//             className="md:hidden bg-white shadow-lg px-4 py-3"
-//           >
-//             <ul className="space-y-3 text-gray-700">
-//               <li onClick={() => (window.location.href = "/chef")}>
-//                 Become a Chef
-//               </li>
-//               {user && (
-//                 <>
-//                   <li onClick={() => (window.location.href = "/cart")}>
-//                     Cart ({cartCount})
-//                   </li>
-//                   <li onClick={() => (window.location.href = "/orders")}>
-//                     My Orders
-//                   </li>
-//                   <li onClick={() => (window.location.href = "/profile")}>
-//                     Profile
-//                   </li>
-//                   <li onClick={handleLogout} className="text-red-500">
-//                     Logout
-//                   </li>
-//                 </>
-//               )}
-//               {!user && (
-//                 <li>
-//                   <button
-//                     onClick={onLoginClick}
-//                     className="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-full font-semibold transition"
-//                   >
-//                     Login
-//                   </button>
-//                 </li>
-//               )}
-//             </ul>
-//           </motion.div>
-//         )}
-//       </AnimatePresence>
-//     </header>
-//   );
-// }
-
-// export default TopNav;
-
+// Premium TopNav — Production Ready
+// Clean rewrite: removed 300+ lines of dead commented code
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
+import { FaShoppingCart, FaBars, FaTimes, FaMapMarkerAlt, FaBell } from "react-icons/fa";
 import axios from "axios";
 import TiffinTalesLogo from "../assets/tiffintaleslogo.png";
 import { useUser } from "../context/userContext.jsx";
 import Loading from "../Loading.jsx";
 import { storage } from "../utils/Storage.js";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext.jsx";
 
 function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
-  const { user, setUser } = useUser();
+  const { user, setUser, setToken } = useUser();
+  const navigate = useNavigate();
+  const { cartItems } = useCart();
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [redirectLoading, setRedirectLoading] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  const cartCount = cartItems?.length || 0;
   const userId = user?._id;
 
-  // 🔹 Fetch addresses or fallback to location
-  // 🔹 Fetch addresses (no fallback to live location)
-useEffect(() => {
-  const fetchAddressesAndLocation = async () => {
-    if (!userId) return;
+  // Scroll effect for nav shadow
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-    setLocationLoading(true);
-
-    try {
-      // 1. Fetch backend addresses
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/user/${userId}/address`);
-      const data = res.data.addresses || res.data;
-      const backendAddresses = Array.isArray(data) ? data : [];
-      setAddresses(backendAddresses);
-
-      // 2. Always check geolocation permission state first
-      if ("geolocation" in navigator && "permissions" in navigator) {
-        const permission = await navigator.permissions.query({ name: "geolocation" });
-
-        if (permission.state === "granted" || permission.state === "prompt") {
-          // Ask for live location
-          navigator.geolocation.getCurrentPosition(
-            async (position) => {
-              const { latitude, longitude } = position.coords;
-
-              try {
-                const locationRes = await axios.get(
-                  `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-                );
-
-                const fullAddress = locationRes.data.display_name;
-                const pinMatch = fullAddress.match(/\b\d{6}\b/);
-                const postalCode = pinMatch ? pinMatch[0] : "";
-
-                const liveAddressObj = {
-                  _id: "live-location",
-                  tag: "Live Location",
-                  addressLine: fullAddress,
-                  latitude,
-                  longitude,
-                  postalCode,
-                };
-
-                const allAddresses = [liveAddressObj, ...backendAddresses];
-                setAddresses(allAddresses);
-                setSelectedAddress(liveAddressObj);
-              } catch (err) {
-                console.error("❌ Reverse geocoding failed:", err);
-                setSelectedAddress(backendAddresses[0] || null);
-              } finally {
-                setLocationLoading(false);
-              }
-            },
-            (err) => {
-              console.error("❌ Geolocation error:", err);
-              setSelectedAddress(backendAddresses[0] || null);
-              setLocationLoading(false);
-            },
-            {
-              enableHighAccuracy: true,
-              timeout: 10000,
-              maximumAge: 0,
-            }
-          );
-        } else if (permission.state === "denied") {
-          alert("⚠ Location access denied. Please allow it in browser settings.");
-          setSelectedAddress(backendAddresses[0] || null);
-          setLocationLoading(false);
-        }
-      } else {
-        console.warn("⚠ Geolocation or Permissions API not supported");
-        setSelectedAddress(backendAddresses[0] || null);
-        setLocationLoading(false);
-      }
-    } catch (err) {
-      console.error("❌ Backend address fetch failed:", err);
-      setLocationLoading(false);
-    }
-  };
-
-  fetchAddressesAndLocation();
-}, [user]);
-
-
-  // 🔹 Cart count
+  // Fetch saved addresses
   useEffect(() => {
     if (!userId) return;
-    const fetchCartCount = async () => {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/orders/user/${userId}`
-        );
-        setCartCount(res.data?.items?.length || 0);
-      } catch (err) {
-        console.error("Error fetching cart:", err);
-      }
-    };
-    fetchCartCount();
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/user/${userId}/address`)
+      .then((res) => {
+        const data = Array.isArray(res.data) ? res.data : res.data?.addresses || [];
+        setAddresses(data);
+        if (data.length > 0) setSelectedAddress(data[0]);
+      })
+      .catch(() => {});
   }, [userId]);
 
-  // 🔹 Live Location Fetch
-  const handleManualLocationFetch = async () => {
+  // Detect live location
+  const handleDetectLocation = () => {
+    if (!("geolocation" in navigator)) return;
     setLocationLoading(true);
-
-    if (!("geolocation" in navigator)) {
-      alert("Geolocation is not supported by your browser.");
-      setLocationLoading(false);
-      return;
-    }
-
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-
+      async (pos) => {
         try {
-          const locationRes = await axios.get(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+          const res = await axios.get(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`
           );
-          const locationData = locationRes.data;
-
-          const addressObj = {
-            addressLine: locationData.display_name,
-            latitude,
-            longitude,
-          };
-
-          setAddresses([addressObj]);
-          setSelectedAddress(addressObj);
-        } catch (err) {
-          console.error("Reverse geocoding failed:", err);
-          alert("Failed to get address from location.");
+          setSelectedAddress({
+            _id: "live",
+            tag: "📍 Live",
+            addressLine: res.data.display_name,
+          });
+        } catch {
+          // geocoding failed — location stays unchanged
         } finally {
           setLocationLoading(false);
         }
       },
-      (err) => {
-        console.error("Geolocation error:", err);
-        alert("Location permission denied.");
-        setLocationLoading(false);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      }
+      () => setLocationLoading(false),
+      { enableHighAccuracy: true, timeout: 8000 }
     );
-  };
-
-  const handleLoginRedirect = () => {
-    setRedirectLoading(true);
-    storage.setItem("redirectAfterLogin", window.location.pathname);
-    setTimeout(() => (window.location.href = "/login"), 800);
   };
 
   const handleLogout = () => {
     setLogoutLoading(true);
     storage.removeItem("userData");
-    setTimeout(() => (window.location.href = "/"), 800);
+    storage.removeItem("usertoken");
     setUser(null);
+    setToken(null);
+    setTimeout(() => (window.location.href = "/"), 600);
   };
 
-  if (redirectLoading) return <Loading message="Redirecting to login..." />;
+  if (redirectLoading) return <Loading message="Redirecting..." />;
   if (logoutLoading) return <Loading message="Logging Out..." />;
 
+  const navLinks = [
+    { label: "Meals", path: "/meals" },
+    { label: "Chefs", path: "/allchef" },
+    { label: "Subscribe", path: user ? "/dashboard/subscription" : "/subscribe" },
+  ];
+
   return (
-    <header className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
+    <header
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-[#0f0f1a]/95 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.6)]"
+          : "bg-[#0f0f1a]/80 backdrop-blur-md shadow-sm"
+      } border-b border-white/5`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        
         {/* Logo */}
-        <div className="flex items-center">
-          <Link to="/">
-            <img
-              src={TiffinTalesLogo}
-              alt="Tiffin Tales"
-              className="h-38 w-auto cursor-pointer"
-            />
-          </Link>
-        </div>
+        <Link to="/" className="flex-shrink-0">
+          <img src={TiffinTalesLogo} alt="Tiffin Tales" className="h-10 w-auto" />
+        </Link>
 
-        {/* 📍 Address Bar */}
-        <div className="hidden md:flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full shadow-sm max-w-[400px] cursor-pointer">
-         
+        {/* Address Bar — Desktop Only */}
+        <div className="hidden lg:flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full max-w-xs cursor-pointer hover:border-orange-400/50 transition group">
+          <FaMapMarkerAlt className="text-orange-500 flex-shrink-0" />
           {user ? (
-            addresses.length > 0 ? (
-              <select
-                value={selectedAddress?._id || "live-location"}
-                onChange={(e) => {
-                  const selected = addresses.find(
-                    (addr) => addr._id === e.target.value
-                  );
-                  if (selected) setSelectedAddress(selected);
-                }}
-                className="bg-transparent outline-none text-sm font-medium text-gray-800 truncate w-full"
-              >
-                {addresses.map((addr) => (
-                  <option
-  key={addr._id || "live-location"}
-  value={addr._id || "live-location"}
-  title={
-    addr.addressLine ||
-    `${addr.street || ""}, ${addr.city || ""}, ${addr.state || ""} - ${addr.postalCode || ""}`
-  }
->
-  {addr.tag ? `${addr.tag} - ` : ""}
-  {addr.addressLine
-    ? addr.addressLine
-    : `${addr.street || ""}, ${addr.city || ""}`}
-</option>
-
-                ))}
-                {selectedAddress?.addressLine && !selectedAddress?._id && (
-                  <option value="live-location">
-                     {selectedAddress.addressLine}
-                  </option>
-                )}
-              </select>
-            ) : selectedAddress?.addressLine ? (
-              <p className="text-sm font-medium text-gray-800 truncate">
-                {selectedAddress.addressLine}
-              </p>
-            ) : locationLoading ? (
-              <p className="text-sm text-gray-500 italic">Detecting location...</p>
-            ) : (
-              <button
-                onClick={handleManualLocationFetch}
-                className="text-sm font-medium text-orange-400 underline hover:text-orange-600"
-              >
-                Add Location
-              </button>
-            )
+            <select
+              value={selectedAddress?._id || ""}
+              onChange={(e) => {
+                const found = addresses.find((a) => a._id === e.target.value);
+                if (found) setSelectedAddress(found);
+              }}
+              className="bg-transparent outline-none text-sm font-medium text-gray-200 truncate max-w-[180px] cursor-pointer"
+            >
+              {selectedAddress?._id === "live" && (
+                <option value="live">{selectedAddress.addressLine?.slice(0, 35)}...</option>
+              )}
+              {addresses.map((addr) => (
+                <option key={addr._id} value={addr._id}>
+                  {addr.tag ? `${addr.tag} - ` : ""}{addr.street || addr.city || "Address"}
+                </option>
+              ))}
+              {addresses.length === 0 && (
+                <option value="">Add delivery address</option>
+              )}
+            </select>
           ) : (
-            <p className="text-sm font-medium text-gray-600">
-              Login to see addresses
-            </p>
+            <span className="text-sm text-gray-400">Select location</span>
+          )}
+          {user && (
+            <button
+              onClick={handleDetectLocation}
+              className="text-xs text-orange-500 hover:text-orange-600 font-semibold ml-1"
+              title="Detect Location"
+            >
+              {locationLoading ? "..." : "📍"}
+            </button>
           )}
         </div>
 
-        {/* Right Desktop Buttons */}
-        <div className="hidden md:flex items-center gap-4">
+        {/* Nav Links — Desktop */}
+        <nav className="hidden md:flex items-center gap-6">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className="text-sm font-semibold text-gray-300 hover:text-orange-400 transition-colors"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Right Side Buttons */}
+        <div className="flex items-center gap-3">
+          {/* Become a Chef */}
           <motion.button
-            whileHover={{ scale: 0.9 }}
-            className="bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold px-4 py-2 rounded-full shadow"
-            onClick={() => (window.location.href = "/chef")}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+            onClick={() => navigate("/chef")}
+            className="hidden sm:flex items-center gap-1 bg-gradient-to-r from-red-500 to-orange-500 text-white text-sm font-bold px-4 py-2 rounded-full shadow-md hover:shadow-lg transition-all"
           >
-            Become a Chef
+            👨‍🍳 Become a Chef
           </motion.button>
 
-          {user && (
+          {user ? (
             <>
-              <motion.div whileHover={{ scale: 1.2 }} className="relative">
-                <button onClick={() => (window.location.href = "/cart")}>
-                  <FaShoppingCart size={22} className="text-gray-700" />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-                      {cartCount}
-                    </span>
-                  )}
-                </button>
-              </motion.div>
+              {/* Cart */}
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => navigate("/cart")}
+                className="relative p-2 rounded-full bg-orange-50 hover:bg-orange-100 transition"
+              >
+                <FaShoppingCart className="text-orange-600 text-xl" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                    {cartCount}
+                  </span>
+                )}
+              </motion.button>
 
-              <motion.div whileHover={{ scale: 1.2 }} className="relative">
-                <img
-                  src={
-                    user?.avtar ||
-                    "https://cdn-icons-png.flaticon.com/512/11018/11018596.png"
-                  }
+              {/* Profile Dropdown */}
+              <div className="relative">
+                <motion.img
+                  whileHover={{ scale: 1.08 }}
+                  src={user?.avtar || "https://cdn-icons-png.flaticon.com/512/11018/11018596.png"}
                   alt="Profile"
-                  className="w-9 h-9 rounded-full cursor-pointer border-2 border-orange-300 object-cover"
+                  className="w-9 h-9 rounded-full cursor-pointer border-2 border-orange-400 object-cover shadow"
                   onClick={() => setProfileOpen(!profileOpen)}
                 />
                 <AnimatePresence>
                   {profileOpen && (
                     <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg border"
+                      initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                      className="absolute right-0 top-12 w-52 bg-[#1e1e30]/98 backdrop-blur-xl shadow-2xl rounded-2xl border border-white/10 overflow-hidden z-50"
                     >
-                      <ul className="text-gray-700 text-sm">
-                        <li onClick={() => (window.location.href = "/orders")} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                          My Orders
-                        </li>
-                        <li onClick={() => (window.location.href = "/profile")} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                          Profile
-                        </li>
-                        <li onClick={handleLogout} className="px-4 py-2 hover:bg-red-100 text-red-500 cursor-pointer">
-                          Logout
-                        </li>
-                        <li onClick={() => (window.location.href = "/dashboard")} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                          Dashboard
-                        </li>
-                      </ul>
+                      <div className="px-4 py-3 bg-gradient-to-r from-orange-500/10 to-red-500/10 border-b border-white/5">
+                        <p className="font-bold text-gray-100 text-sm truncate">{user.fullName}</p>
+                        <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                      </div>
+                      {[
+                        { label: "🏠 Dashboard", path: "/dashboard" },
+                        { label: "📦 My Orders", path: "/orders" },
+                        { label: "👤 Profile", path: "/profile" },
+                        { label: "📋 Subscriptions", path: "/subscription" },
+                      ].map((item) => (
+                        <button
+                          key={item.path}
+                          onClick={() => { navigate(item.path); setProfileOpen(false); }}
+                          className="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-orange-400 transition-colors"
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                      <div className="border-t border-white/5" />
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors font-semibold"
+                      >
+                        🚪 Logout
+                      </button>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </div>
             </>
+          ) : (
+            !disableButtons && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={onLoginClick || (() => navigate("/login"))}
+                  className="text-sm font-semibold text-orange-600 px-4 py-2 rounded-full border border-orange-300 hover:bg-orange-50 transition"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={onSignupClick || (() => navigate("/signup"))}
+                  className="text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-red-500 px-4 py-2 rounded-full shadow hover:shadow-md transition"
+                >
+                  Sign Up
+                </button>
+              </div>
+            )
           )}
 
-          {!user && !disableButtons && (
-            <button
-              onClick={onLoginClick}
-              className="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-full font-semibold transition"
-            >
-              Login
-            </button>
-          )}
-        </div>
-
-        {/* Mobile Hamburger */}
-        <div className="md:hidden">
-          <button onClick={() => setMenuOpen(!menuOpen)}>
-            {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          {/* Mobile Hamburger */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden p-2 rounded-lg text-gray-300 hover:bg-white/5 transition"
+          >
+            {menuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="md:hidden bg-white shadow-lg px-4 py-3"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-[#1a1a2e]/98 border-t border-white/5 shadow-2xl overflow-hidden"
           >
-            <ul className="space-y-3 text-gray-700">
-              <li
-              className="bg-red-400 hover:bg-red-500 text-white px-4 py-2 w-[50%] rounded-full font-semibold transition"
-               onClick={() => (window.location.href = "/chef")}>
-                Become a Chef
-              </li>
-              {user && (
+            <div className="px-4 py-4 space-y-2">
+              {navLinks.map((link) => (
+                <button
+                  key={link.path}
+                  onClick={() => { navigate(link.path); setMenuOpen(false); }}
+                  className="block w-full text-left py-2.5 px-4 rounded-xl text-gray-300 hover:bg-white/5 hover:text-orange-400 font-medium transition"
+                >
+                  {link.label}
+                </button>
+              ))}
+              <button
+                onClick={() => { navigate("/chef"); setMenuOpen(false); }}
+                className="block w-full text-left py-2.5 px-4 rounded-xl text-orange-600 font-semibold hover:bg-orange-50 transition"
+              >
+                👨‍🍳 Become a Chef
+              </button>
+              {user ? (
                 <>
-                  <li onClick={() => (window.location.href = "/cart")}>
-                    Cart ({cartCount})
-                  </li>
-                  <li onClick={() => (window.location.href = "/orders")}>
-                    My Orders
-                  </li>
-                  <li onClick={() => (window.location.href = "/dashboard")}>
-                    Dashboard
-                  </li>
-                  <li onClick={() => (window.location.href = "/profile")}>
-                    Profile
-                  </li>
-                  <li onClick={handleLogout} className="text-red-500">
-                    Logout
-                  </li>
+                  <button onClick={() => { navigate("/cart"); setMenuOpen(false); }} className="block w-full text-left py-2.5 px-4 rounded-xl text-gray-700 hover:bg-orange-50 font-medium transition">
+                    🛒 Cart ({cartCount})
+                  </button>
+                  <button onClick={() => { navigate("/orders"); setMenuOpen(false); }} className="block w-full text-left py-2.5 px-4 rounded-xl text-gray-700 hover:bg-orange-50 font-medium transition">
+                    📦 My Orders
+                  </button>
+                  <button onClick={() => { navigate("/dashboard"); setMenuOpen(false); }} className="block w-full text-left py-2.5 px-4 rounded-xl text-gray-700 hover:bg-orange-50 font-medium transition">
+                    🏠 Dashboard
+                  </button>
+                  <button onClick={handleLogout} className="block w-full text-left py-2.5 px-4 rounded-xl text-red-500 font-semibold hover:bg-red-50 transition">
+                    🚪 Logout
+                  </button>
                 </>
-              )}
-              {!user && (
-                <li>
-                  <button
-                    onClick={onLoginClick}
-                    className="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-full font-semibold transition"
-                  >
+              ) : (
+                <div className="flex gap-2 pt-2">
+                  <button onClick={onLoginClick || (() => navigate("/login"))} className="flex-1 py-2 text-center text-orange-600 border border-orange-300 rounded-xl font-semibold hover:bg-orange-50 transition text-sm">
                     Login
                   </button>
-                </li>
+                  <button onClick={onSignupClick || (() => navigate("/signup"))} className="flex-1 py-2 text-center text-white bg-gradient-to-r from-orange-500 to-red-500 rounded-xl font-semibold transition text-sm">
+                    Sign Up
+                  </button>
+                </div>
               )}
-            </ul>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

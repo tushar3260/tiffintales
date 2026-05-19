@@ -25,8 +25,8 @@ const MessageCard = () => {
         : Array.isArray(res.data?.orders)
         ? res.data.orders
         : [];
-        console.log(orders)
-      // ✅ Extract only orders having notes/instructions
+
+      // Extract only orders having notes/instructions
       const msgs = orders
         .filter((o) => o.specialInstructions || o.notes)
         .map((o) => ({
@@ -36,8 +36,8 @@ const MessageCard = () => {
         }));
 
       setMessages(msgs.slice(0, 3)); // Show only latest 3
-    } catch (err) {
-      console.error("❌ Error fetching messages:", err);
+    } catch {
+      // silent
     } finally {
       setLoading(false);
     }

@@ -106,3 +106,21 @@ export const toggleApproval = async (req, res) => {
     res.status(500).json({ message: "Failed to toggle approval", error: err.message });
   }
 };
+
+// ✅ Chef Self-Update — name, bio, cuisine, phone, location, kitchenImages
+export const updateChef = async (req, res) => {
+  try {
+    const { name, bio, cuisine, phone, location, kitchenImages } = req.body;
+    const updated = await Chef.findByIdAndUpdate(
+      req.params.id,
+      { name, bio, cuisine, phone, location, kitchenImages },
+      { new: true, runValidators: true }
+    ).select("-passwordHash");
+
+    if (!updated) return res.status(404).json({ message: "Chef not found" });
+
+    res.status(200).json({ message: "Profile updated", chef: updated });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update chef profile", error: err.message });
+  }
+};

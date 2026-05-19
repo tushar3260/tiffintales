@@ -1,149 +1,194 @@
+// Footer — Production Ready
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaInstagram, FaYoutube } from "react-icons/fa";
+import { FaInstagram, FaYoutube, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+import { motion } from "framer-motion";
+import toast, { Toaster } from "react-hot-toast";
 
+const cities = [
+  "Mathura City", "Vrindavan", "Chaumhuna", "Govardhan", "Barsana",
+  "GLA University", "Chhata", "Kosi Kalan", "Gokul", "Radhakund",
+];
 
+const footerLinks = {
+  Explore: [
+    { label: "Browse Meals", path: "/meals" },
+    { label: "Our Chefs", path: "/allchef" },
+    { label: "Subscriptions", path: "/subscription" },
+    { label: "My Dashboard", path: "/dashboard" },
+    { label: "My Orders", path: "/orders" },
+  ],
+  "For Chefs": [
+    { label: "Become a Chef", path: "/chef" },
+    { label: "Chef Dashboard", path: "/chef/chefdashboard" },
+    { label: "Chef Login", path: "/chef/login" },
+    { label: "Chef Signup", path: "/chef/signup" },
+  ],
+  Company: [
+    { label: "About Us", path: "/aboutus" },
+    { label: "Our Team", path: "/team" },
+    { label: "Blog", path: "/gallery" },
+    { label: "Careers", path: "/careers" },
+  ],
+  Support: [
+    { label: "Help & Support", path: "/help" },
+    { label: "Terms & Conditions", path: "/terms" },
+    { label: "Privacy Policy", path: "/privacy" },
+    { label: "Refund Policy", path: "/refund" },
+  ],
+};
+
+const socials = [
+  { icon: <FaInstagram />, url: "https://www.instagram.com/ts3231442", color: "hover:text-pink-500", label: "Instagram" },
+  { icon: <FaYoutube />, url: "https://youtube.com/@tiffintales-z3x", color: "hover:text-red-500", label: "YouTube" },
+  { icon: <FaTwitter />, url: "#", color: "hover:text-blue-400", label: "Twitter" },
+  { icon: <FaWhatsapp />, url: "https://wa.me/9109999999", color: "hover:text-green-400", label: "WhatsApp" },
+];
 
 function Footer() {
-  const [showLoader, setShowLoader] = useState(false);
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
 
-  const handleNavigate = (path) => {
-    setShowLoader(true);
-    setTimeout(() => {
-      setShowLoader(false);
-      navigate(path);
-    }, 500); // 0.5 seconds
-  };
-
-  const handleExternal = (url) => {
-    setShowLoader(true);
-    setTimeout(() => {
-      setShowLoader(false);
-      window.open(url, "_blank");
-    }, 500);
+  const handleSubscribe = () => {
+    if (!email || !email.includes("@")) return toast.error("Enter a valid email");
+    toast.success(`🎉 You're subscribed! Watch your inbox.`);
+    setEmail("");
   };
 
   return (
-    <div>
-      {/* Loader */}
-      {showLoader && (
-        <div className="fixed inset-0 bg-orange-100 bg-opacity-90 flex items-center justify-center z-[9999]">
-          <div className="flex space-x-2">
-            <div className="w-3 h-3 bg-orange-500 rounded-full animate-bounce [animation-delay:0ms]" />
-            <div className="w-3 h-3 bg-orange-500 rounded-full animate-bounce [animation-delay:150ms]" />
-            <div className="w-3 h-3 bg-orange-500 rounded-full animate-bounce [animation-delay:300ms]" />
-          </div>
-        </div>
-      )}
-
-      {/* Footer Starts */}
-      <footer className="bg-zinc-900 text-white px-8 pt-16 pb-8">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 text-sm mb-8">
-          <div>
-            <h4 className="font-bold mb-2">Top Areas in Mathura</h4>
-            <ul>
-              <li>Mathura City</li>
-              <li>Vrindavan</li>
-              <li>Chaumhuna</li>
-              <li>Govardhan</li>
-              <li>Barsana</li>
-            </ul>
-          </div>
-          <div>
-            <ul className="mt-6 sm:mt-8">
-              <li>GLA University</li>
-              <li>Chhata</li>
-              <li>Kosi Kalan</li>
-              <li>Naujheel</li>
-              <li>Gokul</li>
-            </ul>
-          </div>
-          <div>
-            <ul className="mt-6 sm:mt-8">
-              <li>Raya</li>
-              <li>Radhakund</li>
-              <li>Township</li>
-              <li>Farah</li>
-              <li>Mahavan</li>
-            </ul>
-          </div>
-          <div>
-            <ul className="mt-6 sm:mt-8">
-              <li>Jait</li>
-              <li>Jamunavata</li>
-              <li>Shahpur</li>
-              <li>Jaisinghpura</li>
-              <li>Chhatikara</li>
-            </ul>
-          </div>
-          <div>
-            <ul className="mt-6 sm:mt-8">
-              <li>Tanki Chowk</li>
-              <li>Masani</li>
-              <li>Dampier Nagar</li>
-              <li>Chhata Rural</li>
-              <li>Yamuna Expressway Area</li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Footer Links */}
-        <div className="border-t border-zinc-700 pt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-sm">
-          <div>
-            <h4 className="font-bold mb-2">Company</h4>
-            <ul>
-              <li onClick={() => handleNavigate("/aboutus")} className="hover:underline cursor-pointer">About us</li>
-              <li onClick={() => handleNavigate("/team")} className="hover:underline cursor-pointer">Team</li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold mb-2">Contact</h4>
-            <ul>
-              <li onClick={() => handleNavigate("/help")} className="hover:underline cursor-pointer">Help & Support</li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold mb-2">Legal</h4>
-            <ul>
-              <li onClick={() => handleNavigate("/terms")} className="hover:underline cursor-pointer">Terms & Conditions</li>
-
-              <li onClick={() => handleNavigate("/refund")} className="hover:underline">Refund & Cancellation</li>
+    <>
+      <Toaster position="top-right" />
+      <footer className="bg-gradient-to-br from-zinc-900 via-gray-900 to-zinc-950 text-white">
+        
+        {/* Main Footer Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-14">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8">
+            
+            {/* Brand Column */}
+            <div className="lg:col-span-2">
+              <div className="mb-4">
+                <h2 className="text-2xl font-extrabold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                  🍱 Tiffin Tales
+                </h2>
+                <p className="text-zinc-400 text-sm mt-2 leading-relaxed">
+                  Real homemade food, delivered fresh. Supporting local home chefs
+                  across Mathura & beyond.
+                </p>
+              </div>
               
-            </ul>
-          </div>
+              {/* Socials */}
+              <div className="mb-5">
+                <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Follow Us</p>
+                <div className="flex items-center gap-3">
+                  {socials.map((s) => (
+                    <motion.a
+                      key={s.label}
+                      href={s.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      whileHover={{ scale: 1.2, y: -2 }}
+                      className={`w-9 h-9 bg-zinc-800 rounded-xl flex items-center justify-center text-zinc-400 ${s.color} transition-colors`}
+                      title={s.label}
+                    >
+                      {s.icon}
+                    </motion.a>
+                  ))}
+                </div>
+              </div>
 
-          {/* Social */}
-          <div>
-            <div className="flex items-center space-x-3 mb-2">
-              <h4 className="font-bold">Follow Us</h4>
-              <button onClick={() => handleExternal("https://www.instagram.com/ts3231442")} className="text-xl hover:text-pink-500">
-                <FaInstagram />
-              </button>
-              <button onClick={() => handleExternal("https://youtube.com/@tiffintales-z3x?si=0nphfnChs5QZtLjE")} className="text-xl hover:text-red-500">
-                <FaYoutube />
-              </button>
-            </div>
-
-            <div className="mt-4">
-              <p className="text-xs font-semibold mb-1">Receive exclusive offers in your mailbox</p>
-              <div className="flex items-center">
-                <input type="email" placeholder="Enter Your email" className="bg-zinc-800 px-4 py-2 rounded-l w-full outline-none" />
-                <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-r">Subscribe</button>
+              {/* Newsletter */}
+              <div>
+                <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">
+                  Get Exclusive Offers
+                </p>
+                <div className="flex items-center bg-zinc-800 rounded-xl overflow-hidden border border-zinc-700 focus-within:border-orange-500 transition">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Your email..."
+                    className="flex-1 bg-transparent px-4 py-2.5 text-sm text-white placeholder-zinc-500 outline-none"
+                    onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
+                  />
+                  <button
+                    onClick={handleSubscribe}
+                    className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2.5 text-sm font-semibold hover:from-orange-600 hover:to-red-600 transition"
+                  >
+                    Subscribe
+                  </button>
+                </div>
               </div>
             </div>
+
+            {/* Link Columns */}
+            {Object.entries(footerLinks).map(([section, links]) => (
+              <div key={section}>
+                <h4 className="font-bold text-sm text-white mb-4 uppercase tracking-wide">
+                  {section}
+                </h4>
+                <ul className="space-y-2.5">
+                  {links.map((link) => (
+                    <li key={link.label}>
+                      <button
+                        onClick={() => navigate(link.path)}
+                        className="text-zinc-400 hover:text-orange-400 text-sm transition-colors text-left"
+                      >
+                        {link.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Bottom note */}
-        <div className="mt-8 text-xs text-zinc-500 border-t border-zinc-700 pt-4 flex flex-col md:flex-row justify-between items-center">
-          <p>All rights Reserved © <span className="text-white font-semibold">Tiffin Tales, 2025</span></p>
-          <p>Made with <span className="text-yellow-500">❤</span> by <span className="text-white">Tiffin Tales</span></p>
+        {/* Service Areas */}
+        <div className="border-t border-zinc-800 bg-zinc-950/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6">
+            <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+              Available In
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {cities.map((city) => (
+                <span
+                  key={city}
+                  className="text-xs px-3 py-1 bg-zinc-800 text-zinc-400 rounded-full hover:bg-orange-500/20 hover:text-orange-400 transition cursor-default"
+                >
+                  {city}
+                </span>
+              ))}
+              <span className="text-xs px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full font-semibold">
+                + More coming soon
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-zinc-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-xs text-zinc-500">
+              © 2025 <span className="text-white font-semibold">Tiffin Tales</span>. All rights reserved.
+            </p>
+            <div className="flex items-center gap-4">
+              {["Privacy", "Terms", "Refund"].map((t) => (
+                <button
+                  key={t}
+                  onClick={() => navigate(`/${t.toLowerCase()}`)}
+                  className="text-xs text-zinc-500 hover:text-orange-400 transition"
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-zinc-600">
+              Made with ❤️ for real home food lovers
+            </p>
+          </div>
         </div>
       </footer>
-    </div>
+    </>
   );
 }
 

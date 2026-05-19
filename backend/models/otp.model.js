@@ -7,6 +7,8 @@ const otpSchema = new mongoose.Schema({
   role: { type: String, required: true },
   expiresAt: { type: Date, required: true },
   isVerified: { type: Boolean, default: false },
+  // createdAt is used by resendOTP to enforce a 1-minute cooldown
+  createdAt: { type: Date, default: Date.now },
 });
 
 export default mongoose.model("Otp", otpSchema);

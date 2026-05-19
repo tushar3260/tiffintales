@@ -21,8 +21,8 @@ const DiscountSection = () => {
           timeLeft: calculateTimeLeft(meal.discountStartDate, meal.discountDuration),
         }));
         setDiscountedMeals(mealsWithTime);
-      } catch (err) {
-        console.error("Error fetching discounted meals:", err);
+      } catch {
+        // silent — renders empty state
       }
     };
 
@@ -77,7 +77,7 @@ const DiscountSection = () => {
   };
 
   return (
-    <div className="relative p-4 sm:p-6 md:p-8 bg-gradient-to-br from-[#FFF7EB] via-[#F2E3C6] to-[#F7C35F] rounded-2xl sm:rounded-3xl shadow-2xl my-6 sm:my-8 md:my-10 overflow-hidden border-2 border-white/60">
+    <div className="relative p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl my-4 overflow-hidden border border-white/[0.06] bg-white/[0.03]">
       {/* Decorative Elements */}
       <div className="absolute top-0 right-0 w-40 sm:w-60 h-40 sm:h-60 bg-[#E57A44] rounded-full blur-3xl opacity-20 pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-32 sm:w-48 h-32 sm:h-48 bg-[#F7C35F] rounded-full blur-3xl opacity-20 pointer-events-none"></div>
@@ -87,17 +87,11 @@ const DiscountSection = () => {
         <div className="inline-block mb-3">
           <span className="text-4xl sm:text-5xl md:text-6xl">🔥</span>
         </div>
-        <h2
-          className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#6B3A1E] mb-2"
-          style={{
-            fontFamily: "Georgia, serif",
-            textShadow: "0 2px 20px rgba(247, 195, 95, 0.3)",
-          }}
-        >
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2">
           Limited Time Offers
         </h2>
         <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-transparent via-[#E57A44] to-transparent mx-auto mb-2"></div>
-        <p className="text-[#6B3A1E]/70 text-sm sm:text-base font-medium">
+        <p className="text-white/50 text-sm sm:text-base font-medium">
           Grab these amazing deals before they expire! ⏰
         </p>
       </div>
@@ -279,7 +273,7 @@ const DiscountSection = () => {
         </div>
       )}
 
-      <style jsx>{`
+      <style>{`
         @keyframes fadeInUp {
           from {
             opacity: 0;

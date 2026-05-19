@@ -1,6 +1,5 @@
 import Order from "../models/Order.js";
-import {io} from '../server.js'
-// ✅ Place a New Order
+import { getIO } from '../config/socket.js'; // ✅ Avoids circular import with server.js
 
 
 export const placeOrder = async (req, res) => {
@@ -22,7 +21,8 @@ export const placeOrder = async (req, res) => {
         totalPrice,
         deliveryAddress,
         paymentMode,
-        timeSlot
+        timeSlot,
+        instructions
       } = ord;
 
       // ✅ Validation for each order
@@ -49,17 +49,21 @@ export const placeOrder = async (req, res) => {
         deliveryAddress,
         paymentMode,
         timeSlot,
+        instructions: instructions || "",
         status: "Placed",
-        paymentStatus: "Pending"
+        paymentStatus: ord.paymentStatus || "Pending"
       });
 
       await newOrder.save();
 
-      // ✅ Emit event to specific chef’s room
-      io.to(`chef:${chefId}`).emit("newOrder", {
-        message: "You have a new order",
-        order: newOrder
-      });
+      // Emit to chef room — guarded in case socket isn't ready yet
+      const io = getIO();
+      if (io) {
+        io.to(`chef:${chefId}`).emit("newOrder", {
+          message: "You have a new order",
+          order: newOrder
+        });
+      }
 
       savedOrders.push(newOrder);
     }
@@ -80,9 +84,9 @@ export const placeOrder = async (req, res) => {
 export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
-      .populate("userId", "name email")
+      .populate("userId", "fullName email phone")
       .populate("chefId", "name email")
-      .populate("meals.mealId", "title price");
+      .populate("meals.mealId", "title price photo");
 
     res.status(200).json(orders);
   } catch (err) {
@@ -107,9 +111,9 @@ export const getOrdersByUser = async (req, res) => {
 export const getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
-      .populate("userId", "name email")
+      .populate("userId", "fullName email phone")
       .populate("chefId", "name email")
-      .populate("meals.mealId", "title price");
+      .populate("meals.mealId", "title price photo");
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
@@ -146,8 +150,9 @@ export const getOrderbyChefId = async (req, res) => {
   try {
     const { chefId } = req.params;
     const orders = await Order.find({ chefId })
-      .populate("userId", "name email")
-      .populate("meals.mealId", "title price");
+      .populate("userId", "fullName email phone")
+      .populate("meals.mealId", "title price photo")
+      .sort({ createdAt: -1 });
       if (!orders) {
       return res.status(404).json({ message: "Orders not found" });
     }

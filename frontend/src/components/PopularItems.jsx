@@ -20,8 +20,8 @@ function PopularItems() {
       try {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/meals/`);
         setMeals(res.data);
-      } catch (err) {
-        console.error("Error fetching meals:", err);
+      } catch {
+        // silent — empty state shown
       } finally {
         setLoading(false);
       }
@@ -69,16 +69,16 @@ function PopularItems() {
   };
 
   return (
-    <div className="relative p-4 sm:p-6 md:p-10 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 overflow-hidden">
+    <div className="relative p-4 sm:p-6 md:p-10 overflow-hidden">
       {/* Minimal Ambient Glow */}
       <div className="absolute top-20 left-10 w-64 h-64 bg-orange-200/20 rounded-full blur-3xl" />
       <div className="absolute bottom-20 right-10 w-56 h-56 bg-amber-200/20 rounded-full blur-3xl" />
       
       <div className="mb-8 relative z-10">
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-2">
+        <h2 className="text-3xl md:text-4xl font-black text-center text-white mb-2">
           Popular Items
         </h2>
-        <div className="w-20 h-1 bg-orange-500 mx-auto" />
+        <div className="w-20 h-1 rounded-full mx-auto" style={{ background: "linear-gradient(135deg, #FF6A2C, #FFB45E)" }} />
       </div>
 
       {loading ? (
@@ -120,7 +120,7 @@ function PopularItems() {
                   key={item._id}
                   className="flex-shrink-0 w-64 group"
                 >
-                  <div className="relative bg-white/50 backdrop-blur-md rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-white/60">
+                  <div className="relative bg-white/[0.06] backdrop-blur-md rounded-2xl shadow-md hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 overflow-hidden border border-white/[0.08] hover:border-orange-500/30">
                     {/* Image */}
                     <div
                       className="relative overflow-hidden rounded-t-2xl cursor-pointer h-48"
@@ -144,13 +144,13 @@ function PopularItems() {
                     
                     {/* Content */}
                     <div className="p-4 text-center">
-                      <h3 className="font-bold text-gray-900 text-base line-clamp-1 mb-1">
+                      <h3 className="font-bold text-white text-base line-clamp-1 mb-1">
                         {item.title}
                       </h3>
-                      <p className="text-sm text-gray-600 line-clamp-1 mb-2">
-                        {item.chefId?.name || "Unknown Chef"}
+                      <p className="text-sm text-white/50 line-clamp-1 mb-2">
+                        {item.chefId?.name || "Home Chef"}
                       </p>
-                      <p className="font-bold text-xl text-orange-600 mb-3">
+                      <p className="font-bold text-xl text-orange-400 mb-3">
                         ₹{item.price}
                       </p>
                       
@@ -325,7 +325,7 @@ function PopularItems() {
         </div>
       )}
 
-      <style jsx>{`
+      <style>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
         }
