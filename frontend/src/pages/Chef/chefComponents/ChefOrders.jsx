@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Loading from "../../../Loading";
 import { useChef } from "../Context/ChefContext";
@@ -15,6 +15,7 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { io } from "socket.io-client";
 import { motion, AnimatePresence } from "framer-motion";
+import BackButton from "../../../components/BackButton.jsx";
 
 // ✅ Status Styles with Pulse Animation
 const statusStyles = {
@@ -52,26 +53,27 @@ const ChefOrders = () => {
 
   const [orders, setOrders] = useState([]);
   const [expandedOrderId, setExpandedOrderId] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [newOrdersQueue, setNewOrdersQueue] = useState([]); // Queue for new orders
+  const [initialLoading, setInitialLoading] = useState(true); // ✅ Only for first load
+  const [newOrdersQueue, setNewOrdersQueue] = useState([]);
 
   const toggleDetails = (id) => {
     setExpandedOrderId((prev) => (prev === id ? null : id));
   };
 
-  const fetchOrders = async () => {
+  // ✅ silent=true → no spinner flash on background refreshes
+  const fetchOrders = useCallback(async (silent = false) => {
     try {
-      setLoading(true);
+      if (!silent) setInitialLoading(true);
       const res = await axios.get(
         `${import.meta.env.VITE_API_URL}/orders/chef/${chefId}`
       );
-      setOrders(res.data);
-    } catch (error) {
-      toast.error("Error fetching orders");
+      setOrders(Array.isArray(res.data) ? res.data : []);
+    } catch {
+      if (!silent) toast.error("Error fetching orders");
     } finally {
-      setLoading(false);
+      setInitialLoading(false);
     }
-  };
+  }, [chefId]);
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
@@ -79,11 +81,9 @@ const ChefOrders = () => {
         status: newStatus,
       });
       toast.success(`Order updated to ${newStatus}`);
-      fetchOrders();
-
-      // Remove current order from queue
+      fetchOrders(true); // ✅ silent refresh — no spinner flash
       setNewOrdersQueue((prev) => prev.slice(1));
-    } catch (err) {
+    } catch {
       toast.error("Couldn't update status");
     }
   };
@@ -112,26 +112,32 @@ const ChefOrders = () => {
   }, [chefId]);
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    if (!chefId) return;
+    fetchOrders(); // initial load
+  }, [fetchOrders]);
 
   const currentOrder = newOrdersQueue[0];
 
   return (
     <div className="bg-gradient-to-br from-white via-orange-50 to-orange-100 rounded-2xl shadow-2xl p-4 sm:p-6">
       <Toaster />
-      <h2 className="text-2xl sm:text-3xl font-extrabold mb-6 text-orange-600 flex items-center gap-2">
-        🧾 Orders Dashboard
-        <span className="text-xs bg-orange-200 text-orange-800 px-3 py-1 rounded-full animate-pulse">
-          Live
-        </span>
-      </h2>
 
-      {loading && (
+      {/* Header with Back button */}
+      <div className="flex items-center gap-3 mb-6">
+        <BackButton fallback="/chef/chefdashboard" label="Back" />
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-orange-600 flex items-center gap-2">
+          🧾 Orders Dashboard
+          <span className="text-xs bg-orange-200 text-orange-800 px-3 py-1 rounded-full animate-pulse">
+            Live
+          </span>
+        </h2>
+      </div>
+
+      {initialLoading && (
         <div className="flex justify-center py-12"><Loading /></div>
       )}
 
-      {!loading && orders.length === 0 && (
+      {!initialLoading && orders.length === 0 && (
         <div className="text-center py-16 text-gray-400">
           <p className="text-lg font-semibold">No orders yet</p>
           <p className="text-sm mt-1">New orders will appear here in real-time</p>
@@ -139,7 +145,7 @@ const ChefOrders = () => {
       )}
 
       {/* Desktop Table */}
-      {!loading && orders.length > 0 && (
+      {!initialLoading && orders.length > 0 && (
         <>
           <div className="hidden md:block overflow-x-auto rounded-lg border border-orange-200">
             <table className="min-w-full divide-y divide-orange-200">

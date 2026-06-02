@@ -27,14 +27,17 @@ const footerLinks = {
   Company: [
     { label: "About Us", path: "/aboutus" },
     { label: "Our Team", path: "/team" },
-    { label: "Blog", path: "/gallery" },
+    { label: "Blog", path: "/blog" },
+    { label: "Gallery", path: "/gallery" },
     { label: "Careers", path: "/careers" },
   ],
   Support: [
     { label: "Help & Support", path: "/help" },
+    { label: "Contact Us", path: "/contact" },
     { label: "Terms & Conditions", path: "/terms" },
     { label: "Privacy Policy", path: "/privacy" },
     { label: "Refund Policy", path: "/refund" },
+    { label: "Disclaimer", path: "/disclaimer" },
   ],
 };
 
@@ -129,12 +132,12 @@ function Footer() {
                 <ul className="space-y-2.5">
                   {links.map((link) => (
                     <li key={link.label}>
-                      <button
-                        onClick={() => navigate(link.path)}
+                      <a
+                        href={link.path}
                         className="text-zinc-400 hover:text-orange-400 text-sm transition-colors text-left"
                       >
                         {link.label}
-                      </button>
+                      </a>
                     </li>
                   ))}
                 </ul>
@@ -172,14 +175,14 @@ function Footer() {
               © 2025 <span className="text-white font-semibold">Tiffin Tales</span>. All rights reserved.
             </p>
             <div className="flex items-center gap-4">
-              {["Privacy", "Terms", "Refund"].map((t) => (
-                <button
-                  key={t}
-                  onClick={() => navigate(`/${t.toLowerCase()}`)}
+              {[["Privacy Policy", "/privacy"], ["Terms", "/terms"], ["Refund", "/refund"], ["Disclaimer", "/disclaimer"], ["Contact", "/contact"]].map(([label, path]) => (
+                <a
+                  key={label}
+                  href={path}
                   className="text-xs text-zinc-500 hover:text-orange-400 transition"
                 >
-                  {t}
-                </button>
+                  {label}
+                </a>
               ))}
             </div>
             <p className="text-xs text-zinc-600">

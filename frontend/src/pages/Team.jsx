@@ -11,19 +11,19 @@ const teamMembers = [
   },
   {
     name: "Tushar Arya",
-    role: "Team Memeber",
+    role: "Team Member",
     about:
       "Passionate about clean UI and smooth UX. Crafts beautiful pages that tell the story of our tiffin service.",
   },
   {
     name: "Tushar Singh",
-    role: "Team Memeber",
+    role: "Team Member",
     about:
       "Bridges the gap between frontend and backend with efficient code and scalable logic. Makes sure features just work!",
   },
   {
     name: "Vartul Arora",
-    role: "Team Memeber",
+    role: "Team Member",
     about:
       "Handles the logic behind the scenes. Focused on data, APIs, and performance optimization.",
   },

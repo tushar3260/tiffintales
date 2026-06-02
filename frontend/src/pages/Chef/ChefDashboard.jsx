@@ -4,7 +4,7 @@ import { HiMenuAlt3, HiX } from "react-icons/hi";
 import Sidebar from "../Chef/chefComponents/Sidebar";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useChef } from "./Context/ChefContext";
-import { FaChevronLeft } from "react-icons/fa";
+import BackButton from "../../components/BackButton.jsx";
 
 const PAGE_TITLES = {
   "":         "Overview",
@@ -70,12 +70,8 @@ const ChefDashboard = () => {
               <HiMenuAlt3 size={22} />
             </button>
 
-            <button
-              onClick={() => navigate(-1)}
-              className="hidden sm:flex items-center gap-1.5 text-sm text-gray-500 hover:text-orange-600 transition font-medium"
-            >
-              <FaChevronLeft className="text-xs" /> Back
-            </button>
+            {/* Back button — visible on ALL screen sizes */}
+            <BackButton fallback="/chef/chefdashboard" label="Back" />
 
             <h1 className="flex-1 text-base sm:text-lg font-bold text-gray-800">{title}</h1>
 
@@ -90,8 +86,8 @@ const ChefDashboard = () => {
           </div>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 p-4 sm:p-6 md:p-8 transition-all duration-300">
+        {/* Content — with smooth enter animation per route */}
+        <div className="flex-1 p-4 sm:p-6 md:p-8 transition-all duration-300 page-enter" key={location.pathname}>
           <Outlet />
         </div>
       </div>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://tiffintalesindia.me/</loc>
+    <lastmod>2025-07-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Core Pages -->
+  <url>
+    <loc>https://tiffintalesindia.me/meals</loc>
+    <lastmod>2025-07-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://tiffintalesindia.me/allchef</loc>
+    <lastmod>2025-07-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://tiffintalesindia.me/subscribe</loc>
+    <lastmod>2025-07-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Company Pages -->
+  <url>
+    <loc>https://tiffintalesindia.me/aboutus</loc>
+    <lastmod>2025-07-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://tiffintalesindia.me/team</loc>
+    <lastmod>2025-07-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://tiffintalesindia.me/contact</loc>
+    <lastmod>2025-07-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://tiffintalesindia.me/blog</loc>
+    <lastmod>2025-07-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://tiffintalesindia.me/blog/best-tiffin-services-mathura-2025</loc>
+    <lastmod>2025-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://tiffintalesindia.me/blog/tiffin-subscription-guide-gla-university</loc>
+    <lastmod>2025-07-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://tiffintalesindia.me/blog/home-chefs-mathura-earning-online</loc>
+    <lastmod>2025-07-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://tiffintalesindia.me/blog/why-home-cooked-tiffin-healthier-than-restaurant</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://tiffintalesindia.me/blog/braj-cuisine-traditional-dishes-mathura-vrindavan</loc>
+    <lastmod>2025-07-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Legal Pages -->
+  <url>
+    <loc>https://tiffintalesindia.me/privacy</loc>
+    <lastmod>2025-07-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://tiffintalesindia.me/terms</loc>
+    <lastmod>2025-07-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://tiffintalesindia.me/refund</loc>
+    <lastmod>2025-07-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://tiffintalesindia.me/disclaimer</loc>
+    <lastmod>2025-07-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!-- Support -->
+  <url>
+    <loc>https://tiffintalesindia.me/help</loc>
+    <lastmod>2025-07-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Gallery -->
+  <url>
+    <loc>https://tiffintalesindia.me/gallery</loc>
+    <lastmod>2025-07-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>

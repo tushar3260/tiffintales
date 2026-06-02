@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* ── Scrollbar hide ── */
 .scrollbar-hidden::-webkit-scrollbar { display: none; }
 .scrollbar-hidden { -ms-overflow-style: none; scrollbar-width: none; }
@@ -8,145 +10,110 @@ html.lenis { height: auto; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 .lenis.lenis-stopped { overflow: hidden; }
 
-/* ══════════════════════════════════════════════
-   GLOBAL DARK MODE — Tiffin Tales
-   Brand: #FF6B2C (orange), #1a1a2e / #0f0f1a (bg)
-   ══════════════════════════════════════════════ */
-
-:root {
-  --bg-primary:    #0f0f1a;
-  --bg-secondary:  #1a1a2e;
-  --bg-card:       #1e1e30;
-  --bg-card-hover: #252540;
-  --bg-nav:        rgba(15, 15, 26, 0.95);
-  --border:        rgba(255, 107, 44, 0.15);
-  --border-subtle: rgba(255,255,255,0.06);
-  --text-primary:  #f0f0f5;
-  --text-secondary:#a0a0b8;
-  --text-muted:    #6b6b88;
-  --orange:        #FF6B2C;
-  --orange-light:  #FF8C55;
-  --red:           #ef4444;
-  --shadow-card:   0 4px 24px rgba(0,0,0,0.5);
-}
-
-/* Force dark background on root */
-html, body, #root {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+/* ── Global base ── */
+html {
+  scroll-behavior: smooth;
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
-
-/* ── Override common Tailwind white/light backgrounds ── */
-.bg-white { background-color: var(--bg-card) !important; }
-.bg-gray-50 { background-color: var(--bg-secondary) !important; }
-.bg-gray-100 { background-color: #22223a !important; }
-.bg-orange-50 { background-color: rgba(255,107,44,0.08) !important; }
-.bg-amber-50, .bg-yellow-50 { background-color: rgba(255,180,44,0.07) !important; }
-.bg-red-50 { background-color: rgba(239,68,68,0.08) !important; }
-.bg-green-50 { background-color: rgba(34,197,94,0.07) !important; }
-.bg-blue-50 { background-color: rgba(59,130,246,0.07) !important; }
-
-/* ── Text overrides ── */
-.text-gray-800, .text-gray-900 { color: var(--text-primary) !important; }
-.text-gray-700 { color: #c8c8d8 !important; }
-.text-gray-600 { color: var(--text-secondary) !important; }
-.text-gray-500, .text-gray-400 { color: var(--text-muted) !important; }
-
-/* ── Border overrides ── */
-.border-gray-100, .border-gray-200 { border-color: var(--border-subtle) !important; }
-.border-orange-100 { border-color: var(--border) !important; }
-
-/* ── Input / Textarea dark ── */
-input, textarea, select {
-  background-color: #252540 !important;
-  color: var(--text-primary) !important;
-  border-color: var(--border-subtle) !important;
+body {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #ffffff;
+  color: #111827;
 }
-input::placeholder, textarea::placeholder {
-  color: var(--text-muted) !important;
-}
-input:focus, textarea:focus, select:focus {
-  border-color: var(--orange) !important;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(255,107,44,0.25) !important;
-}
-select option {
-  background-color: var(--bg-card);
-  color: var(--text-primary);
+h1, h2, h3, h4, h5 {
+  font-family: 'Poppins', 'Inter', system-ui, sans-serif;
 }
 
-/* ── Card shadows ── */
-.shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl {
-  box-shadow: var(--shadow-card) !important;
-}
 
-/* ── Table header dark ── */
-thead tr { background-color: var(--bg-secondary) !important; }
-tbody tr:hover { background-color: var(--bg-card-hover) !important; }
-
-/* ── Scrollbar styling for dark mode ── */
+/* ── Scrollbar styling ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-secondary); }
-::-webkit-scrollbar-thumb { background: rgba(255,107,44,0.4); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--orange); }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: rgba(255,107,44,0.5); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #FF6B2C; }
 
-/* ── Nav / header ── */
-header {
-  background-color: var(--bg-nav) !important;
-  border-bottom: 1px solid var(--border-subtle) !important;
+/* ══════════════════════════════════════════════
+   HERO SECTION — GPU-composited CSS animations
+   ══════════════════════════════════════════════ */
+@keyframes heroBlob1 {
+  0%,100% { transform: scale(1);   opacity: 0.35; }
+  50%      { transform: scale(1.12); opacity: 0.50; }
+}
+@keyframes heroBlob2 {
+  0%,100% { transform: scale(1.08); opacity: 0.22; }
+  50%      { transform: scale(1);    opacity: 0.38; }
+}
+@keyframes heroFloat {
+  0%,100% { transform: translateY(0px); }
+  50%      { transform: translateY(-14px); }
 }
 
-/* ── Modal / Backdrop ── */
-.backdrop-blur-md, .backdrop-blur-xl, .backdrop-blur-2xl {
-  backdrop-filter: blur(16px);
+.hero-blob-1 {
+  animation: heroBlob1 8s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+.hero-blob-2 {
+  animation: heroBlob2 10s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+.hero-float {
+  animation: heroFloat 6s ease-in-out infinite;
+  will-change: transform;
 }
 
-/* ── Gradient backgrounds override (dark-safe) ── */
-.from-orange-50.to-amber-50,
-.from-orange-50.via-amber-50,
-[class*="from-orange-50"],
-[class*="from-amber-100"],
-[class*="from-yellow-50"] {
-  background: var(--bg-primary) !important;
+/* Scroll indicator */
+@keyframes heroScroll {
+  0%,100% { transform: translateY(0);  opacity: 0.4; }
+  50%      { transform: translateY(8px); opacity: 1; }
+}
+.hero-scroll-indicator {
+  animation: heroScroll 2s ease-in-out infinite;
 }
 
-/* ── White/95 transparent cards ── */
-.bg-white\/95, .bg-white\/90, .bg-white\/80,
-.bg-white\/70, .bg-white\/60, .bg-white\/30,
-.bg-white\/20 {
-  background-color: rgba(30,30,48,0.95) !important;
+/* ══════════════════════════════════════════════
+   SMOOTH PAGE TRANSITIONS
+   ══════════════════════════════════════════════ */
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page-enter {
+  animation: pageFadeIn 0.22s ease-out forwards;
 }
 
-/* ── Glassmorphism cards ── */
-.backdrop-blur-xl.border {
-  background-color: rgba(26,26,46,0.92) !important;
+/* ══════════════════════════════════════════════
+   BACK BUTTON
+   ══════════════════════════════════════════════ */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #6b7280;
+  background: rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+.back-btn:hover {
+  background: rgba(255, 107, 44, 0.08);
+  color: #ea580c;
+  border-color: rgba(255, 107, 44, 0.25);
+  transform: translateX(-2px);
+}
+.back-btn:active {
+  transform: translateX(0) scale(0.97);
 }
 
-/* ── Premium card glow hover ── */
-.group:hover .group-hover\:opacity-40 { opacity: 0.25; }
-
-/* ── Toast dark override ── */
-.go2072408551 {
-  background: var(--bg-card) !important;
-  color: var(--text-primary) !important;
-}
-
-/* ── Horizontal rule ── */
-hr, .border-t, .border-b {
-  border-color: var(--border-subtle) !important;
-}
-
-/* ── Radio / Checkbox accent ── */
-input[type="radio"], input[type="checkbox"] {
-  accent-color: var(--orange) !important;
-}
-
-/* ── Link hover ── */
-a:hover { color: var(--orange-light); }
-
-/* ── Sidebar dark ── */
-aside {
-  background-color: var(--bg-secondary) !important;
-  border-right: 1px solid var(--border-subtle) !important;
+/* ══════════════════════════════════════════════
+   PERFORMANCE: GPU layers on fixed elements
+   ══════════════════════════════════════════════ */
+.fixed, header, nav {
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }

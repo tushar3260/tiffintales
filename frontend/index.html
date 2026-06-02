@@ -2,19 +2,100 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image" href="/kaamkaitem.png" />
+    <link rel="icon" type="image/png" href="/kaamkaitem.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>𝓣𝓲𝓯𝓯𝓲𝓷 𝓣𝓪𝓵𝓮𝓼</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7060189185963410"
-     crossorigin="anonymous"></script>
+
+    <!-- Premium Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+
+    <!-- ═══ Primary SEO Tags ═══ -->
+    <title>Tiffin Tales - Fresh Homemade Food Delivery in Mathura & Vrindavan</title>
+    <meta name="description" content="Order fresh homemade tiffin meals from verified local chefs in Mathura, Vrindavan, GLA University & more. Daily tiffin subscription from ₹1299/month. Real home food, delivered fresh every day." />
+    <meta name="keywords" content="tiffin service mathura, homemade food delivery mathura, tiffin subscription vrindavan, gla university food delivery, home cooked meals mathura, daily tiffin mathura, chhata tiffin service, barsana food delivery" />
+    <meta name="author" content="Tiffin Tales" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tiffintalesindia.me" />
+
+    <!-- ═══ Open Graph (Facebook / WhatsApp) ═══ -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tiffintalesindia.me" />
+    <meta property="og:title" content="Tiffin Tales - Real Home Food, Delivered Fresh" />
+    <meta property="og:description" content="Fresh homemade tiffin from verified local chefs in Mathura & Vrindavan. Subscribe from ₹1299/month. Serving GLA University, Chaumhuna, Chhata & more." />
+    <meta property="og:image" content="https://tiffintalesindia.me/kaamkaitem.png" />
+    <meta property="og:site_name" content="Tiffin Tales" />
+    <meta property="og:locale" content="en_IN" />
+
+    <!-- ═══ Twitter Card ═══ -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tiffin Tales - Real Home Food, Delivered Fresh" />
+    <meta name="twitter:description" content="Fresh homemade tiffin from verified local chefs in Mathura & Vrindavan. Subscribe from ₹1299/month." />
+    <meta name="twitter:image" content="https://tiffintalesindia.me/kaamkaitem.png" />
+
+    <!-- ═══ LocalBusiness Structured Data (Schema.org) ═══ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FoodEstablishment",
+      "name": "Tiffin Tales",
+      "description": "Fresh homemade tiffin meal delivery service connecting local home chefs with customers across Mathura, Vrindavan, and nearby areas.",
+      "url": "https://tiffintalesindia.me",
+      "logo": "https://tiffintalesindia.me/kaamkaitem.png",
+      "telephone": "+91-9109999999",
+      "email": "support@tiffintalesindia.me",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Mathura",
+        "addressRegion": "Uttar Pradesh",
+        "postalCode": "281001",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "27.4924",
+        "longitude": "77.6737"
+      },
+      "servesCuisine": ["Indian", "North Indian", "Home-cooked", "Vegetarian"],
+      "priceRange": "₹₹",
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+        "opens": "07:00",
+        "closes": "21:00"
+      },
+      "sameAs": [
+        "https://www.instagram.com/ts3231442",
+        "https://youtube.com/@tiffintales-z3x"
+      ]
+    }
+    </script>
+
+    <!-- ═══ Website Schema ═══ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Tiffin Tales",
+      "url": "https://tiffintalesindia.me",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://tiffintalesindia.me/meals?meal={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- NOTE: Google AdSense script will be added AFTER approval -->
+    <!-- DO NOT add it before AdSense account is approved -->
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-     <!-- Add this in your index.html or dynamically load -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-   
+    <!-- Razorpay is loaded lazily in Checkout.jsx — no need here -->
   </body>
 </html>

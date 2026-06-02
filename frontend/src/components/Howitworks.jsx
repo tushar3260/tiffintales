@@ -42,12 +42,12 @@ function Howitworks() {
   const navigate = useNavigate();
 
   return (
-    <section className="relative py-24 lg:py-32 bg-[#0A0A0A] overflow-hidden">
+    <section className="relative py-24 lg:py-32 bg-gradient-to-b from-white to-orange-50 overflow-hidden">
       {/* Subtle background grid */}
       <div
         className="absolute inset-0 opacity-[0.025]"
         style={{
-          backgroundImage: `linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(#FF6A2C 1px, transparent 1px), linear-gradient(90deg, #FF6A2C 1px, transparent 1px)`,
           backgroundSize: "60px 60px",
         }}
       />
@@ -65,7 +65,7 @@ function Howitworks() {
             initial={{ opacity: 0, y: -10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase border border-orange-500/30 text-orange-400 bg-orange-500/10 mb-5"
+            className="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase border border-orange-300 text-orange-600 bg-orange-50 mb-5"
           >
             How It Works
           </motion.span>
@@ -74,7 +74,7 @@ function Howitworks() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl sm:text-5xl font-black text-white leading-tight"
+            className="text-4xl sm:text-5xl font-black text-gray-900 leading-tight"
           >
             Four Steps to{" "}
             <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #FF6A2C, #FFB45E)" }}>
@@ -86,7 +86,7 @@ function Howitworks() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="mt-4 text-white/40 text-lg max-w-xl mx-auto"
+            className="mt-4 text-gray-500 text-lg max-w-xl mx-auto"
           >
             Getting home-cooked food has never been this simple
           </motion.p>
@@ -111,10 +111,10 @@ function Howitworks() {
               />
 
               {/* Card */}
-              <div className="relative rounded-3xl bg-white/[0.04] border border-white/[0.07] p-7 h-full hover:border-white/15 transition-all duration-300">
+              <div className="relative rounded-3xl bg-white border border-orange-100 p-7 h-full hover:border-orange-300 hover:shadow-lg transition-all duration-300">
                 {/* Step number */}
                 <div className="flex items-center justify-between mb-6">
-                  <span className="text-5xl font-black text-white/[0.05] select-none">
+                  <span className="text-5xl font-black text-orange-100 select-none">
                     {step.step}
                   </span>
                   {/* Icon bubble */}
@@ -128,13 +128,13 @@ function Howitworks() {
 
                 {/* Connector line (desktop) */}
                 {i < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-[3.5rem] left-full w-6 h-px bg-gradient-to-r from-white/10 to-transparent z-0" />
+                  <div className="hidden lg:block absolute top-[3.5rem] left-full w-6 h-px bg-gradient-to-r from-orange-200 to-transparent z-0" />
                 )}
 
-                <h3 className="text-lg font-bold text-white mb-2 group-hover:text-orange-400 transition-colors">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-orange-500 transition-colors">
                   {step.title}
                 </h3>
-                <p className="text-sm text-white/40 leading-relaxed">{step.desc}</p>
+                <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -158,7 +158,7 @@ function Howitworks() {
             Start Ordering Now
             <span className="text-lg">→</span>
           </motion.button>
-          <p className="text-white/20 text-sm mt-4">No subscription required · Pay per order</p>
+          <p className="text-gray-400 text-sm mt-4">No subscription required · Pay per order</p>
         </motion.div>
       </div>
     </section>

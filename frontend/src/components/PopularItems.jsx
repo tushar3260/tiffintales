@@ -19,9 +19,18 @@ function PopularItems() {
     const fetchMeals = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/meals/`);
-        setMeals(res.data);
+        // ✅ Defensive: handle array, {meals:[...]}, or {data:[...]} shapes
+        const raw = res.data;
+        const list = Array.isArray(raw)
+          ? raw
+          : Array.isArray(raw?.meals)
+          ? raw.meals
+          : Array.isArray(raw?.data)
+          ? raw.data
+          : [];
+        setMeals(list);
       } catch {
-        // silent — empty state shown
+        setMeals([]); // silent — empty state shown
       } finally {
         setLoading(false);
       }
@@ -75,7 +84,7 @@ function PopularItems() {
       <div className="absolute bottom-20 right-10 w-56 h-56 bg-amber-200/20 rounded-full blur-3xl" />
       
       <div className="mb-8 relative z-10">
-        <h2 className="text-3xl md:text-4xl font-black text-center text-white mb-2">
+        <h2 className="text-3xl md:text-4xl font-black text-center text-gray-900 mb-2">
           Popular Items
         </h2>
         <div className="w-20 h-1 rounded-full mx-auto" style={{ background: "linear-gradient(135deg, #FF6A2C, #FFB45E)" }} />
@@ -120,7 +129,7 @@ function PopularItems() {
                   key={item._id}
                   className="flex-shrink-0 w-64 group"
                 >
-                  <div className="relative bg-white/[0.06] backdrop-blur-md rounded-2xl shadow-md hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 overflow-hidden border border-white/[0.08] hover:border-orange-500/30">
+                  <div className="relative bg-white border border-orange-100 rounded-2xl shadow-md hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 overflow-hidden hover:border-orange-300">
                     {/* Image */}
                     <div
                       className="relative overflow-hidden rounded-t-2xl cursor-pointer h-48"
@@ -144,13 +153,13 @@ function PopularItems() {
                     
                     {/* Content */}
                     <div className="p-4 text-center">
-                      <h3 className="font-bold text-white text-base line-clamp-1 mb-1">
+                      <h3 className="font-bold text-gray-900 text-base line-clamp-1 mb-1">
                         {item.title}
                       </h3>
-                      <p className="text-sm text-white/50 line-clamp-1 mb-2">
+                      <p className="text-sm text-gray-500 line-clamp-1 mb-2">
                         {item.chefId?.name || "Home Chef"}
                       </p>
-                      <p className="font-bold text-xl text-orange-400 mb-3">
+                      <p className="font-bold text-xl text-orange-500 mb-3">
                         ₹{item.price}
                       </p>
                       

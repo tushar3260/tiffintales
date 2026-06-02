@@ -95,9 +95,9 @@ function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
     <header
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#0f0f1a]/95 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.6)]"
-          : "bg-[#0f0f1a]/80 backdrop-blur-md shadow-sm"
-      } border-b border-white/5`}
+          ? "bg-white shadow-md"
+          : "bg-white/95 backdrop-blur-md shadow-sm"
+      } border-b border-orange-100`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         
@@ -107,7 +107,7 @@ function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
         </Link>
 
         {/* Address Bar — Desktop Only */}
-        <div className="hidden lg:flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full max-w-xs cursor-pointer hover:border-orange-400/50 transition group">
+        <div className="hidden lg:flex items-center gap-2 bg-orange-50 border border-orange-200 px-4 py-2 rounded-full max-w-xs cursor-pointer hover:border-orange-400 transition group">
           <FaMapMarkerAlt className="text-orange-500 flex-shrink-0" />
           {user ? (
             <select
@@ -116,7 +116,7 @@ function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
                 const found = addresses.find((a) => a._id === e.target.value);
                 if (found) setSelectedAddress(found);
               }}
-              className="bg-transparent outline-none text-sm font-medium text-gray-200 truncate max-w-[180px] cursor-pointer"
+              className="bg-transparent outline-none text-sm font-medium text-gray-700 truncate max-w-[180px] cursor-pointer"
             >
               {selectedAddress?._id === "live" && (
                 <option value="live">{selectedAddress.addressLine?.slice(0, 35)}...</option>
@@ -131,7 +131,7 @@ function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
               )}
             </select>
           ) : (
-            <span className="text-sm text-gray-400">Select location</span>
+            <span className="text-sm text-gray-500">Select location</span>
           )}
           {user && (
             <button
@@ -150,7 +150,7 @@ function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
             <Link
               key={link.path}
               to={link.path}
-              className="text-sm font-semibold text-gray-300 hover:text-orange-400 transition-colors"
+              className="text-sm font-semibold text-gray-600 hover:text-orange-500 transition-colors"
             >
               {link.label}
             </Link>
@@ -201,11 +201,11 @@ function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
                       initial={{ opacity: 0, y: -8, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                      className="absolute right-0 top-12 w-52 bg-[#1e1e30]/98 backdrop-blur-xl shadow-2xl rounded-2xl border border-white/10 overflow-hidden z-50"
+                      className="absolute right-0 top-12 w-52 bg-white shadow-2xl rounded-2xl border border-orange-100 overflow-hidden z-50"
                     >
-                      <div className="px-4 py-3 bg-gradient-to-r from-orange-500/10 to-red-500/10 border-b border-white/5">
-                        <p className="font-bold text-gray-100 text-sm truncate">{user.fullName}</p>
-                        <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                      <div className="px-4 py-3 bg-gradient-to-r from-orange-50 to-red-50 border-b border-orange-100">
+                        <p className="font-bold text-gray-800 text-sm truncate">{user.fullName}</p>
+                        <p className="text-xs text-gray-500 truncate">{user.email}</p>
                       </div>
                       {[
                         { label: "🏠 Dashboard", path: "/dashboard" },
@@ -216,15 +216,15 @@ function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
                         <button
                           key={item.path}
                           onClick={() => { navigate(item.path); setProfileOpen(false); }}
-                          className="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-orange-400 transition-colors"
+                          className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
                         >
                           {item.label}
                         </button>
                       ))}
-                      <div className="border-t border-white/5" />
+                      <div className="border-t border-orange-100" />
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors font-semibold"
+                        className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors font-semibold"
                       >
                         🚪 Logout
                       </button>
@@ -255,7 +255,7 @@ function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
           {/* Mobile Hamburger */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden p-2 rounded-lg text-gray-300 hover:bg-white/5 transition"
+            className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-orange-50 transition"
           >
             {menuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
           </button>
@@ -269,14 +269,14 @@ function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[#1a1a2e]/98 border-t border-white/5 shadow-2xl overflow-hidden"
+            className="md:hidden bg-white border-t border-orange-100 shadow-xl overflow-hidden"
           >
-            <div className="px-4 py-4 space-y-2">
+            <div className="px-4 py-4 space-y-1">
               {navLinks.map((link) => (
                 <button
                   key={link.path}
                   onClick={() => { navigate(link.path); setMenuOpen(false); }}
-                  className="block w-full text-left py-2.5 px-4 rounded-xl text-gray-300 hover:bg-white/5 hover:text-orange-400 font-medium transition"
+                  className="block w-full text-left py-2.5 px-4 rounded-xl text-gray-700 hover:bg-orange-50 hover:text-orange-600 font-medium transition"
                 >
                   {link.label}
                 </button>

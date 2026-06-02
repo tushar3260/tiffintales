@@ -77,7 +77,7 @@ const DiscountSection = () => {
   };
 
   return (
-    <div className="relative p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl my-4 overflow-hidden border border-white/[0.06] bg-white/[0.03]">
+    <div className="relative p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl my-4 overflow-hidden border border-orange-100 bg-gradient-to-b from-amber-50 to-white">
       {/* Decorative Elements */}
       <div className="absolute top-0 right-0 w-40 sm:w-60 h-40 sm:h-60 bg-[#E57A44] rounded-full blur-3xl opacity-20 pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-32 sm:w-48 h-32 sm:h-48 bg-[#F7C35F] rounded-full blur-3xl opacity-20 pointer-events-none"></div>
@@ -87,11 +87,11 @@ const DiscountSection = () => {
         <div className="inline-block mb-3">
           <span className="text-4xl sm:text-5xl md:text-6xl">🔥</span>
         </div>
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 mb-2">
           Limited Time Offers
         </h2>
         <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-transparent via-[#E57A44] to-transparent mx-auto mb-2"></div>
-        <p className="text-white/50 text-sm sm:text-base font-medium">
+        <p className="text-gray-500 text-sm sm:text-base font-medium">
           Grab these amazing deals before they expire! ⏰
         </p>
       </div>

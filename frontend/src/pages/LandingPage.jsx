@@ -1,7 +1,6 @@
-// LandingPage.jsx — Production Ready, Full Dark Premium Theme
-import React, { useEffect, useState } from "react";
+// LandingPage.jsx — Light Premium Theme
+import React from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 import TopNav from "../components/TopNav.jsx";
@@ -14,31 +13,30 @@ import DiscountSection from "../components/Discountsection.jsx";
 import SubscriptionPlans from "../components/SubscriptionPlans.jsx";
 import SmoothScrollProvider from "../utils/SmoothScrollProvider.jsx";
 
-const BASE = import.meta.env.VITE_API_URL;
-
-// ── Testimonials ───────────────────────────────────────────────────────────
+// ── Testimonials ──────────────────────────────────────────────────────────────
 const testimonials = [
-  { name: "Priya Sharma", city: "Mathura", text: "Best dal tadka I've had outside home! Chef Ravi's food is incredible.", stars: 5, avatar: "P" },
-  { name: "Rahul Gupta", city: "Vrindavan", text: "Tiffin Tales has changed my daily routine. Fresh food every day, zero hassle!", stars: 5, avatar: "R" },
-  { name: "Anita Singh", city: "GLA University", text: "As a student, this is a lifesaver. Home food taste at ₹100/meal? Unreal.", stars: 5, avatar: "A" },
-  { name: "Mohit Bansal", city: "Chhata", text: "The subscription plan is incredible value. 2 meals a day for just ₹1299!", stars: 5, avatar: "M" },
+  { name: "Priya Sharma",  city: "Mathura",       text: "Best dal tadka I've had outside home! Chef Ravi's food is incredible.", stars: 5, avatar: "P", color: "from-orange-400 to-red-400" },
+  { name: "Rahul Gupta",   city: "Vrindavan",     text: "Tiffin Tales has changed my daily routine. Fresh food every day, zero hassle!", stars: 5, avatar: "R", color: "from-violet-400 to-purple-500" },
+  { name: "Anita Singh",   city: "GLA University",text: "As a student, this is a lifesaver. Home food taste at ₹100/meal? Unreal.", stars: 5, avatar: "A", color: "from-emerald-400 to-teal-500" },
+  { name: "Mohit Bansal",  city: "Chhata",        text: "The subscription plan is incredible value. 2 meals a day for just ₹1299!", stars: 5, avatar: "M", color: "from-blue-400 to-indigo-500" },
 ];
 
 function TestimonialsSection() {
   return (
-    <section className="py-24 bg-[#0D0D0D]">
+    <section className="py-20 bg-gradient-to-b from-orange-50 to-white">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="text-center mb-14">
-          <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase border border-orange-500/30 text-orange-400 bg-orange-500/10 mb-5">
+        <div className="text-center mb-12">
+          <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase border border-orange-300 text-orange-600 bg-orange-50 mb-4">
             Loved By Thousands
           </span>
-          <h2 className="text-4xl sm:text-5xl font-black text-white">
+          <h2 className="text-4xl sm:text-5xl font-black text-gray-900">
             What Our{" "}
-            <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #FF6A2C, #FFB45E)" }}>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">
               Customers Say
             </span>
           </h2>
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {testimonials.map((t, i) => (
             <motion.div
@@ -47,19 +45,22 @@ function TestimonialsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white/[0.04] border border-white/[0.07] rounded-3xl p-6 hover:border-orange-500/20 hover:bg-white/[0.06] transition-all"
+              whileHover={{ y: -6 }}
+              className="bg-white border border-orange-100 rounded-3xl p-6 shadow-sm hover:shadow-lg hover:border-orange-200 transition-all"
             >
               <div className="flex gap-1 mb-4">
-                {[...Array(t.stars)].map((_, j) => <span key={j} className="text-amber-400 text-sm">★</span>)}
+                {[...Array(t.stars)].map((_, j) => (
+                  <span key={j} className="text-amber-400 text-sm">★</span>
+                ))}
               </div>
-              <p className="text-white/60 text-sm leading-relaxed mb-5">"{t.text}"</p>
+              <p className="text-gray-600 text-sm leading-relaxed mb-5">"{t.text}"</p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ background: "linear-gradient(135deg, #FF6A2C, #FFB45E)" }}>
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm bg-gradient-to-br ${t.color}`}>
                   {t.avatar}
                 </div>
                 <div>
-                  <p className="text-white font-semibold text-sm">{t.name}</p>
-                  <p className="text-white/30 text-xs">{t.city}</p>
+                  <p className="text-gray-900 font-semibold text-sm">{t.name}</p>
+                  <p className="text-gray-400 text-xs">{t.city}</p>
                 </div>
               </div>
             </motion.div>
@@ -70,43 +71,74 @@ function TestimonialsSection() {
   );
 }
 
-// ── CTA Banner ─────────────────────────────────────────────────────────────
+// ── Trust Strip ───────────────────────────────────────────────────────────────
+function TrustStrip() {
+  const stats = [
+    { icon: "🍱", value: "10,000+", label: "Happy Customers" },
+    { icon: "👨‍🍳", value: "200+",    label: "Verified Chefs" },
+    { icon: "🏙️", value: "10+",     label: "Cities Covered" },
+    { icon: "⭐", value: "4.9/5",   label: "Average Rating" },
+    { icon: "🚀", value: "1,000+",  label: "Orders Today" },
+  ];
+  return (
+    <section className="py-8 bg-gradient-to-r from-orange-500 to-red-500">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 text-center">
+          {stats.map((s) => (
+            <div key={s.label}>
+              <p className="text-2xl mb-1">{s.icon}</p>
+              <p className="text-white font-black text-xl">{s.value}</p>
+              <p className="text-white/80 text-xs font-medium">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── CTA Banner ────────────────────────────────────────────────────────────────
 function CTABanner() {
   const navigate = useNavigate();
   return (
-    <section className="py-20 bg-[#0A0A0A]">
+    <section className="py-20 bg-white">
       <div className="max-w-4xl mx-auto px-6 text-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="relative rounded-3xl overflow-hidden p-12"
+          className="relative rounded-3xl overflow-hidden p-12 shadow-2xl"
           style={{ background: "linear-gradient(135deg, #FF6A2C 0%, #FFB45E 50%, #FF4500 100%)" }}
         >
-          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} />
-          <h2 className="text-4xl sm:text-5xl font-black text-white mb-4 relative">
-            Ready for Real Home Food? 🍱
-          </h2>
-          <p className="text-white/80 text-lg mb-8 relative">
-            Join 10,000+ happy customers enjoying daily home-cooked meals
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center relative">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => navigate("/meals")}
-              className="px-10 py-4 bg-white text-orange-600 font-black rounded-2xl shadow-2xl text-base hover:shadow-orange-500/30"
-            >
-              Order Now →
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => navigate("/subscribe")}
-              className="px-10 py-4 bg-white/20 backdrop-blur-sm text-white font-bold rounded-2xl border border-white/30 hover:bg-white/30 text-base"
-            >
-              View Plans
-            </motion.button>
+          {/* Pattern overlay */}
+          <div className="absolute inset-0 opacity-10"
+            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}
+          />
+          <div className="relative">
+            <h2 className="text-4xl sm:text-5xl font-black text-white mb-4">
+              Ready for Real Home Food? 🍱
+            </h2>
+            <p className="text-white/80 text-lg mb-8">
+              Join 10,000+ happy customers enjoying daily home-cooked meals
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => navigate("/meals")}
+                className="px-10 py-4 bg-white text-orange-600 font-black rounded-2xl shadow-2xl text-base hover:shadow-orange-500/30 transition"
+              >
+                Order Now →
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => navigate("/subscribe")}
+                className="px-10 py-4 bg-white/20 backdrop-blur-sm text-white font-bold rounded-2xl border border-white/30 hover:bg-white/30 text-base transition"
+              >
+                View Plans
+              </motion.button>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -114,10 +146,10 @@ function CTABanner() {
   );
 }
 
-// ── Main Landing Page ───────────────────────────────────────────────────────
+// ── Main Landing Page ─────────────────────────────────────────────────────────
 const LandingPage = ({ onLoginClick, onSignupClick, disableButtons }) => {
   return (
-    <div className="bg-[#0A0A0A]">
+    <div className="bg-white">
       <SmoothScrollProvider>
         <TopNav
           onLoginClick={onLoginClick}
@@ -125,37 +157,40 @@ const LandingPage = ({ onLoginClick, onSignupClick, disableButtons }) => {
           disableButtons={disableButtons}
         />
 
-        {/* 1. Hero — Dark */}
+        {/* 1. Hero */}
         <Herosection />
 
-        {/* 2. Popular Meals — Dark wrapper */}
-        <div className="bg-[#0D0D0D]">
+        {/* 2. Trust Strip */}
+        <TrustStrip />
+
+        {/* 3. Popular Meals */}
+        <div className="bg-white py-6 px-4 sm:px-8">
           <PopularItems />
         </div>
 
-        {/* 3. Featured Chefs — Dark wrapper */}
-        <div className="bg-[#0A0A0A]">
-          <FeaturedRestaurants />
-        </div>
+        {/* 4. Featured Chefs */}
+        <FeaturedRestaurants />
 
-        {/* 4. Discount/Hot Deals — wrapped dark */}
-        <div className="bg-[#0D0D0D] px-4 sm:px-8 lg:px-16 py-6">
+        {/* 5. Hot Deals */}
+        <div className="bg-gradient-to-b from-white to-amber-50 px-4 sm:px-8 lg:px-16 py-4">
           <DiscountSection />
         </div>
 
-        {/* 5. How It Works — already dark */}
+        {/* 6. How It Works */}
         <Howitworks />
 
-        {/* 6. Testimonials — dark */}
+        {/* 7. Testimonials */}
         <TestimonialsSection />
 
-        {/* 7. Subscription Plans — now dark */}
-        <SubscriptionPlans />
+        {/* 8. Subscription Plans */}
+        <div className="bg-gradient-to-b from-white to-orange-50">
+          <SubscriptionPlans />
+        </div>
 
-        {/* 8. CTA Banner */}
+        {/* 9. CTA Banner */}
         <CTABanner />
 
-        {/* 9. Footer — already dark */}
+        {/* 10. Footer */}
         <Footer />
       </SmoothScrollProvider>
     </div>

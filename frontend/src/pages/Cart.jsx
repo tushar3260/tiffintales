@@ -4,11 +4,12 @@ import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiTrash2 } from "react-icons/fi";
-import { FaMinus, FaPlus, FaShoppingCart, FaArrowLeft, FaLeaf, FaLock } from "react-icons/fa";
+import { FaMinus, FaPlus, FaShoppingCart, FaLeaf, FaLock } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
 import { useUser } from "../context/userContext";
 import { useCart } from "../context/CartContext";
 import TopNav from "../components/TopNav.jsx";
+import BackButton from "../components/BackButton.jsx";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -55,12 +56,7 @@ const Cart = () => {
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center gap-3 mb-8"
           >
-            <button
-              onClick={() => navigate(-1)}
-              className="p-2 rounded-full bg-[#1e1e30] shadow text-gray-400 hover:bg-white/5 transition"
-            >
-              <FaArrowLeft />
-            </button>
+          <BackButton fallback="/meals" label="Back" />
             <div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-100 flex items-center gap-2">
                 <FaShoppingCart className="text-orange-500" /> Your Cart
