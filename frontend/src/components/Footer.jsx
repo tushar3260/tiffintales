@@ -1,7 +1,7 @@
-// Footer — Production Ready
+// Footer.jsx — Premium Production Ready
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaInstagram, FaYoutube, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+import { FaInstagram, FaYoutube, FaTwitter, FaWhatsapp } from "react-icons/fa";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -12,40 +12,40 @@ const cities = [
 
 const footerLinks = {
   Explore: [
-    { label: "Browse Meals", path: "/meals" },
-    { label: "Our Chefs", path: "/allchef" },
+    { label: "Browse Meals",  path: "/meals" },
+    { label: "Our Chefs",     path: "/allchef" },
     { label: "Subscriptions", path: "/subscription" },
-    { label: "My Dashboard", path: "/dashboard" },
-    { label: "My Orders", path: "/orders" },
+    { label: "My Dashboard",  path: "/dashboard" },
+    { label: "My Orders",     path: "/orders" },
   ],
   "For Chefs": [
-    { label: "Become a Chef", path: "/chef" },
-    { label: "Chef Dashboard", path: "/chef/chefdashboard" },
-    { label: "Chef Login", path: "/chef/login" },
-    { label: "Chef Signup", path: "/chef/signup" },
+    { label: "Become a Chef",   path: "/chef" },
+    { label: "Chef Dashboard",  path: "/chef/chefdashboard" },
+    { label: "Chef Login",      path: "/chef/login" },
+    { label: "Chef Signup",     path: "/chef/signup" },
   ],
   Company: [
-    { label: "About Us", path: "/aboutus" },
-    { label: "Our Team", path: "/team" },
-    { label: "Blog", path: "/blog" },
-    { label: "Gallery", path: "/gallery" },
-    { label: "Careers", path: "/careers" },
+    { label: "About Us",  path: "/aboutus" },
+    { label: "Our Team",  path: "/team" },
+    { label: "Blog",      path: "/blog" },
+    { label: "Gallery",   path: "/gallery" },
+    { label: "Careers",   path: "/careers" },
   ],
   Support: [
     { label: "Help & Support", path: "/help" },
-    { label: "Contact Us", path: "/contact" },
-    { label: "Terms & Conditions", path: "/terms" },
+    { label: "Contact Us",     path: "/contact" },
+    { label: "Terms",          path: "/terms" },
     { label: "Privacy Policy", path: "/privacy" },
-    { label: "Refund Policy", path: "/refund" },
-    { label: "Disclaimer", path: "/disclaimer" },
+    { label: "Refund Policy",  path: "/refund" },
+    { label: "Disclaimer",     path: "/disclaimer" },
   ],
 };
 
 const socials = [
-  { icon: <FaInstagram />, url: "https://www.instagram.com/ts3231442", color: "hover:text-pink-500", label: "Instagram" },
-  { icon: <FaYoutube />, url: "https://youtube.com/@tiffintales-z3x", color: "hover:text-red-500", label: "YouTube" },
-  { icon: <FaTwitter />, url: "#", color: "hover:text-blue-400", label: "Twitter" },
-  { icon: <FaWhatsapp />, url: "https://wa.me/9109999999", color: "hover:text-green-400", label: "WhatsApp" },
+  { icon: <FaInstagram />,   url: "https://www.instagram.com/ts3231442",        label: "Instagram", hover: "hover:bg-pink-500" },
+  { icon: <FaYoutube />,     url: "https://youtube.com/@tiffintales-z3x",       label: "YouTube",   hover: "hover:bg-red-500"  },
+  { icon: <FaTwitter />,     url: "#",                                           label: "Twitter",   hover: "hover:bg-sky-500"  },
+  { icon: <FaWhatsapp />,    url: "https://wa.me/9109999999",                   label: "WhatsApp",  hover: "hover:bg-green-500" },
 ];
 
 function Footer() {
@@ -54,44 +54,46 @@ function Footer() {
 
   const handleSubscribe = () => {
     if (!email || !email.includes("@")) return toast.error("Enter a valid email");
-    toast.success(`🎉 You're subscribed! Watch your inbox.`);
+    toast.success("You're subscribed! Check your inbox.");
     setEmail("");
   };
 
   return (
     <>
       <Toaster position="top-right" />
-      <footer className="bg-gradient-to-br from-zinc-900 via-gray-900 to-zinc-950 text-white">
-        
-        {/* Main Footer Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-14">
+      <footer className="bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-white">
+
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-14 pb-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8">
-            
+
             {/* Brand Column */}
             <div className="lg:col-span-2">
-              <div className="mb-4">
-                <h2 className="text-2xl font-extrabold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
-                  🍱 Tiffin Tales
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-white tracking-tight mb-2">
+                  Tiffin Tales
                 </h2>
-                <p className="text-zinc-400 text-sm mt-2 leading-relaxed">
+                <p className="text-gray-400 text-sm leading-relaxed">
                   Real homemade food, delivered fresh. Supporting local home chefs
-                  across Mathura & beyond.
+                  across Mathura &amp; beyond.
                 </p>
               </div>
-              
+
               {/* Socials */}
-              <div className="mb-5">
-                <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Follow Us</p>
-                <div className="flex items-center gap-3">
+              <div className="mb-6">
+                <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-3">Follow Us</p>
+                <div className="flex items-center gap-2">
                   {socials.map((s) => (
                     <motion.a
                       key={s.label}
                       href={s.url}
                       target="_blank"
                       rel="noreferrer"
-                      whileHover={{ scale: 1.2, y: -2 }}
-                      className={`w-9 h-9 bg-zinc-800 rounded-xl flex items-center justify-center text-zinc-400 ${s.color} transition-colors`}
+                      whileHover={{ scale: 1.15, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`w-9 h-9 bg-gray-800 rounded-xl flex items-center justify-center text-gray-400 ${s.hover} hover:text-white transition-all duration-200`}
                       title={s.label}
+                      aria-label={s.label}
                     >
                       {s.icon}
                     </motion.a>
@@ -101,21 +103,19 @@ function Footer() {
 
               {/* Newsletter */}
               <div>
-                <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">
-                  Get Exclusive Offers
-                </p>
-                <div className="flex items-center bg-zinc-800 rounded-xl overflow-hidden border border-zinc-700 focus-within:border-orange-500 transition">
+                <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-3">Get Exclusive Offers</p>
+                <div className="flex items-center bg-gray-800 rounded-xl overflow-hidden border border-gray-700 focus-within:border-orange-500 transition-colors">
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Your email..."
-                    className="flex-1 bg-transparent px-4 py-2.5 text-sm text-white placeholder-zinc-500 outline-none"
+                    placeholder="Your email address"
+                    className="flex-1 bg-transparent px-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none"
                     onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
                   />
                   <button
                     onClick={handleSubscribe}
-                    className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2.5 text-sm font-semibold hover:from-orange-600 hover:to-red-600 transition"
+                    className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2.5 text-sm font-semibold hover:from-orange-600 hover:to-orange-700 transition-colors"
                   >
                     Subscribe
                   </button>
@@ -126,7 +126,7 @@ function Footer() {
             {/* Link Columns */}
             {Object.entries(footerLinks).map(([section, links]) => (
               <div key={section}>
-                <h4 className="font-bold text-sm text-white mb-4 uppercase tracking-wide">
+                <h4 className="font-semibold text-xs text-gray-400 mb-4 uppercase tracking-widest">
                   {section}
                 </h4>
                 <ul className="space-y-2.5">
@@ -134,7 +134,7 @@ function Footer() {
                     <li key={link.label}>
                       <a
                         href={link.path}
-                        className="text-zinc-400 hover:text-orange-400 text-sm transition-colors text-left"
+                        className="text-sm text-gray-500 hover:text-orange-400 transition-colors duration-150"
                       >
                         {link.label}
                       </a>
@@ -147,21 +147,19 @@ function Footer() {
         </div>
 
         {/* Service Areas */}
-        <div className="border-t border-zinc-800 bg-zinc-950/50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6">
-            <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
-              Available In
-            </p>
+        <div className="border-t border-gray-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 py-5">
+            <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-widest mb-3">Available In</p>
             <div className="flex flex-wrap gap-2">
               {cities.map((city) => (
                 <span
                   key={city}
-                  className="text-xs px-3 py-1 bg-zinc-800 text-zinc-400 rounded-full hover:bg-orange-500/20 hover:text-orange-400 transition cursor-default"
+                  className="text-xs px-3 py-1 bg-gray-800/60 text-gray-400 rounded-full hover:bg-orange-500/15 hover:text-orange-400 transition-colors cursor-default"
                 >
                   {city}
                 </span>
               ))}
-              <span className="text-xs px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full font-semibold">
+              <span className="text-xs px-3 py-1 bg-orange-500/15 text-orange-400 rounded-full font-semibold">
                 + More coming soon
               </span>
             </div>
@@ -169,25 +167,23 @@ function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-zinc-800">
+        <div className="border-t border-gray-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-xs text-zinc-500">
-              © 2025 <span className="text-white font-semibold">Tiffin Tales</span>. All rights reserved.
+            <p className="text-xs text-gray-500">
+              © 2025 <span className="text-gray-300 font-semibold">Tiffin Tales</span>. All rights reserved.
             </p>
-            <div className="flex items-center gap-4">
-              {[["Privacy Policy", "/privacy"], ["Terms", "/terms"], ["Refund", "/refund"], ["Disclaimer", "/disclaimer"], ["Contact", "/contact"]].map(([label, path]) => (
+            <div className="flex items-center gap-4 flex-wrap justify-center">
+              {[["Privacy", "/privacy"], ["Terms", "/terms"], ["Refund", "/refund"], ["Disclaimer", "/disclaimer"], ["Contact", "/contact"]].map(([label, path]) => (
                 <a
                   key={label}
                   href={path}
-                  className="text-xs text-zinc-500 hover:text-orange-400 transition"
+                  className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
                 >
                   {label}
                 </a>
               ))}
             </div>
-            <p className="text-xs text-zinc-600">
-              Made with ❤️ for real home food lovers
-            </p>
+            <p className="text-xs text-gray-600">Made with care for home food lovers</p>
           </div>
         </div>
       </footer>

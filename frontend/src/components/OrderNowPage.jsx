@@ -119,10 +119,12 @@ const OrderNowPage = () => {
 
   const item = {
     mealId: meal._id,
+    chefId: meal?.chefId?._id || meal?.chefId,  // ✅ FIXED: include chefId so checkout works
     title: meal.title,
     price: meal.price,
     quantity,
     photo: meal.photo,
+    tags: meal.tags || [],
   };
 
   try {
@@ -138,7 +140,6 @@ const OrderNowPage = () => {
     toast.error("Something went wrong!");
   }
 };
-
 
 
   /* ------------ Razorpay SDK Loader ------------ */

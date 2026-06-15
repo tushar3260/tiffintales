@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/userContext.jsx";
@@ -8,6 +8,8 @@ const DiscountSection = () => {
   const [discountedMeals, setDiscountedMeals] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedMeal, setSelectedMeal] = useState(null);
+  // Single tick counter — replaces per-meal state updates every second
+  const [tick, setTick] = useState(0);
 
   const { user } = useUser();
   const navigate = useNavigate();
@@ -16,11 +18,7 @@ const DiscountSection = () => {
     const fetchDiscountedMeals = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/meals/discounted`);
-        const mealsWithTime = res.data.map((meal) => ({
-          ...meal,
-          timeLeft: calculateTimeLeft(meal.discountStartDate, meal.discountDuration),
-        }));
-        setDiscountedMeals(mealsWithTime);
+        setDiscountedMeals(res.data);
       } catch {
         // silent — renders empty state
       }
@@ -28,15 +26,8 @@ const DiscountSection = () => {
 
     fetchDiscountedMeals();
 
-    const interval = setInterval(() => {
-      setDiscountedMeals((prevMeals) =>
-        prevMeals.map((meal) => ({
-          ...meal,
-          timeLeft: calculateTimeLeft(meal.discountStartDate, meal.discountDuration),
-        }))
-      );
-    }, 1000);
-
+    // Only increment a counter — no array cloning every second
+    const interval = setInterval(() => setTick((t) => t + 1), 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -61,13 +52,12 @@ const DiscountSection = () => {
   };
 
   const handleClick = (meal) => {
-    const discountedPrice = getDiscountedPrice(meal.price, meal.discount);
-
     if (!user) {
-      setSelectedMeal({ ...meal, discountedPrice });
+      setSelectedMeal({ ...meal, discountedPrice: getDiscountedPrice(meal.price, meal.discount) });
       setShowLoginModal(true);
     } else {
-      navigate("/cart", { state: { meal: { ...meal, discountedPrice } } });
+      // ✅ FIX: go to Order Now page, NOT cart
+      navigate(`/order-now/${meal._id}`);
     }
   };
 
@@ -109,8 +99,8 @@ const DiscountSection = () => {
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 relative z-10">
           {discountedMeals.map((meal, index) => {
             const discountedPrice = getDiscountedPrice(meal.price, meal.discount);
-            const timeLeft = meal.timeLeft;
-            const isExpired = timeLeft === "Expired";
+            const timeLeft = calculateTimeLeft(meal.discountStartDate, meal.discountDuration);
+            const isExpired = timeLeft === "Expired" || !timeLeft;
 
             return (
               <div
@@ -131,7 +121,7 @@ const DiscountSection = () => {
                   </div>
 
                   {/* Timer Badge */}
-                  {!isExpired && (
+                  {!isExpired && timeLeft && typeof timeLeft === "object" && (
                     <div className="absolute top-2 right-2 z-10 bg-gradient-to-r from-[#F7C35F] to-[#E57A44] text-white text-[9px] sm:text-[10px] font-bold px-2 py-1 rounded-full shadow-lg">
                       <div className="flex items-center gap-0.5 sm:gap-1">
                         <FaClock className="text-[8px] sm:text-[10px]" />

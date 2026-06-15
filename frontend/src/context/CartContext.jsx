@@ -32,12 +32,12 @@ export const CartProvider = ({ children }) => {
         items.map((item) => ({
           _id:            item._id || item.mealId,
           mealId:         item.mealId || item._id,
+          chefId:         item.chefId,                   // ✅ FIXED: map chefId so checkout can access it
           title:          item.title,
           price:          item.price ?? 0,
           discountedPrice: item.discountedPrice,
           photo:          item.photo || "",
           quantity:       item.quantity || 1,
-          chefId:         item.chefId,
           tags:           item.tags || [],
         }))
       );

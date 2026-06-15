@@ -7,6 +7,7 @@ import CartProvider from "./context/CartContext.jsx";
 import { ChefProvider } from "./pages/Chef/Context/ChefContext.jsx";
 import { AdminProvider } from "./Admin/context/AdminContext.jsx";
 import UserProtect from "./ProtectWrapper/UserProtect.jsx";
+import { LocationProvider } from "./context/LocationContext.jsx";
 
 // ── Eagerly loaded (first paint critical) ──
 import LandingPage from "./pages/LandingPage.jsx";
@@ -78,6 +79,7 @@ function App() {
       <Toaster position="top-center" reverseOrder={false} />
 
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        <LocationProvider>
         <UserProvider>
           <CartProvider>
             <BrowserRouter>
@@ -230,6 +232,7 @@ function App() {
             </BrowserRouter>
           </CartProvider>
         </UserProvider>
+        </LocationProvider>
       </GoogleOAuthProvider>
     </div>
   );

@@ -141,16 +141,10 @@ const AllMeals = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-6 sm:mb-8"
           >
-            <h1
-              className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#6B3A1E] tracking-wide mb-2"
-              style={{
-                textShadow: "0 2px 20px rgba(247, 195, 95, 0.3)",
-                fontFamily: "Georgia, serif",
-              }}
-            >
-              Homestyle Meals 🍱
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-2">
+              Homestyle Meals
             </h1>
-            <p className="text-sm sm:text-base text-[#6B3A1E]/70 font-medium">
+            <p className="text-sm sm:text-base text-gray-500 font-medium">
               By local chefs · Fresh everyday · Made with love
             </p>
           </motion.div>
@@ -170,7 +164,7 @@ const AllMeals = () => {
                   placeholder="Search your favorite meal..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
-                  className="w-full px-4 sm:px-5 py-3 sm:py-3.5 bg-white/60 backdrop-blur-xl border-2 border-white/80 rounded-xl sm:rounded-2xl text-[#6B3A1E] placeholder-[#6B3A1E]/50 focus:outline-none focus:border-[#E57A44] transition-all duration-300 shadow-lg text-sm sm:text-base"
+                  className="w-full px-4 sm:px-5 py-3 sm:py-3.5 bg-white border-2 border-gray-200 rounded-xl sm:rounded-2xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-all duration-300 shadow-sm text-sm sm:text-base"
                 />
                 <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-[#E57A44] text-lg sm:text-xl">
                   🔍
@@ -181,7 +175,7 @@ const AllMeals = () => {
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowFilters(!showFilters)}
-                className="relative px-4 sm:px-5 py-3 sm:py-3.5 bg-gradient-to-r from-[#E57A44] to-[#F7C35F] text-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                className="relative px-4 sm:px-5 py-3 sm:py-3.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl sm:rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2"
               >
                 <FaFilter className="text-sm sm:text-base" />
                 <span className="hidden sm:inline font-semibold">Filters</span>
@@ -205,13 +199,13 @@ const AllMeals = () => {
               >
                 <div className="bg-white/50 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 border-2 border-white/80 shadow-xl max-w-3xl mx-auto">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-base sm:text-lg font-bold text-[#6B3A1E]" style={{ fontFamily: "Georgia, serif" }}>
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900">
                       Filter Options
                     </h3>
                     {activeFiltersCount > 0 && (
                       <button
                         onClick={clearFilters}
-                        className="text-xs sm:text-sm text-[#E57A44] hover:text-[#6B3A1E] font-semibold transition-colors"
+                        className="text-xs sm:text-sm text-orange-500 hover:text-orange-700 font-semibold transition-colors"
                       >
                         Clear All
                       </button>
@@ -417,24 +411,21 @@ const AllMeals = () => {
                         <div className="absolute top-[7.5rem] sm:top-[8.5rem] md:top-[9.5rem] left-1/2 -translate-x-1/2 w-12 sm:w-16 h-1 bg-gradient-to-r from-transparent via-[#E57A44] to-transparent"></div>
 
                         <div className="flex justify-between items-start mb-2 mt-1">
-                          <h3
-                            className="font-bold text-[#6B3A1E] text-xs sm:text-sm line-clamp-1 flex-1"
-                            style={{ fontFamily: "Georgia, serif" }}
-                          >
+                          <h3 className="font-bold text-gray-800 text-xs sm:text-sm line-clamp-1 flex-1">
                             {meal.title}
                           </h3>
-                          <span className="ml-2 text-xs sm:text-sm font-bold text-[#E57A44] bg-[#FFF7EB] px-2 py-0.5 rounded-full whitespace-nowrap">
+                          <span className="ml-2 text-xs sm:text-sm font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full whitespace-nowrap">
                             ₹{meal.price}
                           </span>
                         </div>
 
-                        <p className="flex items-center text-[10px] sm:text-xs text-[#6B3A1E]/70 mb-1.5">
-                          <FaMapMarkerAlt className="mr-1 text-[#E57A44] flex-shrink-0" />
+                        <p className="flex items-center text-[10px] sm:text-xs text-gray-500 mb-1.5">
+                          <FaMapMarkerAlt className="mr-1 text-orange-400 flex-shrink-0" />
                           <span className="truncate">{meal.chefId?.name || "Chef"}</span>
                         </p>
 
-                        <p className="flex items-center text-[10px] sm:text-xs text-[#F7C35F] mb-2">
-                          <FaStar className="mr-1 text-[#F7C35F] flex-shrink-0" />
+                        <p className="flex items-center text-[10px] sm:text-xs text-amber-500 mb-2">
+                          <FaStar className="mr-1 text-amber-400 flex-shrink-0" />
                           {meal.rating ? `${meal.rating.toFixed(1)} / 5` : "No rating"}
                         </p>
 
@@ -458,7 +449,7 @@ const AllMeals = () => {
                           <motion.button
                             onClick={() => handleViewDetails(meal)}
                             whileTap={{ scale: 0.95 }}
-                            className="flex-1 bg-white/80 backdrop-blur-sm text-[#6B3A1E] font-semibold px-2 py-1.5 sm:py-2 rounded-lg border-2 border-[#E57A44]/30 hover:border-[#E57A44] transition-all duration-300 text-[10px] sm:text-xs"
+                            className="flex-1 bg-white text-gray-700 font-semibold px-2 py-1.5 sm:py-2 rounded-lg border border-gray-200 hover:border-orange-400 hover:text-orange-600 transition-all duration-200 text-[10px] sm:text-xs"
                           >
                             Details
                           </motion.button>
@@ -466,8 +457,8 @@ const AllMeals = () => {
                           <motion.button
                             onClick={() => handleOrderNow(meal._id)}
                             whileTap={{ scale: 0.95 }}
-                            whileHover={{ scale: 1.05 }}
-                            className="flex-1 bg-gradient-to-r from-[#E57A44] to-[#F7C35F] text-white font-semibold px-2 py-1.5 sm:py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group/btn text-[10px] sm:text-xs"
+                            whileHover={{ scale: 1.03 }}
+                            className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold px-2 py-1.5 sm:py-2 rounded-lg shadow hover:shadow-md transition-all duration-200 text-[10px] sm:text-xs"
                           >
                             <span className="relative z-10">Order</span>
                             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300"></div>
@@ -532,20 +523,17 @@ const AllMeals = () => {
 
                 {/* Content */}
                 <div className="p-5 sm:p-6 md:p-8">
-                  <h2
-                    className="text-2xl sm:text-3xl font-bold text-[#6B3A1E] mb-2"
-                    style={{ fontFamily: "Georgia, serif" }}
-                  >
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                     {selectedMeal.title}
                   </h2>
 
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="flex items-center text-sm sm:text-base text-[#6B3A1E]/70 font-medium">
-                      <FaMapMarkerAlt className="mr-1.5 text-[#E57A44]" />
+                    <span className="flex items-center text-sm sm:text-base text-gray-500 font-medium">
+                      <FaMapMarkerAlt className="mr-1.5 text-orange-400" />
                       {selectedMeal.chefId?.name || "Unknown Chef"}
                     </span>
-                    <span className="flex items-center text-sm sm:text-base text-[#F7C35F] font-medium">
-                      <FaStar className="mr-1.5 text-[#F7C35F]" />
+                    <span className="flex items-center text-sm sm:text-base text-amber-500 font-medium">
+                      <FaStar className="mr-1.5 text-amber-400" />
                       {selectedMeal.rating ? `${selectedMeal.rating.toFixed(1)} / 5` : "No rating"}
                     </span>
                   </div>

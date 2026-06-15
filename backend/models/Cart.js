@@ -5,10 +5,13 @@ const CartItemSchema = new mongoose.Schema({
   items: [
     {
       mealId: { type: mongoose.Schema.Types.ObjectId, ref: "Meal" },
+      chefId: { type: mongoose.Schema.Types.ObjectId, ref: "Chef" },
       title: String,
       price: Number,
+      discountedPrice: Number,
       quantity: Number,
       photo: String,
+      tags: [String],
     },
   ],
 });
