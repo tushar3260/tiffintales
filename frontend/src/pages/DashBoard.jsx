@@ -48,7 +48,7 @@ export default function UserDashboard() {
     { label: "Browse Meals",   path: "/meals",                  icon: <FaUtensils className="text-xl text-orange-500" /> },
     { label: "My Orders",      path: "/dashboard/orders",       icon: <HiOutlineShoppingBag className="text-xl text-blue-500" /> },
     { label: "Subscriptions",  path: "/dashboard/subscription", icon: <HiOutlineClipboardList className="text-xl text-emerald-500" /> },
-    { label: "Find Chefs",     path: "/allchef",                icon: <RiChefLine className="text-xl text-purple-500" /> },
+    { label: "Find Chefs",     path: "/allchef",                icon: <RiRestaurantLine  className="text-xl text-purple-500" /> },
   ];
 
   return (
