@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import { FaCheckCircle, FaWallet, FaUtensils, FaShoppingBag, FaArrowRight } from "react-icons/fa";
 import { HiOutlineShoppingBag, HiOutlineClipboardList, HiOutlineViewGrid } from "react-icons/hi";
-import { RiChefLine } from "react-icons/ri";
+import { RiRestaurantLine } from "react-icons/ri";
 import { useUser } from "../context/userContext.jsx";
 import { useNavigate } from "react-router-dom";
 
