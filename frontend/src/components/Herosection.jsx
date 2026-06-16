@@ -3,16 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { useLocation2 } from "../context/LocationContext.jsx";
+import { FaMapMarkerAlt, FaSearch, FaLeaf, FaFire, FaUtensils, FaBreadSlice, FaDumbbell, FaWater, FaStar } from "react-icons/fa";
 
 const TAGS = ["Dal Tadka", "Paneer", "Biryani", "Roti Sabzi", "Chole", "Khichdi"];
 
 const CRAVINGS = [
-  { emoji: "🌿", label: "Light",   tag: "Veg" },
-  { emoji: "🔥", label: "Spicy",   tag: "Spicy" },
-  { emoji: "🍚", label: "Rice",    tag: "Rice" },
-  { emoji: "🫓", label: "Roti",    tag: "Roti" },
-  { emoji: "💪", label: "Protein", tag: "Protein" },
-  { emoji: "🍜", label: "Soup",    tag: "Soup" },
+  { icon: <FaLeaf className="text-green-500" />, label: "Light",   tag: "Veg" },
+  { icon: <FaFire className="text-red-500" />,   label: "Spicy",   tag: "Spicy" },
+  { icon: <FaUtensils className="text-yellow-500" />, label: "Rice", tag: "Rice" },
+  { icon: <FaBreadSlice className="text-amber-500" />, label: "Roti", tag: "Roti" },
+  { icon: <FaDumbbell className="text-blue-500" />, label: "Protein", tag: "Protein" },
+  { icon: <FaWater className="text-cyan-500" />, label: "Soup",    tag: "Soup" },
 ];
 
 function HeroSection() {
@@ -95,7 +96,7 @@ function HeroSection() {
                   transition={{ delay: 0.3 }}
                   className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-green-50 border border-green-200"
                 >
-                  <span className="text-green-500 text-sm">📍</span>
+                  <FaMapMarkerAlt className="text-green-500 text-sm" />
                   <span className="text-green-700 text-xs font-semibold">
                     Delivering to {userLocation.city}
                   </span>
@@ -108,7 +109,7 @@ function HeroSection() {
                   onClick={userLocation.refresh}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 border border-gray-200 text-gray-500 text-xs font-medium hover:bg-orange-50 hover:text-orange-500 hover:border-orange-200 transition-colors"
                 >
-                  <span>📍</span> Detect my location
+                  <FaMapMarkerAlt className="text-orange-400" /> Detect my location
                 </motion.button>
               )}
             </motion.div>
@@ -143,7 +144,7 @@ function HeroSection() {
               className="relative"
             >
               <div className="relative flex items-center gap-2 bg-white border border-orange-200 rounded-2xl p-2 shadow-lg hover:border-orange-400 transition-all">
-                <span className="pl-3 text-gray-400 text-lg">🔍</span>
+                <span className="pl-3 text-gray-400 text-lg"><FaSearch /></span>
                 <input
                   type="text"
                   value={searchInput}
@@ -180,7 +181,7 @@ function HeroSection() {
                         onMouseDown={() => { setSearchInput(s); navigate(`/meals?meal=${encodeURIComponent(s)}`); }}
                         className="flex items-center gap-3 px-5 py-3 hover:bg-orange-50 cursor-pointer border-b border-gray-100 last:border-0 transition-colors"
                       >
-                        <span className="text-orange-400 text-sm">🍽️</span>
+                        <FaUtensils className="text-orange-400 text-sm" />
                         <span className="text-gray-700 text-sm font-medium">{s}</span>
                       </div>
                     ))}
@@ -225,7 +226,7 @@ function HeroSection() {
                     onClick={() => navigate(`/meals?tag=${encodeURIComponent(c.tag)}`)}
                     className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-xs font-bold border-2 border-orange-100 bg-white shadow-sm hover:border-orange-400 hover:bg-orange-50 hover:shadow-md transition-all duration-200 text-gray-700"
                   >
-                    <span className="text-base">{c.emoji}</span>
+                    <span className="text-base">{c.icon}</span>
                     {c.label}
                   </motion.button>
                 ))}
@@ -241,11 +242,11 @@ function HeroSection() {
             >
               {[
                 { label: "Happy Customers", value: "10K+" },
-                { label: "Verified Chefs", value: "200+" },
-                { label: "Average Rating", value: "4.9 ⭐" },
+                { label: "Verified Chefs",  value: "200+" },
+                { label: "Average Rating",  value: "4.9", icon: <FaStar className="text-amber-400 inline text-lg" /> },
               ].map((s) => (
                 <div key={s.label}>
-                  <p className="text-2xl font-black text-gray-900">{s.value}</p>
+                  <p className="text-2xl font-black text-gray-900 flex items-center gap-1">{s.value}{s.icon}</p>
                   <p className="text-xs text-gray-400 font-medium mt-0.5">{s.label}</p>
                 </div>
               ))}
@@ -295,7 +296,7 @@ function HeroSection() {
               className="absolute -bottom-5 -left-6 px-5 py-3.5 rounded-2xl shadow-2xl border border-orange-500/20"
               style={{ background: "linear-gradient(135deg, #FF6A2C, #FFB45E)" }}
             >
-              <p className="text-white font-black text-xl">🔥 1K+</p>
+              <p className="text-white font-black text-xl flex items-center gap-1.5"><FaFire /> 1K+</p>
               <p className="text-white/80 text-xs font-semibold">Orders Today</p>
             </motion.div>
 
@@ -306,7 +307,7 @@ function HeroSection() {
               transition={{ delay: 1.2, type: "spring", stiffness: 200 }}
               className="absolute -top-5 -right-6 px-5 py-3.5 rounded-2xl bg-white shadow-2xl border border-orange-100"
             >
-              <p className="text-gray-900 font-black text-xl">⭐ 4.9</p>
+              <p className="text-gray-900 font-black text-xl flex items-center gap-1"><FaStar className="text-amber-400" /> 4.9</p>
               <p className="text-gray-400 text-xs font-semibold">2.5k Reviews</p>
             </motion.div>
 

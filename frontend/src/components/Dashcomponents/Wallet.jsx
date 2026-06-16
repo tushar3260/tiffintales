@@ -93,7 +93,7 @@ export default function Wallet() {
             <div className="animate-spin w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full" />
           </div>
         ) : recentTransactions.length === 0 ? (
-          <p className="text-center text-gray-400 py-8">No orders yet. Start ordering! 🍱</p>
+          <p className="text-center text-gray-400 py-8">No orders yet. Start ordering!</p>
         ) : (
           <div className="divide-y divide-gray-100">
             {recentTransactions.map((txn) => (

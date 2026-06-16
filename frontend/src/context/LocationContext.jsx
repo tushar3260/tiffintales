@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 const LocationContext = createContext(null);
 
 const CACHE_KEY = "tt_user_location";
-const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+const CACHE_TTL = 60 * 60 * 1000; // 1 hour cache — reduces redundant API calls
 
 function loadCache() {
   try {
@@ -133,12 +133,16 @@ export const LocationProvider = ({ children }) => {
           granted: false,
         }));
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
+      // enableHighAccuracy: false = network/WiFi based (instant)
+      // enableHighAccuracy: true  = GPS (5-10 second wait = site lag)
+      { enableHighAccuracy: false, timeout: 5000, maximumAge: 600000 }
     );
   }, []);
 
   useEffect(() => {
-    detect(false);
+    // Delay slightly so it doesn't block initial render
+    const timer = setTimeout(() => detect(false), 300);
+    return () => clearTimeout(timer);
   }, [detect]);
 
   return (

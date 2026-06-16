@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/userContext.jsx";
-import { FaClock, FaTag, FaTimes, FaShoppingCart } from "react-icons/fa";
+import { FaClock, FaTag, FaShoppingCart, FaFireAlt, FaSadTear } from "react-icons/fa";
+import LoginGateModal from "./LoginGateModal.jsx";
 
 const DiscountSection = () => {
   const [discountedMeals, setDiscountedMeals] = useState([]);
@@ -74,22 +75,19 @@ const DiscountSection = () => {
 
       {/* Header */}
       <div className="text-center mb-6 sm:mb-8 relative z-10">
-        <div className="inline-block mb-3">
-          <span className="text-4xl sm:text-5xl md:text-6xl">🔥</span>
-        </div>
+        <span className="section-badge">Limited Time Deals</span>
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 mb-2">
-          Limited Time Offers
+          Hot Offers For You
         </h2>
-        <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-transparent via-[#E57A44] to-transparent mx-auto mb-2"></div>
-        <p className="text-gray-500 text-sm sm:text-base font-medium">
-          Grab these amazing deals before they expire! ⏰
+        <p className="text-gray-500 text-sm sm:text-base">
+          Grab these amazing deals before they expire!
         </p>
       </div>
 
       {/* Meals Grid */}
       {discountedMeals.length === 0 ? (
         <div className="text-center py-12 sm:py-16 bg-white/50 backdrop-blur-xl rounded-2xl border-2 border-white/80">
-          <span className="text-5xl sm:text-6xl mb-4 block">😔</span>
+          <FaSadTear className="text-5xl sm:text-6xl mb-4 text-orange-200 mx-auto" />
           <p className="text-[#6B3A1E]/70 text-base sm:text-lg font-medium">
             No discounted meals available right now
           </p>
@@ -142,8 +140,8 @@ const DiscountSection = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#6B3A1E]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                     {/* Hot Deal Badge */}
-                    <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm text-[#E57A44] text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md">
-                      🔥 HOT DEAL
+                    <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm text-[#E57A44] text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md flex items-center gap-1">
+                      <FaFireAlt className="text-[8px]" /> HOT DEAL
                     </div>
                   </div>
 
@@ -152,10 +150,7 @@ const DiscountSection = () => {
                     {/* Decorative Border */}
                     <div className="w-12 sm:w-16 h-0.5 bg-gradient-to-r from-transparent via-[#E57A44] to-transparent mx-auto mb-2"></div>
 
-                    <h3
-                      className="text-xs sm:text-sm font-bold text-[#6B3A1E] mb-1 sm:mb-2 truncate group-hover:text-[#E57A44] transition-colors duration-200"
-                      style={{ fontFamily: "Georgia, serif" }}
-                    >
+                    <h3 className="text-xs sm:text-sm font-bold text-gray-800 mb-1 sm:mb-2 truncate group-hover:text-orange-500 transition-colors duration-200">
                       {meal.title}
                     </h3>
 
@@ -196,113 +191,12 @@ const DiscountSection = () => {
         </div>
       )}
 
-      {/* Login Modal */}
-      {showLoginModal && (
-        <div
-          className="fixed inset-0 bg-[#6B3A1E]/70 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fadeIn"
-          onClick={() => setShowLoginModal(false)}
-        >
-          <div
-            className="bg-white/95 backdrop-blur-2xl rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-md p-6 sm:p-8 text-center border-2 border-[#E57A44]/30 relative overflow-hidden animate-scaleIn"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Decorative Background */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#F7C35F]/20 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#E57A44]/20 rounded-full blur-3xl"></div>
-
-            {/* Close Button */}
-            <button
-              onClick={() => setShowLoginModal(false)}
-              className="absolute top-4 right-4 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-200"
-            >
-              <FaTimes className="text-[#6B3A1E]" />
-            </button>
-
-            <div className="relative z-10">
-              {/* Icon */}
-              <div className="w-16 sm:w-20 h-16 sm:h-20 mx-auto mb-4 bg-gradient-to-br from-[#F7C35F] to-[#E57A44] rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-3xl sm:text-4xl">🔐</span>
-              </div>
-
-              <h3
-                className="text-xl sm:text-2xl font-bold text-[#6B3A1E] mb-3"
-                style={{
-                  fontFamily: "Georgia, serif",
-                  textShadow: "0 2px 10px rgba(107, 58, 30, 0.1)",
-                }}
-              >
-                Login Required
-              </h3>
-
-              <p className="text-sm sm:text-base text-[#6B3A1E]/80 mb-2">
-                Please login to grab this amazing deal for
-              </p>
-              <p className="text-base sm:text-lg font-bold text-[#E57A44] mb-6">
-                {selectedMeal?.title}
-              </p>
-
-              {/* Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <button
-                  onClick={() => setShowLoginModal(false)}
-                  className="flex-1 px-6 py-3 bg-white/60 backdrop-blur-md text-[#6B3A1E] font-semibold rounded-xl border-2 border-[#6B3A1E]/20 hover:border-[#6B3A1E]/40 hover:bg-white/80 transition-all duration-200 shadow-md text-sm sm:text-base hover:scale-105 active:scale-95"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  onClick={handleLoginRedirect}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-[#E57A44] to-[#F7C35F] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 relative overflow-hidden group text-sm sm:text-base hover:scale-105 active:scale-95"
-                >
-                  <span className="relative z-10">Login Now</span>
-                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        @keyframes scaleIn {
-          from {
-            opacity: 0;
-            transform: scale(0.9);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-
-        .animate-fadeInUp {
-          animation: fadeInUp 0.4s ease-out forwards;
-        }
-
-        .animate-fadeIn {
-          animation: fadeIn 0.2s ease-out;
-        }
-
-        .animate-scaleIn {
-          animation: scaleIn 0.25s ease-out;
-        }
-      `}</style>
+      {/* Login Gate Modal — reusable */}
+      <LoginGateModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        redirectTo={`/order-now/${selectedMeal?._id}`}
+      />
     </div>
   );
 };

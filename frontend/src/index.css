@@ -427,6 +427,13 @@ html.lenis { height: auto; }
   border-radius: var(--radius-md);
 }
 
+/* fadeInUp — used by DiscountSection cards */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeInUp { animation: fadeInUp 0.4s ease-out forwards; }
+
 /* ═══════════════════════════════════════════════════════════════
    PREMIUM GRADIENTS
    ═══════════════════════════════════════════════════════════════ */
@@ -512,8 +519,23 @@ html.lenis { height: auto; }
   padding-left: 16px;
   padding-right: 16px;
 }
+@media (min-width: 480px)  { .container-app { padding-left: 20px; padding-right: 20px; } }
 @media (min-width: 640px)  { .container-app { padding-left: 24px; padding-right: 24px; } }
 @media (min-width: 1024px) { .container-app { padding-left: 32px; padding-right: 32px; } }
+
+/* Mobile bottom nav clearance — prevents content behind bottom nav */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: calc(68px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Input touch improvements for mobile */
+@media (max-width: 767px) {
+  input, select, textarea {
+    font-size: 16px !important; /* prevents iOS zoom on focus */
+  }
+}
 
 /* ═══════════════════════════════════════════════════════════════
    FOCUS TRAP FOR MODALS

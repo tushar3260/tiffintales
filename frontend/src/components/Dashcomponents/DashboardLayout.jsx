@@ -1,4 +1,4 @@
-// DashboardLayout.jsx — Production Ready with premium sidebar & full-fledged back button
+// DashboardLayout.jsx — Light Theme, Clean & Fast
 import React, { useState } from "react";
 import Sidebar from "./Sidebar.jsx";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
@@ -21,7 +21,7 @@ const PAGE_TITLES = {
 
 function getPageTitle(pathname) {
   if (PAGE_TITLES[pathname]) return PAGE_TITLES[pathname];
-  if (/^\/dashboard\/chat\//.test(pathname)) return "Order Chat 💬";
+  if (/^\/dashboard\/chat\//.test(pathname)) return "Order Chat";
   return "Dashboard";
 }
 
@@ -35,24 +35,24 @@ export default function DashboardLayout() {
   const isRoot = location.pathname === "/dashboard" || location.pathname === "/dashboard/";
 
   return (
-    <div className="min-h-screen bg-[#0f0f1a] flex">
+    <div className="min-h-screen bg-gray-50 flex">
 
-      {/* ── Sidebar Desktop ── */}
+      {/* Sidebar Desktop */}
       <div className="hidden md:flex w-64 flex-shrink-0">
-        <div className="fixed top-0 left-0 h-screen w-64 shadow-xl z-40">
+        <div className="fixed top-0 left-0 h-screen w-64 shadow-sm z-40">
           <Sidebar />
         </div>
       </div>
 
-      {/* ── Sidebar Mobile Overlay ── */}
+      {/* Sidebar Mobile Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden"
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
 
-      {/* ── Sidebar Mobile Panel ── */}
+      {/* Sidebar Mobile Panel */}
       <div
         className={`fixed top-0 left-0 h-full w-64 z-50 transform transition-transform duration-300 ease-in-out md:hidden ${
           isOpen ? "translate-x-0" : "-translate-x-full"
@@ -61,23 +61,23 @@ export default function DashboardLayout() {
         <Sidebar onClose={() => setIsOpen(false)} />
       </div>
 
-      {/* ── Main Content Area ── */}
+      {/* Main Content Area */}
       <div className="flex-1 md:ml-0 w-full overflow-hidden">
 
-        {/* ── Sticky Top Bar ── */}
-        <div className="sticky top-0 z-30 bg-[#1a1a2e]/95 backdrop-blur-md border-b border-white/5 shadow-[0_2px_12px_rgba(0,0,0,0.4)]">
+        {/* Sticky Top Bar */}
+        <div className="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
           <div className="flex items-center gap-2 sm:gap-3 px-3 py-2.5 sm:px-5 sm:py-3">
 
-            {/* Mobile hamburger — only on mobile */}
+            {/* Mobile hamburger */}
             <button
               onClick={() => setIsOpen(true)}
-              className="md:hidden p-2 rounded-xl hover:bg-white/5 text-gray-400 transition flex-shrink-0"
+              className="md:hidden p-2 rounded-xl hover:bg-gray-100 text-gray-500 transition flex-shrink-0"
               aria-label="Open sidebar menu"
             >
               <Menu size={20} />
             </button>
 
-            {/* Back Button — shown on ALL screen sizes when not on root dashboard */}
+            {/* Back Button */}
             {!isRoot && (
               <BackButton
                 fallback="/dashboard"
@@ -87,7 +87,7 @@ export default function DashboardLayout() {
             )}
 
             {/* Page Title */}
-            <h1 className="flex-1 text-sm sm:text-base font-bold text-gray-100 truncate">
+            <h1 className="flex-1 text-sm sm:text-base font-bold text-gray-800 truncate">
               {title}
             </h1>
 
@@ -95,7 +95,7 @@ export default function DashboardLayout() {
             <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
               <button
                 onClick={() => navigate("/")}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-gray-500 hover:bg-white/5 text-xs sm:text-sm transition"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-gray-500 hover:bg-gray-100 text-xs sm:text-sm transition"
                 aria-label="Go to home"
               >
                 <Home size={13} /> Home
@@ -113,7 +113,7 @@ export default function DashboardLayout() {
           </div>
         </div>
 
-        {/* ── Page Content — smooth enter animation per route ── */}
+        {/* Page Content */}
         <div className="p-0 page-enter" key={location.pathname}>
           <Outlet />
         </div>

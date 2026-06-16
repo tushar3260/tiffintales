@@ -85,11 +85,21 @@ export default function Charts() {
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-xl p-8 shadow-xl mt-4 h-96"
+      className="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen"
     >
-      <h2 className="font-bold mb-4 text-lg">Weekly Meal Consumption</h2>
-      <div className="w-full h-80">
-        {chartData ? <Line data={chartData} options={options} /> : <p>Loading chart...</p>}
+      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 p-5 rounded-2xl shadow-md text-white mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold">Order Analytics</h1>
+        <p className="text-sm opacity-90 mt-1">Your weekly meal ordering patterns</p>
+      </div>
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <h2 className="font-bold mb-4 text-base text-gray-800">Weekly Order Activity</h2>
+        <div className="w-full h-72">
+          {chartData ? <Line data={chartData} options={options} /> : (
+            <div className="flex items-center justify-center h-full">
+              <div className="animate-spin w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full" />
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   );

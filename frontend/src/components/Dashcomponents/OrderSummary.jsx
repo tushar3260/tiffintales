@@ -1,4 +1,4 @@
-// OrderSummary.jsx — Dashboard Orders Panel (Production Ready)
+// OrderSummary.jsx — Dashboard Orders Panel (Light Theme, No Emojis)
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
@@ -36,7 +36,6 @@ export default function OrderSummary() {
   const filtered = filter === "all" ? orders : orders.filter(o => o.status?.toLowerCase() === filter);
 
   const handleReorder = (order) => {
-    // Navigate to first meal's order-now page
     const mealId = order.meals?.[0]?.mealId?._id;
     if (mealId) navigate(`/order-now/${mealId}`);
   };
@@ -51,7 +50,7 @@ export default function OrderSummary() {
     <div className="p-4 sm:p-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-        <h2 className="text-2xl font-extrabold text-gray-800">📦 My Orders</h2>
+        <h2 className="text-2xl font-extrabold text-gray-800">My Orders</h2>
         <div className="flex gap-2 flex-wrap">
           {["all", "placed", "preparing", "delivered", "cancelled"].map(f => (
             <button
@@ -60,7 +59,7 @@ export default function OrderSummary() {
               className={`px-3 py-1.5 rounded-full text-xs font-semibold capitalize transition ${
                 filter === f
                   ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow"
-                  : "bg-gray-100 text-gray-600 hover:bg-orange-50"
+                  : "bg-gray-100 text-gray-600 hover:bg-orange-50 hover:text-orange-600"
               }`}
             >
               {f}
@@ -72,10 +71,11 @@ export default function OrderSummary() {
       {filtered.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           <FaBoxOpen className="text-5xl mx-auto mb-4 text-gray-300" />
-          <p className="font-semibold text-lg">No orders found</p>
+          <p className="font-semibold text-lg text-gray-500">No orders found</p>
+          <p className="text-sm text-gray-400 mt-1 mb-4">Place your first order to see it here</p>
           <button
             onClick={() => navigate("/meals")}
-            className="mt-4 px-6 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full font-semibold text-sm shadow hover:shadow-md transition"
+            className="px-6 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-semibold text-sm shadow hover:shadow-md transition"
           >
             Browse Meals
           </button>
@@ -109,7 +109,9 @@ export default function OrderSummary() {
                           onError={e => { e.target.src = "https://via.placeholder.com/80x80?text=Food"; }}
                         />
                       ) : (
-                        <div className="w-20 h-20 rounded-xl bg-orange-50 flex items-center justify-center text-3xl">🍱</div>
+                        <div className="w-20 h-20 rounded-xl bg-orange-50 flex items-center justify-center">
+                          <FaBoxOpen className="text-orange-300 text-2xl" />
+                        </div>
                       )}
                     </div>
 
@@ -150,7 +152,7 @@ export default function OrderSummary() {
                             onClick={() => navigate("/dashboard/tracker")}
                             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 transition"
                           >
-                            📍 Track
+                            <FaMapMarkerAlt /> Track
                           </button>
                           <button
                             onClick={() => handleReorder(order)}

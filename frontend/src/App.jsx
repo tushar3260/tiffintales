@@ -8,6 +8,10 @@ import { ChefProvider } from "./pages/Chef/Context/ChefContext.jsx";
 import { AdminProvider } from "./Admin/context/AdminContext.jsx";
 import UserProtect from "./ProtectWrapper/UserProtect.jsx";
 import { LocationProvider } from "./context/LocationContext.jsx";
+import ScrollToTop from "./utils/ScrollToTop.jsx";
+import ErrorBoundary from "./components/ErrorBoundary.jsx";
+import BottomNav from "./components/BottomNav.jsx";
+import FloatingWhatsApp from "./components/FloatingWhatsApp.jsx";
 
 // ── Eagerly loaded (first paint critical) ──
 import LandingPage from "./pages/LandingPage.jsx";
@@ -76,15 +80,31 @@ function App() {
 
   return (
     <div>
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            borderRadius: "12px",
+            fontFamily: "Inter, system-ui, sans-serif",
+            fontSize: "14px",
+            fontWeight: "500",
+            boxShadow: "0 10px 40px rgba(0,0,0,0.12)",
+          },
+        }}
+      />
 
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <LocationProvider>
         <UserProvider>
           <CartProvider>
             <BrowserRouter>
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
+              <ErrorBoundary>
+                <Suspense fallback={<PageLoader />}>
+                  <ScrollToTop />
+                  <BottomNav />
+                  <FloatingWhatsApp />
+                  <Routes>
                   {/* ── Landing Page (eager) ── */}
                   <Route
                     path="/"
@@ -227,8 +247,9 @@ function App() {
                       </AdminProvider>
                     }
                   />
-                </Routes>
-              </Suspense>
+                  </Routes>
+                </Suspense>
+              </ErrorBoundary>
             </BrowserRouter>
           </CartProvider>
         </UserProvider>

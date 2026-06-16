@@ -84,12 +84,12 @@ function RecoCard({ meal, rank, onOrder }) {
       onClick={onOrder}
     >
       {/* Rank badge */}
-      <div className={`absolute -top-2 -left-2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black shadow-md ${
-        rank === 0 ? "bg-gradient-to-br from-yellow-400 to-orange-500 text-white" :
-        rank === 1 ? "bg-gradient-to-br from-gray-300 to-gray-400 text-white" :
-        "bg-gradient-to-br from-orange-300 to-amber-500 text-white"
+      <div className={`absolute -top-2 -left-2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black shadow-md text-white ${
+        rank === 0 ? "bg-gradient-to-br from-yellow-400 to-orange-500" :
+        rank === 1 ? "bg-gradient-to-br from-gray-300 to-gray-400" :
+        "bg-gradient-to-br from-orange-300 to-amber-500"
       }`}>
-        {rank === 0 ? "🥇" : rank === 1 ? "🥈" : "🥉"}
+        {rank === 0 ? "#1" : rank === 1 ? "#2" : "#3"}
       </div>
 
       {/* Image */}
@@ -144,8 +144,9 @@ export default function AIMealRecommender() {
   const [loadingMeals, setLoadingMeals] = useState(false);
   const [computing, setComputing] = useState(false);
 
-  // Pre-fetch meals once
+  // Lazy-fetch meals ONLY when panel opens — not on page load
   useEffect(() => {
+    if (!isOpen || allMeals.length > 0) return; // skip if already loaded
     setLoadingMeals(true);
     axios
       .get(`${import.meta.env.VITE_API_URL}/meals`)
@@ -156,7 +157,7 @@ export default function AIMealRecommender() {
       })
       .catch(() => {})
       .finally(() => setLoadingMeals(false));
-  }, []);
+  }, [isOpen]); // ← only runs when isOpen changes to true
 
   const computeRecs = useCallback((mood, timeId) => {
     setComputing(true);

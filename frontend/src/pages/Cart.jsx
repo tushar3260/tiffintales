@@ -6,7 +6,7 @@ import { FiTrash2 } from "react-icons/fi";
 import { FaMinus, FaPlus, FaShoppingCart, FaLeaf, FaLock, FaArrowRight } from "react-icons/fa";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import { RiSecurePaymentLine } from "react-icons/ri";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useUser } from "../context/userContext";
 import { useCart } from "../context/CartContext";
 import TopNav from "../components/TopNav.jsx";
@@ -42,7 +42,6 @@ const Cart = () => {
 
   return (
     <>
-      <Toaster position="top-right" />
       <TopNav
         onLoginClick={() => navigate("/login")}
         onSignupClick={() => navigate("/signup")}

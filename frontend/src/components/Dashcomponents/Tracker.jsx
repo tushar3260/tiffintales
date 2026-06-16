@@ -1,5 +1,4 @@
-// Tracker.jsx — Full Order Tracker with Map
-// Polls order status every 15 seconds, shows animated progress + map
+// Tracker.jsx — Order Tracker, Light Theme, No Emojis
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,32 +6,31 @@ import { useUser } from "../../context/userContext.jsx";
 import { useNavigate } from "react-router-dom";
 import {
   FaBoxOpen, FaFireAlt, FaMotorcycle, FaCheckCircle,
-  FaTimesCircle, FaSpinner, FaMapMarkerAlt, FaSync,
+  FaTimesCircle, FaSpinner, FaMapMarkerAlt, FaSync, FaComments,
 } from "react-icons/fa";
 
 const BASE = import.meta.env.VITE_API_URL;
 
 const STEPS = [
-  { key: "Placed",    icon: <FaBoxOpen />,     label: "Order Placed",  desc: "Your order has been received" },
-  { key: "Preparing", icon: <FaFireAlt />,     label: "Preparing",     desc: "Chef is cooking your meal" },
-  { key: "Out for Delivery", icon: <FaMotorcycle />, label: "Out for Delivery", desc: "On the way to you" },
-  { key: "Delivered", icon: <FaCheckCircle />, label: "Delivered",     desc: "Enjoy your meal! 🎉" },
+  { key: "Placed",             icon: <FaBoxOpen />,     label: "Order Placed",     desc: "Your order has been received" },
+  { key: "Preparing",          icon: <FaFireAlt />,     label: "Preparing",        desc: "Chef is cooking your meal" },
+  { key: "Out for Delivery",   icon: <FaMotorcycle />,  label: "Out for Delivery", desc: "On the way to you" },
+  { key: "Delivered",          icon: <FaCheckCircle />, label: "Delivered",        desc: "Enjoy your meal!" },
 ];
 
 const COLOR_MAP = {
-  Placed:     { text: "text-purple-600", bg: "bg-purple-100", ring: "ring-purple-400", bar: "from-purple-400 to-blue-500" },
-  Preparing:  { text: "text-blue-600",   bg: "bg-blue-100",   ring: "ring-blue-400",   bar: "from-blue-400 to-cyan-500" },
+  Placed:             { text: "text-purple-600", bg: "bg-purple-100", ring: "ring-purple-400", bar: "from-purple-400 to-blue-500" },
+  Preparing:          { text: "text-blue-600",   bg: "bg-blue-100",   ring: "ring-blue-400",   bar: "from-blue-400 to-cyan-500" },
   "Out for Delivery": { text: "text-orange-600", bg: "bg-orange-100", ring: "ring-orange-400", bar: "from-orange-400 to-yellow-500" },
-  Delivered:  { text: "text-green-600",  bg: "bg-green-100",  ring: "ring-green-400",  bar: "from-green-400 to-emerald-500" },
-  Cancelled:  { text: "text-red-500",    bg: "bg-red-100",    ring: "ring-red-400",    bar: "from-red-400 to-pink-500" },
+  Delivered:          { text: "text-green-600",  bg: "bg-green-100",  ring: "ring-green-400",  bar: "from-green-400 to-emerald-500" },
+  Cancelled:          { text: "text-red-500",    bg: "bg-red-100",    ring: "ring-red-400",    bar: "from-red-400 to-pink-500" },
 };
 
-// Simple embedded map (no npm required)
 function DeliveryMap({ address }) {
   if (!address) return null;
   const label = [address.street, address.city, address.pincode].filter(Boolean).join(", ");
   return (
-    <div className="rounded-2xl overflow-hidden border border-orange-200 shadow-md">
+    <div className="rounded-2xl overflow-hidden border border-orange-200 shadow-sm">
       <div className="bg-orange-50 px-4 py-2 text-xs font-semibold text-orange-700 flex items-center gap-2">
         <FaMapMarkerAlt className="text-orange-500" /> Delivery to: {label}
       </div>
@@ -71,7 +69,7 @@ export default function Tracker() {
         if (updated) setSelected(updated);
       }
     } catch {
-      // silent — shows empty state
+      // silent
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -103,7 +101,7 @@ export default function Tracker() {
       <p className="text-gray-500 font-semibold">No active orders to track</p>
       <p className="text-gray-400 text-sm">Completed & cancelled orders are shown in My Orders</p>
       <button onClick={() => navigate("/meals")} className="px-5 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-bold text-sm shadow hover:shadow-md transition">
-        Order Now 🍱
+        Order Now
       </button>
     </div>
   );
@@ -117,7 +115,7 @@ export default function Tracker() {
     <div className="space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-extrabold text-gray-800">🚀 Live Tracker</h2>
+        <h2 className="text-lg font-extrabold text-gray-800">Live Order Tracker</h2>
         <button
           onClick={() => fetchOrders(true)}
           className={`flex items-center gap-1.5 text-xs font-semibold text-orange-600 hover:text-orange-700 transition ${refreshing ? "opacity-60" : ""}`}
@@ -126,7 +124,7 @@ export default function Tracker() {
         </button>
       </div>
 
-      {/* Order Selector (if multiple active) */}
+      {/* Order Selector */}
       {orders.length > 1 && (
         <div className="flex gap-2 overflow-x-auto pb-1">
           {orders.map((o) => (
@@ -156,7 +154,7 @@ export default function Tracker() {
           >
             {/* Status Banner */}
             <div className={`${cfg.bg} rounded-2xl p-4 flex items-center gap-4`}>
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${cfg.bg} ring-2 ${cfg.ring} shadow-md`}>
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${cfg.bg} ring-2 ${cfg.ring} shadow-sm`}>
                 {currentStep?.icon}
               </div>
               <div>
@@ -174,7 +172,7 @@ export default function Tracker() {
                   return (
                     <div key={step.key} className="flex flex-col items-center gap-1 flex-1">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm transition-all ring-offset-2 ${
-                        done ? `${sc.bg} ${sc.text} ring-2 ${sc.ring} ${i === currentIdx ? "scale-115 shadow-lg" : ""}` : "bg-gray-100 text-gray-400"
+                        done ? `${sc.bg} ${sc.text} ring-2 ${sc.ring} ${i === currentIdx ? "scale-110 shadow-lg" : ""}` : "bg-gray-100 text-gray-400"
                       }`}>
                         {step.icon}
                       </div>
@@ -185,7 +183,6 @@ export default function Tracker() {
                   );
                 })}
               </div>
-              {/* Connecting line */}
               <div className="absolute top-4 left-4 right-4 h-1 bg-gray-200 -z-10 rounded-full">
                 <motion.div
                   className={`h-full rounded-full bg-gradient-to-r ${cfg.bar}`}
@@ -228,7 +225,7 @@ export default function Tracker() {
               onClick={() => navigate(`/dashboard/chat/${selected._id}`)}
               className="w-full py-3 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-2xl font-bold shadow hover:shadow-lg transition text-sm"
             >
-              💬 Chat with Chef
+              <FaComments /> Chat with Chef
             </button>
 
             <p className="text-center text-xs text-gray-400">Auto-refreshes every 15 seconds</p>

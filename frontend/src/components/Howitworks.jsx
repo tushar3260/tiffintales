@@ -1,14 +1,15 @@
-// Howitworks.jsx — Premium redesign
+// Howitworks.jsx — Premium redesign, No Emojis
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { FaMapMarkerAlt, FaSearch, FaCreditCard, FaHome, FaArrowRight } from "react-icons/fa";
 
 const steps = [
   {
     step: "01",
     title: "Pick Location",
     desc: "Share your delivery address or detect it live. We'll show you the best chefs near you.",
-    emoji: "📍",
+    icon: <FaMapMarkerAlt className="text-white text-xl" />,
     gradient: "from-violet-500 to-indigo-500",
     glow: "#7C3AED40",
   },
@@ -16,7 +17,7 @@ const steps = [
     step: "02",
     title: "Browse & Choose",
     desc: "Explore handcrafted dishes from verified home chefs. Filter by cuisine, price, or rating.",
-    emoji: "🍽️",
+    icon: <FaSearch className="text-white text-xl" />,
     gradient: "from-orange-500 to-amber-400",
     glow: "#FF6A2C40",
   },
@@ -24,7 +25,7 @@ const steps = [
     step: "03",
     title: "Quick Payment",
     desc: "Pay securely via UPI, card, or Razorpay. Your transaction is 100% safe & encrypted.",
-    emoji: "💳",
+    icon: <FaCreditCard className="text-white text-xl" />,
     gradient: "from-emerald-500 to-teal-400",
     glow: "#10B98140",
   },
@@ -32,7 +33,7 @@ const steps = [
     step: "04",
     title: "Enjoy at Home",
     desc: "Your meal is prepared fresh and delivered hot. Track your order in real time.",
-    emoji: "❤️",
+    icon: <FaHome className="text-white text-xl" />,
     gradient: "from-rose-500 to-pink-400",
     glow: "#F4365440",
   },
@@ -120,9 +121,9 @@ function Howitworks() {
                   {/* Icon bubble */}
                   <motion.div
                     whileHover={{ scale: 1.15, rotate: 10 }}
-                    className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center text-2xl shadow-lg`}
+                    className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center shadow-lg`}
                   >
-                    {step.emoji}
+                    {step.icon}
                   </motion.div>
                 </div>
 
@@ -156,7 +157,7 @@ function Howitworks() {
             style={{ background: "linear-gradient(135deg, #FF6A2C, #FFB45E)" }}
           >
             Start Ordering Now
-            <span className="text-lg">→</span>
+            <FaArrowRight className="text-base" />
           </motion.button>
           <p className="text-gray-400 text-sm mt-4">No subscription required · Pay per order</p>
         </motion.div>

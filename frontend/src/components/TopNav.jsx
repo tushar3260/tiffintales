@@ -98,8 +98,20 @@ function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
 
         {/* Logo */}
-        <Link to="/" className="flex-shrink-0">
-          <img src={TiffinTalesLogo} alt="Tiffin Tales" className="h-9 w-auto" />
+        <Link to="/" className="flex-shrink-0 flex items-center gap-2">
+          <img
+            src={TiffinTalesLogo}
+            alt="Tiffin Tales"
+            className="h-12 w-auto object-contain"
+            style={{ maxHeight: "48px" }}
+            onError={(e) => { e.target.style.display = "none"; e.target.nextSibling.style.display = "flex"; }}
+          />
+          <span
+            className="hidden items-center text-xl font-black text-gray-900"
+            style={{ display: "none" }}
+          >
+            Tiffin<span className="text-orange-500">Tales</span>
+          </span>
         </Link>
 
         {/* Location Bar — Visible to ALL users (guest + logged-in) */}
@@ -201,11 +213,17 @@ function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
                   onClick={() => setProfileOpen(!profileOpen)}
                   className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl hover:bg-gray-100 transition-colors"
                 >
-                  <img
-                    src={user?.avtar || "https://cdn-icons-png.flaticon.com/512/11018/11018596.png"}
-                    alt="Profile"
-                    className="w-8 h-8 rounded-lg object-cover border-2 border-orange-200"
-                  />
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt="Profile"
+                      className="w-8 h-8 rounded-lg object-cover border-2 border-orange-200"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-bold text-sm border-2 border-orange-200">
+                      {(user?.fullName || user?.name || "U").charAt(0).toUpperCase()}
+                    </div>
+                  )}
                   <span className="hidden sm:block text-sm font-semibold text-gray-700 max-w-[80px] truncate">
                     {user.fullName?.split(" ")[0]}
                   </span>
@@ -232,10 +250,10 @@ function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
                         {/* Links */}
                         <div className="py-1">
                           {[
-                            { label: "Dashboard",    path: "/dashboard",    icon: <HiOutlineViewGrid className="text-base" /> },
-                            { label: "My Orders",    path: "/orders",       icon: <HiOutlineShoppingBag className="text-base" /> },
-                            { label: "Profile",      path: "/profile",      icon: <HiOutlineUser className="text-base" /> },
-                            { label: "Subscriptions",path: "/subscription", icon: <HiOutlineClipboardList className="text-base" /> },
+                            { label: "Dashboard",    path: "/dashboard",              icon: <HiOutlineViewGrid className="text-base" /> },
+                            { label: "My Orders",    path: "/dashboard/orders",       icon: <HiOutlineShoppingBag className="text-base" /> },
+                            { label: "Profile",      path: "/profile",                icon: <HiOutlineUser className="text-base" /> },
+                            { label: "Subscriptions",path: "/dashboard/subscription", icon: <HiOutlineClipboardList className="text-base" /> },
                           ].map((item) => (
                             <button
                               key={item.path}
@@ -324,10 +342,10 @@ function TopNav({ onLoginClick, onSignupClick, disableButtons }) {
               </button>
               {user ? (
                 <>
-                  <button onClick={() => { navigate("/cart");       setMenuOpen(false); }} className="block w-full text-left py-2.5 px-3 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"><FaShoppingCart className="text-gray-400" /> Cart {cartCount > 0 && `(${cartCount})`}</button>
-                  <button onClick={() => { navigate("/orders");     setMenuOpen(false); }} className="block w-full text-left py-2.5 px-3 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"><HiOutlineShoppingBag className="text-gray-400" /> My Orders</button>
-                  <button onClick={() => { navigate("/dashboard");  setMenuOpen(false); }} className="block w-full text-left py-2.5 px-3 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"><HiOutlineViewGrid className="text-gray-400" /> Dashboard</button>
-                  <button onClick={handleLogout} className="block w-full text-left py-2.5 px-3 rounded-lg text-sm text-red-500 font-semibold hover:bg-red-50 transition-colors flex items-center gap-2"><FaSignOutAlt /> Sign Out</button>
+                  <button onClick={() => { navigate("/cart");              setMenuOpen(false); }} className="flex w-full items-center gap-2 py-2.5 px-3 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors"><FaShoppingCart className="text-gray-400" /> Cart {cartCount > 0 && `(${cartCount})`}</button>
+                  <button onClick={() => { navigate("/dashboard/orders"); setMenuOpen(false); }} className="flex w-full items-center gap-2 py-2.5 px-3 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors"><HiOutlineShoppingBag className="text-gray-400" /> My Orders</button>
+                  <button onClick={() => { navigate("/dashboard");         setMenuOpen(false); }} className="flex w-full items-center gap-2 py-2.5 px-3 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors"><HiOutlineViewGrid className="text-gray-400" /> Dashboard</button>
+                  <button onClick={handleLogout} className="flex w-full items-center gap-2 py-2.5 px-3 rounded-lg text-sm text-red-500 font-semibold hover:bg-red-50 transition-colors"><FaSignOutAlt /> Sign Out</button>
                 </>
               ) : (
                 <div className="flex gap-2 pt-2">

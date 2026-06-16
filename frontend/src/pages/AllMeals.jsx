@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { FaMapMarkerAlt, FaStar, FaFilter, FaTimes } from "react-icons/fa";
+import { FaMapMarkerAlt, FaStar, FaFilter, FaTimes, FaSearch, FaLeaf, FaTag, FaShoppingCart, FaEye, FaUtensils, FaSun, FaMoon, FaCheck } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUser } from "../context/userContext";
-import { Dialog } from "@headlessui/react";
+import LoginGateModal from "../components/LoginGateModal";
 import TopNav from "../components/TopNav";
 
 const AllMeals = () => {
@@ -22,7 +22,7 @@ const AllMeals = () => {
 
   // Filters
   const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("meal")?.toLowerCase() || ""
+    searchParams.get("meal") || ""
   );
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -38,7 +38,7 @@ const AllMeals = () => {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/meals`);
       setMeals(res.data);
     } catch {
-      setError("⚠️ Could not load meals. Try again.");
+      setError("Could not load meals. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -49,7 +49,7 @@ const AllMeals = () => {
   }, []);
 
   const filteredMeals = meals.filter((meal) => {
-    const matchTitle = meal.title?.toLowerCase().includes(searchQuery);
+    const matchTitle = meal.title?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchMinPrice = minPrice ? meal.price >= Number(minPrice) : true;
     const matchMaxPrice = maxPrice ? meal.price <= Number(maxPrice) : true;
     const matchVeg = vegOnly ? meal.tags?.includes("Veg") : true;
@@ -86,11 +86,13 @@ const AllMeals = () => {
   const handleViewDetails = (meal) => {
     setSelectedMeal(meal);
     setShowDetailsModal(true);
+    document.body.style.overflow = "hidden";
   };
 
   const closeDetailsModal = () => {
     setShowDetailsModal(false);
     setSelectedMeal(null);
+    document.body.style.overflow = "";
   };
 
   const clearFilters = () => {
@@ -167,7 +169,7 @@ const AllMeals = () => {
                   className="w-full px-4 sm:px-5 py-3 sm:py-3.5 bg-white border-2 border-gray-200 rounded-xl sm:rounded-2xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-orange-400 transition-all duration-300 shadow-sm text-sm sm:text-base"
                 />
                 <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-[#E57A44] text-lg sm:text-xl">
-                  🔍
+                  <FaSearch />
                 </div>
               </div>
 
@@ -266,8 +268,8 @@ const AllMeals = () => {
                         className="w-full px-3 py-2 bg-white/70 backdrop-blur-sm border border-[#E57A44]/30 rounded-lg text-[#6B3A1E] focus:outline-none focus:border-[#E57A44] transition-all text-sm"
                       >
                         <option value="">All Time Slots</option>
-                        <option value="Lunch">🌞 Lunch</option>
-                        <option value="Dinner">🌙 Dinner</option>
+                        <option value="Lunch">Lunch</option>
+                        <option value="Dinner">Dinner</option>
                       </select>
                     </div>
 
@@ -280,9 +282,9 @@ const AllMeals = () => {
                           onChange={(e) => setVegOnly(e.target.checked)}
                           className="w-4 h-4 sm:w-5 sm:h-5 accent-[#E57A44] cursor-pointer"
                         />
-                        <span className="text-xs sm:text-sm text-[#6B3A1E] font-medium group-hover:text-[#E57A44] transition-colors">
-                          🥬 Vegetarian Only
-                        </span>
+                        <span className="text-xs sm:text-sm text-[#6B3A1E] font-medium group-hover:text-[#E57A44] transition-colors flex items-center gap-1.5">
+                            <FaLeaf className="text-green-500" /> Vegetarian Only
+                          </span>
                       </label>
 
                       <label className="flex items-center gap-2 cursor-pointer group">
@@ -292,9 +294,9 @@ const AllMeals = () => {
                           onChange={(e) => setDiscountOnly(e.target.checked)}
                           className="w-4 h-4 sm:w-5 sm:h-5 accent-[#E57A44] cursor-pointer"
                         />
-                        <span className="text-xs sm:text-sm text-[#6B3A1E] font-medium group-hover:text-[#E57A44] transition-colors">
-                          💰 Discounted Offers
-                        </span>
+                        <span className="text-xs sm:text-sm text-[#6B3A1E] font-medium group-hover:text-[#E57A44] transition-colors flex items-center gap-1.5">
+                            <FaTag className="text-orange-500" /> Discounted Offers
+                          </span>
                       </label>
 
                       <label className="flex items-center gap-2 cursor-pointer group">
@@ -304,9 +306,9 @@ const AllMeals = () => {
                           onChange={(e) => setActiveOnly(e.target.checked)}
                           className="w-4 h-4 sm:w-5 sm:h-5 accent-[#E57A44] cursor-pointer"
                         />
-                        <span className="text-xs sm:text-sm text-[#6B3A1E] font-medium group-hover:text-[#E57A44] transition-colors">
-                          ✅ Active Meals Only
-                        </span>
+                        <span className="text-xs sm:text-sm text-[#6B3A1E] font-medium group-hover:text-[#E57A44] transition-colors flex items-center gap-1.5">
+                            <FaCheck className="text-emerald-500" /> Active Meals Only
+                          </span>
                       </label>
                     </div>
                   </div>
@@ -356,7 +358,7 @@ const AllMeals = () => {
                 className="text-center py-12 sm:py-20"
               >
                 <div className="inline-block px-6 sm:px-8 py-6 sm:py-8 bg-white/50 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-lg">
-                  <span className="text-5xl sm:text-6xl mb-4 block">🔍</span>
+                  <FaSearch className="text-5xl sm:text-6xl mb-4 text-orange-200 mx-auto" />
                   <p className="text-[#6B3A1E] font-semibold text-base sm:text-lg mb-2">No meals found</p>
                   <p className="text-[#6B3A1E]/60 text-xs sm:text-sm">Try adjusting your filters</p>
                 </div>
@@ -399,8 +401,8 @@ const AllMeals = () => {
 
                         {/* View Details on Hover */}
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <span className="bg-white/90 backdrop-blur-sm text-[#6B3A1E] px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-semibold shadow-lg">
-                            👁️ View Details
+                          <span className="bg-white/90 backdrop-blur-sm text-[#6B3A1E] px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-semibold shadow-lg flex items-center gap-1">
+                            <FaEye className="text-[10px]" /> View Details
                           </span>
                         </div>
                       </motion.div>
@@ -438,8 +440,8 @@ const AllMeals = () => {
                             Homemade
                           </span>
                           {meal.tags?.includes("Veg") && (
-                            <span className="text-[8px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full font-medium">
-                              🥬 Veg
+                            <span className="text-[8px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full font-medium flex items-center gap-0.5">
+                              <FaLeaf className="text-[7px]" /> Veg
                             </span>
                           )}
                         </div>
@@ -540,15 +542,15 @@ const AllMeals = () => {
 
                   {/* Tags */}
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <span className="text-xs sm:text-sm px-3 py-1 bg-green-100 text-green-700 rounded-full font-medium">
-                      🌿 Fresh
+                    <span className="text-xs sm:text-sm px-3 py-1 bg-green-100 text-green-700 rounded-full font-medium flex items-center gap-1">
+                      <FaLeaf className="text-xs" /> Fresh
                     </span>
-                    <span className="text-xs sm:text-sm px-3 py-1 bg-red-100 text-red-700 rounded-full font-medium">
-                      🏠 Homemade
+                    <span className="text-xs sm:text-sm px-3 py-1 bg-red-100 text-red-700 rounded-full font-medium flex items-center gap-1">
+                      <FaUtensils className="text-xs" /> Homemade
                     </span>
                     {selectedMeal.tags?.includes("Veg") && (
-                      <span className="text-xs sm:text-sm px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full font-medium">
-                        🥬 Vegetarian
+                      <span className="text-xs sm:text-sm px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full font-medium flex items-center gap-1">
+                        <FaLeaf className="text-xs" /> Vegetarian
                       </span>
                     )}
                   </div>
@@ -559,7 +561,7 @@ const AllMeals = () => {
                   {/* Description */}
                   <div className="mb-5 sm:mb-6">
                     <h3 className="text-base sm:text-lg font-semibold text-[#6B3A1E] mb-2 flex items-center gap-2">
-                      <span>📖</span> About this dish
+                      <FaUtensils className="text-orange-400" /> About this dish
                     </h3>
                     <p className="text-sm sm:text-base text-[#6B3A1E]/80 leading-relaxed">
                       {selectedMeal.description ||
@@ -571,7 +573,7 @@ const AllMeals = () => {
                   {(selectedMeal.availableDays || selectedMeal.timeSlots) && (
                     <div className="mb-5 sm:mb-6">
                       <h3 className="text-base sm:text-lg font-semibold text-[#6B3A1E] mb-3 flex items-center gap-2">
-                        <span>🕒</span> Availability
+                        <FaStar className="text-orange-400" /> Availability
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {selectedMeal.availableDays && selectedMeal.availableDays.length > 0 && (
@@ -601,9 +603,9 @@ const AllMeals = () => {
                               {selectedMeal.timeSlots.map((slot) => (
                                 <span
                                   key={slot}
-                                  className="text-xs px-2 py-1 bg-white/80 text-[#6B3A1E] rounded-lg font-medium"
+                                  className="text-xs px-2 py-1 bg-white/80 text-[#6B3A1E] rounded-lg font-medium flex items-center gap-1"
                                 >
-                                  {slot === "Lunch" ? "🌞" : "🌙"} {slot}
+                                  {slot === "Lunch" ? <FaSun className="text-yellow-500" /> : <FaMoon className="text-indigo-500" />} {slot}
                                 </span>
                               ))}
                             </div>
@@ -616,15 +618,15 @@ const AllMeals = () => {
                   {/* Additional Info Cards */}
                   <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-5 sm:mb-6">
                     <div className="bg-[#FFF7EB] rounded-xl p-3 sm:p-4 text-center border border-[#E57A44]/20">
-                      <span className="text-2xl sm:text-3xl mb-1 block">🍽️</span>
+                      <FaUtensils className="text-3xl text-orange-400 mx-auto mb-1" />
                       <p className="text-[10px] sm:text-xs text-[#6B3A1E]/70 font-medium">Fresh & Hot</p>
                     </div>
                     <div className="bg-[#FFF7EB] rounded-xl p-3 sm:p-4 text-center border border-[#E57A44]/20">
-                      <span className="text-2xl sm:text-3xl mb-1 block">⭐</span>
+                      <FaStar className="text-3xl text-amber-400 mx-auto mb-1" />
                       <p className="text-[10px] sm:text-xs text-[#6B3A1E]/70 font-medium">Top Rated</p>
                     </div>
                     <div className="bg-[#FFF7EB] rounded-xl p-3 sm:p-4 text-center border border-[#E57A44]/20">
-                      <span className="text-2xl sm:text-3xl mb-1 block">💚</span>
+                      <FaLeaf className="text-3xl text-green-400 mx-auto mb-1" />
                       <p className="text-[10px] sm:text-xs text-[#6B3A1E]/70 font-medium">Healthy</p>
                     </div>
                   </div>
@@ -648,7 +650,7 @@ const AllMeals = () => {
                       whileHover={{ scale: 1.02 }}
                       className="flex-1 bg-gradient-to-r from-[#E57A44] to-[#F7C35F] text-white font-bold px-4 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group text-sm sm:text-base"
                     >
-                      <span className="relative z-10">Order Now 🛒</span>
+                      <span className="relative z-10 flex items-center justify-center gap-2"><FaShoppingCart /> Order Now</span>
                       <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                     </motion.button>
                   </div>
@@ -658,86 +660,16 @@ const AllMeals = () => {
           )}
         </AnimatePresence>
 
-        {/* Login Popup */}
-        <Dialog
-          open={isLoginPopupOpen}
+
+        {/* Login Gate Modal — reusable */}
+        <LoginGateModal
+          isOpen={isLoginPopupOpen}
           onClose={() => setIsLoginPopupOpen(false)}
-          className="relative z-50"
-        >
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-[#6B3A1E]/60 backdrop-blur-md"
-            aria-hidden="true"
-          />
-
-          <div className="fixed inset-0 flex items-center justify-center p-4">
-            <Dialog.Panel
-              as={motion.div}
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white/50 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-6 sm:p-8 max-w-sm w-full mx-auto shadow-2xl border border-white/60 relative overflow-hidden"
-            >
-              {/* Decorative Background */}
-              <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-[#F7C35F]/20 rounded-full blur-3xl"></div>
-              <div className="absolute bottom-0 left-0 w-24 sm:w-32 h-24 sm:h-32 bg-[#E57A44]/20 rounded-full blur-3xl"></div>
-
-              <div className="relative z-10">
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, type: "spring" }}
-                  className="w-16 sm:w-20 h-16 sm:h-20 mx-auto mb-4 bg-gradient-to-br from-[#F7C35F] to-[#E57A44] rounded-full flex items-center justify-center shadow-lg"
-                >
-                  <span className="text-3xl sm:text-4xl">🔐</span>
-                </motion.div>
-
-                <Dialog.Title
-                  className="text-xl sm:text-2xl font-bold text-[#6B3A1E] mb-3 text-center"
-                  style={{
-                    fontFamily: "Georgia, serif",
-                    textShadow: "0 2px 10px rgba(107, 58, 30, 0.1)",
-                  }}
-                >
-                  Login Required
-                </Dialog.Title>
-
-                <p className="text-[#6B3A1E]/80 mb-6 sm:mb-8 text-sm sm:text-base font-medium text-center">
-                  Please login to place your order and start your culinary journey.
-                </p>
-
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                  <motion.button
-                    onClick={() => {
-                      sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
-                      navigate("/login");
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    whileHover={{ scale: 1.05 }}
-                    className="flex-1 bg-gradient-to-r from-[#E57A44] to-[#F7C35F] text-white font-semibold px-6 sm:px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group text-sm sm:text-base"
-                  >
-                    <span className="relative z-10">Go to Login</span>
-                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                  </motion.button>
-
-                  <motion.button
-                    onClick={() => setIsLoginPopupOpen(false)}
-                    whileTap={{ scale: 0.95 }}
-                    whileHover={{ scale: 1.05 }}
-                    className="flex-1 bg-white/60 backdrop-blur-md text-[#6B3A1E] font-semibold px-6 sm:px-8 py-3 rounded-xl border-2 border-[#6B3A1E]/20 hover:border-[#6B3A1E]/40 hover:bg-white/80 transition-all duration-300 shadow-md text-sm sm:text-base"
-                  >
-                    Cancel
-                  </motion.button>
-                </div>
-              </div>
-            </Dialog.Panel>
-          </div>
-        </Dialog>
+          redirectTo={window.location.pathname}
+        />
       </section>
     </>
   );
 };
 
-export default AllMeals;
+export default AllMeals;

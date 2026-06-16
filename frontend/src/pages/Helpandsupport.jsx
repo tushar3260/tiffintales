@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { FaChevronDown, FaChevronRight, FaEnvelope, FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaEnvelope, FaWhatsapp, FaPhoneAlt, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import TopNav from "../components/TopNav";
 
 const faqs = [
@@ -180,9 +181,12 @@ function HelpSupport() {
           {/* FAQs List */}
           <div className="space-y-3">
             {filtered.map((faq, idx) => (
-              <div
+              <motion.div
                 key={idx}
-                className={`border rounded-2xl overflow-hidden transition-all ${
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.04 }}
+                className={`border rounded-2xl overflow-hidden transition-colors ${
                   openIndex === idx
                     ? "border-orange-200 bg-orange-50"
                     : "border-zinc-100 bg-white hover:border-orange-100"
@@ -191,6 +195,7 @@ function HelpSupport() {
                 <button
                   onClick={() => toggle(idx)}
                   className="flex justify-between items-center w-full text-left px-5 py-4 group"
+                  aria-expanded={openIndex === idx}
                 >
                   <div className="flex items-center gap-3 flex-1 pr-4">
                     <span className="text-xs font-bold px-2.5 py-1 bg-orange-100 text-orange-600 rounded-full whitespace-nowrap">
@@ -200,20 +205,32 @@ function HelpSupport() {
                       {faq.question}
                     </span>
                   </div>
-                  {openIndex === idx ? (
-                    <FaChevronDown className="text-orange-500 flex-shrink-0" />
-                  ) : (
-                    <FaChevronRight className="text-zinc-400 flex-shrink-0" />
-                  )}
+                  <motion.div
+                    animate={{ rotate: openIndex === idx ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex-shrink-0"
+                  >
+                    <FaChevronDown className={openIndex === idx ? "text-orange-500" : "text-zinc-400"} />
+                  </motion.div>
                 </button>
-                {openIndex === idx && (
-                  <div className="px-5 pb-5">
-                    <p className="text-sm text-zinc-600 leading-relaxed border-t border-orange-100 pt-4">
-                      {faq.answer}
-                    </p>
-                  </div>
-                )}
-              </div>
+
+                <AnimatePresence initial={false}>
+                  {openIndex === idx && (
+                    <motion.div
+                      key="content"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.22, ease: "easeInOut" }}
+                      className="overflow-hidden"
+                    >
+                      <p className="px-5 pb-5 text-sm text-zinc-600 leading-relaxed border-t border-orange-100 pt-4">
+                        {faq.answer}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             ))}
           </div>
 
@@ -226,23 +243,23 @@ function HelpSupport() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
                 href="mailto:support@tiffintalesindia.me"
-                className="px-6 py-3 bg-white text-orange-600 font-bold rounded-xl hover:bg-orange-50 transition text-sm"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-orange-600 font-bold rounded-xl hover:bg-orange-50 transition text-sm"
               >
-                📧 Email Us
+                <FaEnvelope /> Email Us
               </a>
               <a
                 href="https://wa.me/919109999999"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-3 bg-white/20 text-white font-bold rounded-xl border border-white/30 hover:bg-white/30 transition text-sm"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-white/20 text-white font-bold rounded-xl border border-white/30 hover:bg-white/30 transition text-sm"
               >
-                💬 WhatsApp
+                <FaWhatsapp /> WhatsApp
               </a>
               <button
                 onClick={() => navigate("/contact")}
-                className="px-6 py-3 bg-white/20 text-white font-bold rounded-xl border border-white/30 hover:bg-white/30 transition text-sm"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-white/20 text-white font-bold rounded-xl border border-white/30 hover:bg-white/30 transition text-sm"
               >
-                📝 Contact Form
+                <FaEdit /> Contact Form
               </button>
             </div>
           </div>

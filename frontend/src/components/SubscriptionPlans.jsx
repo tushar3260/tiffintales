@@ -1,6 +1,6 @@
 // SubscriptionPlans.jsx — Light Premium Design
 import React from "react";
-import { FaFire, FaCrown, FaLeaf, FaCheck } from "react-icons/fa";
+import { FaFire, FaCrown, FaLeaf, FaCheck, FaUtensils, FaStar, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -57,9 +57,9 @@ const SubscriptionPlans = () => {
             initial={{ opacity: 0, y: -10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase border border-orange-300 text-orange-600 bg-orange-50 mb-5"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase border border-orange-300 text-orange-600 bg-orange-50 mb-5"
           >
-            🍱 Meal Subscription
+            <FaUtensils className="text-sm" /> Meal Subscription
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -109,12 +109,12 @@ const SubscriptionPlans = () => {
                 }`}
               >
                 {plan.popular && (
-                  <div
-                    className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white shadow-lg"
-                    style={{ background: "linear-gradient(135deg, #FF6A2C, #FFB45E)" }}
-                  >
-                    ⭐ Most Popular
-                  </div>
+                    <div
+                      className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white shadow-lg flex items-center gap-1.5"
+                      style={{ background: "linear-gradient(135deg, #FF6A2C, #FFB45E)" }}
+                    >
+                      <FaStar className="text-yellow-300 text-[10px]" /> Most Popular
+                    </div>
                 )}
 
                 {/* Icon */}
@@ -149,8 +149,8 @@ const SubscriptionPlans = () => {
           ))}
         </div>
 
-        <p className="text-center text-gray-400 text-sm mt-10">
-          🔒 Secure payments · Cancel anytime · No hidden fees
+        <p className="text-center text-gray-400 text-sm mt-10 flex items-center justify-center gap-2">
+          <FaLock className="text-emerald-500 text-xs" /> Secure payments · Cancel anytime · No hidden fees
         </p>
       </div>
     </section>

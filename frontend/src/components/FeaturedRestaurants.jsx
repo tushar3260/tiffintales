@@ -57,14 +57,17 @@ const FeaturedRestaurants = () => {
 
   if (chefs.length === 0) return null;
 
+  const closeModal = () => {
+    setSelectedChef(null);
+    document.body.style.overflow = "";
+  };
+
   return (
     <section className="py-20 px-4 bg-gradient-to-b from-orange-50/50 to-white">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase border border-orange-300 text-orange-600 bg-orange-50 mb-4">
-            Meet the Chefs
-          </span>
+          <span className="section-badge">Meet the Chefs</span>
           <h2 className="text-4xl sm:text-5xl font-black text-gray-900">
             Your{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">
@@ -87,7 +90,7 @@ const FeaturedRestaurants = () => {
               transition={{ delay: i * 0.07 }}
               whileHover={{ y: -6 }}
               className="group relative bg-white border border-orange-100 rounded-3xl p-6 text-center hover:border-orange-300 hover:shadow-xl transition-all duration-300 cursor-pointer shadow-sm"
-              onClick={() => setSelectedChef(chef)}
+              onClick={() => {setSelectedChef(chef); document.body.style.overflow = "hidden";}}
             >
               {/* Avatar with gradient ring */}
               <div className="relative mx-auto mb-4 w-20 h-20">
@@ -121,7 +124,7 @@ const FeaturedRestaurants = () => {
 
               <button
                 className="mt-4 w-full py-2 rounded-xl text-xs font-bold text-orange-500 border border-orange-200 hover:bg-orange-50 hover:border-orange-400 transition-all"
-                onClick={(e) => { e.stopPropagation(); setSelectedChef(chef); }}
+                onClick={(e) => { e.stopPropagation(); setSelectedChef(chef); document.body.style.overflow = "hidden"; }}
               >
                 View Profile
               </button>
@@ -144,83 +147,81 @@ const FeaturedRestaurants = () => {
 
       {/* Chef Detail Modal */}
       <AnimatePresence>
-        {selectedChef && (() => {
-          const locationStr = getLocationStr(selectedChef.location); // ✅ safe
-          return (
+        {selectedChef && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4"
+            onClick={closeModal}
+          >
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4"
-              onClick={() => setSelectedChef(null)}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", damping: 25 }}
+              className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative"
+              onClick={(e) => e.stopPropagation()}
             >
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                transition={{ type: "spring", damping: 25 }}
-                className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative"
-                onClick={(e) => e.stopPropagation()}
+              {/* Close */}
+              <button
+                onClick={closeModal}
+                className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-red-50 hover:text-red-500 transition"
               >
-                {/* Close */}
+                <FaTimes size={12} />
+              </button>
+
+              {/* Modal Header */}
+              <div className={`bg-gradient-to-br ${AVATAR_GRADIENTS[chefs.indexOf(selectedChef) % AVATAR_GRADIENTS.length]} p-8 text-center`}>
+                <div className="w-24 h-24 rounded-full bg-white/30 flex items-center justify-center text-white text-3xl font-black mx-auto mb-3 shadow-lg overflow-hidden">
+                  {selectedChef.photo
+                    ? <img src={selectedChef.photo} alt={selectedChef.name} className="w-full h-full object-cover" onError={(e)=>{e.target.style.display='none';}} />
+                    : selectedChef.name?.charAt(0)?.toUpperCase() || "C"
+                  }
+                </div>
+                <h2 className="text-2xl font-black text-white">{selectedChef.name}</h2>
+                <p className="text-white/80 text-sm mt-1 capitalize">
+                  {selectedChef.cuisine?.join(", ") || "Multi-cuisine"}
+                </p>
+                {/* ✅ FIX: safe location string, no object render */}
+                {getLocationStr(selectedChef.location) && (
+                  <p className="text-white/60 text-xs mt-1 flex items-center justify-center gap-1">
+                    <FaMapMarkerAlt size={10} /> {getLocationStr(selectedChef.location)}
+                  </p>
+                )}
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-6 space-y-3">
+                {selectedChef.phone && (
+                  <div className="flex items-center gap-3 bg-orange-50 rounded-xl px-4 py-3">
+                    <FaPhone className="text-orange-400" size={14} />
+                    <span className="text-gray-700 text-sm">{selectedChef.phone}</span>
+                  </div>
+                )}
+                {selectedChef.email && (
+                  <div className="flex items-center gap-3 bg-orange-50 rounded-xl px-4 py-3">
+                    <FaEnvelope className="text-orange-400" size={14} />
+                    <span className="text-gray-700 text-sm">{selectedChef.email}</span>
+                  </div>
+                )}
+                {selectedChef.bio && (
+                  <div className="bg-gray-50 rounded-xl px-4 py-3">
+                    <p className="text-gray-600 text-sm leading-relaxed">{selectedChef.bio}</p>
+                  </div>
+                )}
+
                 <button
-                  onClick={() => setSelectedChef(null)}
-                  className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-red-50 hover:text-red-500 transition"
+                  onClick={() => { closeModal(); navigate("/meals"); }}
+                  className="mt-2 w-full py-3 rounded-xl font-bold text-white text-sm bg-gradient-to-r from-orange-500 to-red-500 shadow hover:shadow-md transition"
                 >
-                  <FaTimes size={12} />
+                  Order from {selectedChef.name?.split(" ")[0]} →
                 </button>
 
-                {/* Modal Header */}
-                <div className={`bg-gradient-to-br ${AVATAR_GRADIENTS[chefs.indexOf(selectedChef) % AVATAR_GRADIENTS.length]} p-8 text-center`}>
-                  <div className="w-24 h-24 rounded-full bg-white/30 flex items-center justify-center text-white text-3xl font-black mx-auto mb-3 shadow-lg overflow-hidden">
-                    {selectedChef.photo
-                      ? <img src={selectedChef.photo} alt={selectedChef.name} className="w-full h-full object-cover" onError={(e)=>{e.target.style.display='none';}} />
-                      : selectedChef.name?.charAt(0)?.toUpperCase() || "C"
-                    }
-                  </div>
-                  <h2 className="text-2xl font-black text-white">{selectedChef.name}</h2>
-                  <p className="text-white/80 text-sm mt-1 capitalize">
-                    {selectedChef.cuisine?.join(", ") || "Multi-cuisine"}
-                  </p>
-                  {/* ✅ FIX: safe location string, no object render */}
-                  {locationStr && (
-                    <p className="text-white/60 text-xs mt-1 flex items-center justify-center gap-1">
-                      <FaMapMarkerAlt size={10} /> {locationStr}
-                    </p>
-                  )}
-                </div>
-
-                {/* Modal Body */}
-                <div className="p-6 space-y-3">
-                  {selectedChef.phone && (
-                    <div className="flex items-center gap-3 bg-orange-50 rounded-xl px-4 py-3">
-                      <FaPhone className="text-orange-400" size={14} />
-                      <span className="text-gray-700 text-sm">{selectedChef.phone}</span>
-                    </div>
-                  )}
-                  {selectedChef.email && (
-                    <div className="flex items-center gap-3 bg-orange-50 rounded-xl px-4 py-3">
-                      <FaEnvelope className="text-orange-400" size={14} />
-                      <span className="text-gray-700 text-sm">{selectedChef.email}</span>
-                    </div>
-                  )}
-                  {selectedChef.bio && (
-                    <div className="bg-gray-50 rounded-xl px-4 py-3">
-                      <p className="text-gray-600 text-sm leading-relaxed">{selectedChef.bio}</p>
-                    </div>
-                  )}
-
-                  <button
-                    onClick={() => { setSelectedChef(null); navigate("/meals"); }}
-                    className="mt-2 w-full py-3 rounded-xl font-bold text-white text-sm bg-gradient-to-r from-orange-500 to-red-500 shadow hover:shadow-md transition"
-                  >
-                    Order from {selectedChef.name?.split(" ")[0]} →
-                  </button>
-                </div>
-              </motion.div>
+              </div>
             </motion.div>
-          );
-        })()}
+          </motion.div>
+        )}
       </AnimatePresence>
     </section>
   );

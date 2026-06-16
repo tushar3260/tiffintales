@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import { FaCheckCircle, FaWallet, FaUtensils, FaShoppingBag, FaArrowRight } from "react-icons/fa";
 import { HiOutlineShoppingBag, HiOutlineClipboardList, HiOutlineViewGrid } from "react-icons/hi";
-import { RiChefLine } from "react-icons/ri";
+import { RiRestaurantLine } from "react-icons/ri";
 import { useUser } from "../context/userContext.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -48,7 +48,7 @@ export default function UserDashboard() {
     { label: "Browse Meals",   path: "/meals",                  icon: <FaUtensils className="text-xl text-orange-500" /> },
     { label: "My Orders",      path: "/dashboard/orders",       icon: <HiOutlineShoppingBag className="text-xl text-blue-500" /> },
     { label: "Subscriptions",  path: "/dashboard/subscription", icon: <HiOutlineClipboardList className="text-xl text-emerald-500" /> },
-    { label: "Find Chefs",     path: "/allchef",                icon: <RiChefLine className="text-xl text-purple-500" /> },
+    { label: "Find Chefs",     path: "/allchef",                icon: <RiRestaurantLine className="text-xl text-purple-500" /> },
   ];
 
   return (
@@ -146,7 +146,7 @@ export default function UserDashboard() {
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <h2 className="font-bold text-gray-900">Recent Orders</h2>
           <button
-            onClick={() => navigate("/orders")}
+            onClick={() => navigate("/dashboard/orders")}
             className="text-sm text-orange-500 hover:text-orange-600 font-semibold flex items-center gap-1 transition-colors"
           >
             View All <FaArrowRight className="text-xs" />
@@ -190,7 +190,7 @@ export default function UserDashboard() {
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.08 }}
-                      onClick={() => navigate("/orders")}
+                      onClick={() => navigate("/dashboard/orders")}
                     >
                       <td className="py-3.5 px-5 text-sm text-gray-500">
                         {new Date(order.createdAt).toLocaleDateString("en-IN")}
@@ -218,7 +218,7 @@ export default function UserDashboard() {
                 <div
                   key={order._id}
                   className="px-5 py-4 hover:bg-gray-50 transition-colors cursor-pointer"
-                  onClick={() => navigate("/orders")}
+                  onClick={() => navigate("/dashboard/orders")}
                 >
                   <div className="flex justify-between items-start gap-3">
                     <div className="min-w-0">

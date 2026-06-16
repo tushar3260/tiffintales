@@ -172,17 +172,13 @@ const LandingPage = ({ onLoginClick, onSignupClick, disableButtons }) => {
         <LiveNearYou />
 
         {/* 4. Popular Meals */}
-        <div className="bg-white py-6 px-4 sm:px-8">
-          <PopularItems />
-        </div>
+        <PopularItems />
 
         {/* 5. Featured Chefs */}
         <FeaturedRestaurants />
 
         {/* 6. Hot Deals */}
-        <div className="bg-gradient-to-b from-white to-amber-50 px-4 sm:px-8 lg:px-16 py-4">
-          <DiscountSection />
-        </div>
+        <DiscountSection />
 
         {/* 7. How It Works */}
         <Howitworks />
