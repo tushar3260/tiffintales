@@ -6,9 +6,9 @@ Tiffin Tales is a full-stack MERN web application that connects customers with h
 
 ## 🚀 Live Project
 
-**Website:** https://tiffintalesindia.me/
 
-**Frontend:** https://tiffin-tales-nine.vercel.app/
+
+**website:** https://tiffin-tales-nine.vercel.app/
 
 ## ✨ Features
 
